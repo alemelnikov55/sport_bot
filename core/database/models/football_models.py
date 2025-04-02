@@ -1,7 +1,16 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from .base import Base
-from .main_models import Team
+# from .main_models import Team
+
+from enum import Enum
+from sqlalchemy import Enum as SQLAlchemyEnum
+
+
+class MatchStatus(str, Enum):
+    NOT_STARTED = "NOT_STARTED"
+    IN_PROGRESS = "IN_PROGRESS"
+    FINISHED = "FINISHED"
 
 
 class FootballMatch(Base):
@@ -15,12 +24,19 @@ class FootballMatch(Base):
     score1 = Column(Integer, default=0)
     score2 = Column(Integer, default=0)
 
-    status = Column(String(20))  # SCHEDULED, IN_PROGRESS, FINISHED
-
+    status = Column(
+        SQLAlchemyEnum(MatchStatus),
+        nullable=False,
+        default=MatchStatus.NOT_STARTED,
+        server_default="NOT_STARTED"
+    )
     team1 = relationship("Team", foreign_keys=[team1_id])
     team2 = relationship("Team", foreign_keys=[team2_id])
     goals = relationship("FootballGoal", back_populates="match")
 
+    def __str__(self):
+        return (f'match_id: {self.match_id}, team1_id: {self.team1_id}, team2_id: {self.team2_id}, '
+               f'group_name: {self.group_name}, score1: {self.score1}, score2: {self.score2}, ')
 
 class FootballGoal(Base):
     __tablename__ = 'football_goals'

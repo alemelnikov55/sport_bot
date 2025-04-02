@@ -14,6 +14,11 @@ from loader import RedisSettings, MainSettings, WebhookSettings
 from handlers.support_handlers import start_bot_sup_handler, stop_bot_sup_handler
 from handlers.update import update
 
+from handlers.judge.choose_sport import choose_sport_handler
+from handlers.judge.callback_handlers import judge_callback_handler
+from utils.middleware import DatabaseMiddleware
+
+from database.models import async_session
 
 async def start_bot():
     """Запуск бота и его обработчиков"""
@@ -24,12 +29,15 @@ async def start_bot():
     bot = Bot(token=MainSettings.TOKEN, default=DefaultBotProperties(parse_mode='HTML'))
     dp = Dispatcher(storage=storage)
 
-    await bot.delete_webhook()
+    dp.update.middleware(DatabaseMiddleware(session_pool=async_session))
 
     dp.startup.register(start_bot_sup_handler)
     dp.shutdown.register(stop_bot_sup_handler)
 
     dp.message.register(update, Command('update'))
+
+    dp.callback_query.register(judge_callback_handler, F.data.startswith('j'))
+    dp.message.register(choose_sport_handler, Command('choose_sport'))
 
     try:
         if not WebhookSettings.WEBHOOK_DOMAIN:

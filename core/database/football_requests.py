@@ -1,9 +1,11 @@
-from typing import Dict, Union
+from typing import Dict, Union, List, Optional, Any
 
-from sqlalchemy import select, exists
-from sqlalchemy.orm import joinedload
+from sqlalchemy import select, exists, update
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload, aliased
 
 from database.models import FootballGoal, FootballMatch, Participant, async_session, ParticipantSport, Sport, Team
+from database.models import MatchStatus
 
 
 async def create_match(team1_id: int, team2_id: int, group_name: str = None) -> FootballMatch:
@@ -19,7 +21,7 @@ async def create_match(team1_id: int, team2_id: int, group_name: str = None) -> 
             return match
 
 
-async def add_goal(match_id: int, participant_id: int, half: int) -> FootballMatch:
+async def add_goal(match_id: int, participant_id: int, half: int = 1) -> FootballMatch:
     """Добавляет гол без проверки на участие в футболе"""
     async with async_session() as session:
         async with session.begin():
@@ -42,6 +44,7 @@ async def add_goal(match_id: int, participant_id: int, half: int) -> FootballMat
             return match
 
 
+# под удаление
 async def get_team_sport_participants(team_id: int, sport: Union[str, int]) -> Dict[str, int]:
     """
     Возвращает участников команды, которые играют в указанный вид спорта.
@@ -166,3 +169,214 @@ async def get_football_matches_with_goals() -> dict:
             result["football"][group].append(match_data)
 
     return result
+
+
+async def get_active_matches() -> Dict[str, List[Dict]]:
+    """
+    Возвращает все матчи не в статусе FINISHED, сгруппированные по группам.
+
+    Returns:
+        Словарь в формате:
+        {
+            "группа_A": [
+                {
+                    "match_id": int,
+                    "team1": str,
+                    "team2": str
+                },
+                ...
+            ],
+            "группа_B": [...],
+            ...
+        }
+    """
+    result = {}
+
+    async with async_session() as session:
+        # Запрос с предзагрузкой данных команд
+        stmt = (
+            select(FootballMatch)
+            .options(
+                joinedload(FootballMatch.team1),
+                joinedload(FootballMatch.team2)
+            )
+            .where(FootballMatch.status != MatchStatus.FINISHED)
+            .order_by(FootballMatch.group_name)
+        )
+
+        matches = (await session.execute(stmt)).scalars().all()
+
+        for match in matches:
+            group = match.group_name or "Без группы"
+
+            if group not in result:
+                result[group] = []
+
+            match_data = {
+                "match_id": match.match_id,
+                "team1": match.team1.name,
+                "team2": match.team2.name
+            }
+            result[group].append(match_data)
+
+    return result
+
+
+# async def get_match_teams_info(
+#         session: AsyncSession,
+#         match_id: int
+# ) -> Optional[Dict[str, str]]:
+#     """
+#     Получает информацию о командах и группе матча по ID.
+#
+#     Args:
+#         session: Асинхронная сессия SQLAlchemy
+#         match_id: ID искомого матча
+#
+#     Returns:
+#         Словарь с информацией о матче или None, если матч не найден
+#     """
+#     # Создаем алиасы для таблицы Team
+#     Team1 = aliased(Team)
+#     Team2 = aliased(Team)
+#
+#     result = await session.execute(
+#         select(
+#             Team1.name.label("team1_name"),
+#             Team2.name.label("team2_name"),
+#             FootballMatch.group_name
+#         )
+#         .select_from(FootballMatch)
+#         .join(Team1, FootballMatch.team1_id == Team1.team_id, isouter=True)
+#         .join(Team2, FootballMatch.team2_id == Team2.team_id, isouter=True)
+#         .where(FootballMatch.match_id == match_id)
+#     )
+#
+#     match_info = result.first()
+#
+#     if not match_info:
+#         return None
+#
+#     return {
+#         "team1": match_info.team1_name,
+#         "team2": match_info.team2_name,
+#         "group": match_info.group_name or "Без группы"
+#     }
+
+
+async def get_match_teams_info(
+    session: AsyncSession,
+    match_id: int
+) -> Optional[Dict[str, Any]]:
+    """
+    Получает информацию о командах (с ID) и группе матча по ID.
+
+    Args:
+        session: Асинхронная сессия SQLAlchemy
+        match_id: ID искомого матча
+
+    Returns:
+        Словарь с информацией о матче в формате:
+        {
+            "team1": {
+                "name": "Название команды",
+                "id": team_id
+            },
+            "team2": {
+                "name": "Название команды",
+                "id": team_id
+            },
+            "group": "Название группы"
+        }
+        или None, если матч не найден
+    """
+    # Создаем алиасы для таблицы Team
+    Team1 = aliased(Team)
+    Team2 = aliased(Team)
+
+    result = await session.execute(
+        select(
+            Team1.name.label("team1_name"),
+            Team1.team_id.label("team1_id"),
+            Team2.name.label("team2_name"),
+            Team2.team_id.label("team2_id"),
+            FootballMatch.group_name
+        )
+        .select_from(FootballMatch)
+        .join(Team1, FootballMatch.team1_id == Team1.team_id, isouter=True)
+        .join(Team2, FootballMatch.team2_id == Team2.team_id, isouter=True)
+        .where(FootballMatch.match_id == match_id)
+    )
+
+    match_info = result.first()
+
+    if not match_info:
+        return None
+
+    return {
+        "team1": {
+            "name": match_info.team1_name,
+            "id": match_info.team1_id
+        },
+        "team2": {
+            "name": match_info.team2_name,
+            "id": match_info.team2_id
+        },
+        "group": match_info.group_name or "Без группы"
+    }
+
+
+async def change_match_status(
+        match_id: int,
+        status: MatchStatus,
+        session: AsyncSession
+) -> Optional[Dict[str, str]]:
+    """
+    Изменяет статус матча и возвращает информацию о командах.
+
+    Args:
+        match_id: ID матча
+        status: Новый статус матча
+        session: Асинхронная сессия SQLAlchemy
+
+    Returns:
+        Словарь с названиями команд или None, если матч не найден
+        {
+            "team1": "Название команды 1",
+            "team2": "Название команды 2"
+        }
+    """
+    # 1. Сначала обновляем статус матча
+    update_stmt = (
+        update(FootballMatch)
+        .where(FootballMatch.match_id == match_id)
+        .values(status=status)
+    )
+    await session.execute(update_stmt)
+    await session.commit()
+
+    # 2. Затем получаем информацию о командах
+    Team1 = aliased(Team)
+    Team2 = aliased(Team)
+
+    select_stmt = (
+        select(
+            Team1.name.label("team1_name"),
+            Team2.name.label("team2_name")
+        )
+        .select_from(FootballMatch)
+        .join(Team1, FootballMatch.team1_id == Team1.team_id)
+        .join(Team2, FootballMatch.team2_id == Team2.team_id)
+        .where(FootballMatch.match_id == match_id)
+    )
+
+    result = await session.execute(select_stmt)
+    match_info = result.first()
+
+    if not match_info:
+        return None
+
+    return {
+        "team1": match_info.team1_name,
+        "team2": match_info.team2_name
+    }
