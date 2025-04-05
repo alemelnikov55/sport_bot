@@ -19,7 +19,7 @@ from handlers.update import update
 
 from handlers.judge.choose_sport import choose_sport
 from handlers.judge.dialog import dialog_router
-from handlers.judge.callback_handlers import judge_callback_handler
+# from handlers.judge.callback_handlers import judge_callback_handler
 from utils.middleware import DatabaseMiddleware
 
 from database.models import async_session
@@ -34,9 +34,6 @@ async def start_bot():
 
     # Создаем хранилище состояний
     storage = RedisStorage(r, key_builder=DefaultKeyBuilder(with_destiny=True))
-    # storage.key_builder(DefaultKeyBuilder(with_destiny=True))
-    # RedisStorage(key_builder=DefaultKeyBuilder(with_destiny=True))
-    # DefaultKeyBuilder(with_destiny=True)
     bot = Bot(token=MainSettings.TOKEN, default=DefaultBotProperties(parse_mode='HTML'))
     dp = Dispatcher(storage=storage)
 

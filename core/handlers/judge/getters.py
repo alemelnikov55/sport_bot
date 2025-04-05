@@ -44,3 +44,11 @@ async def choose_scorer_getter(dialog_manager: DialogManager, **kwargs):
     all_participants = await get_team_participants_by_sport(team_id, sport_id, session)
 
     return {'participants': [{'name': name.split(' ')[0], 'id': id_} for name, id_ in all_participants.items()]}
+
+
+async def football_teams_getter(dialog_manager: DialogManager, **kwargs):
+    session = dialog_manager.middleware_data['session']
+    sport_identifier = 'football'
+    football_teams = await get_teams_by_sport(sport_identifier, session)
+    return {'teams': [{'name': name, 'id': id_} for name, id_ in football_teams.items()]}
+

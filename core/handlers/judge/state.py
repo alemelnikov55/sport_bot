@@ -7,7 +7,10 @@ class FootballStates(StatesGroup):
     start_match = State()
     goal = State()
     choose_scorer = State()
-    finish_match = State()
+
+    confirm_finish_match = State()
+    manual_match_create_1 = State()
+    manual_match_create_2 = State()
 
 
 class MainJudgeStates(StatesGroup):

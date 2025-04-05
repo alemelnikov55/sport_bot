@@ -45,50 +45,50 @@ async def add_goal(match_id: int, participant_id: int, half: int = 1) -> Footbal
 
 
 # под удаление
-async def get_team_sport_participants(team_id: int, sport: Union[str, int]) -> Dict[str, int]:
-    """
-    Возвращает участников команды, которые играют в указанный вид спорта.
-
-    Args:
-        team_id: ID команды в таблице Team
-        sport: вид спорта (название или sport_id)
-
-    Returns:
-        Словарь в формате {short_name: participant_id}
-    """
-    async with async_session() as session:
-        # Определяем sport_id в зависимости от типа входного параметра
-        if isinstance(sport, int):
-            # Если передан ID вида спорта, проверяем его существование
-            sport_exists = await session.execute(
-                select(exists().where(Sport.sport_id == sport))
-            )
-            if not sport_exists.scalar():
-                return {}
-            sport_id = sport
-        else:
-            # Если передано название, ищем соответствующий ID
-            sport_result = await session.execute(
-                select(Sport.sport_id).where(Sport.name == sport.lower())
-            )
-            sport_id = sport_result.scalar_one_or_none()
-            if sport_id is None:
-                return {}
-
-        # Выполняем основной запрос
-        result = await session.execute(
-            select(
-                Participant.short_name,
-                Participant.participant_id
-            )
-            .join(Participant.sports)  # Соединяем с таблицей participant_sports
-            .where(
-                Participant.team_id == team_id,
-                ParticipantSport.sport_id == sport_id
-            )
-        )
-
-        return {row.short_name: row.participant_id for row in result.all()}
+# async def get_team_sport_participants(team_id: int, sport: Union[str, int]) -> Dict[str, int]:
+#     """
+#     Возвращает участников команды, которые играют в указанный вид спорта.
+#
+#     Args:
+#         team_id: ID команды в таблице Team
+#         sport: вид спорта (название или sport_id)
+#
+#     Returns:
+#         Словарь в формате {short_name: participant_id}
+#     """
+#     async with async_session() as session:
+#         # Определяем sport_id в зависимости от типа входного параметра
+#         if isinstance(sport, int):
+#             # Если передан ID вида спорта, проверяем его существование
+#             sport_exists = await session.execute(
+#                 select(exists().where(Sport.sport_id == sport))
+#             )
+#             if not sport_exists.scalar():
+#                 return {}
+#             sport_id = sport
+#         else:
+#             # Если передано название, ищем соответствующий ID
+#             sport_result = await session.execute(
+#                 select(Sport.sport_id).where(Sport.name == sport.lower())
+#             )
+#             sport_id = sport_result.scalar_one_or_none()
+#             if sport_id is None:
+#                 return {}
+#
+#         # Выполняем основной запрос
+#         result = await session.execute(
+#             select(
+#                 Participant.short_name,
+#                 Participant.participant_id
+#             )
+#             .join(Participant.sports)  # Соединяем с таблицей participant_sports
+#             .where(
+#                 Participant.team_id == team_id,
+#                 ParticipantSport.sport_id == sport_id
+#             )
+#         )
+#
+#         return {row.short_name: row.participant_id for row in result.all()}
 
 
 async def get_football_matches_with_goals() -> dict:
@@ -215,48 +215,6 @@ async def get_active_matches() -> List[Dict[str, Any]]:
             result.append(match_data)
 
     return result
-
-
-# async def get_match_teams_info(
-#         session: AsyncSession,
-#         match_id: int
-# ) -> Optional[Dict[str, str]]:
-#     """
-#     Получает информацию о командах и группе матча по ID.
-#
-#     Args:
-#         session: Асинхронная сессия SQLAlchemy
-#         match_id: ID искомого матча
-#
-#     Returns:
-#         Словарь с информацией о матче или None, если матч не найден
-#     """
-#     # Создаем алиасы для таблицы Team
-#     Team1 = aliased(Team)
-#     Team2 = aliased(Team)
-#
-#     result = await session.execute(
-#         select(
-#             Team1.name.label("team1_name"),
-#             Team2.name.label("team2_name"),
-#             FootballMatch.group_name
-#         )
-#         .select_from(FootballMatch)
-#         .join(Team1, FootballMatch.team1_id == Team1.team_id, isouter=True)
-#         .join(Team2, FootballMatch.team2_id == Team2.team_id, isouter=True)
-#         .where(FootballMatch.match_id == match_id)
-#     )
-#
-#     match_info = result.first()
-#
-#     if not match_info:
-#         return None
-#
-#     return {
-#         "team1": match_info.team1_name,
-#         "team2": match_info.team2_name,
-#         "group": match_info.group_name or "Без группы"
-#     }
 
 
 async def get_match_teams_info(
