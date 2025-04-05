@@ -183,7 +183,7 @@ async def get_team_participants_by_sport(
 
         if not sport_id:
             return {}
-
+        print(f'in query{team_id}, {sport_id}')
         # Запрос на получение спортсменов
         query = await session.execute(
             select(Participant.participant_id, Participant.full_name)

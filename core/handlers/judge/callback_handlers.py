@@ -11,8 +11,11 @@ j_<sport_id>_<entity_id>_<action>_<доп информация>
    s - start
    f - finish
    g - goal
+   p - choose participant
 
 """
+from pprint import pprint
+
 from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
@@ -71,6 +74,8 @@ async def judge_callback_handler(callback: CallbackQuery, state: FSMContext, bot
             print('выбираем матч')
             matches = await get_active_matches()
 
+            await state.update_data(matches=matches, sport_id=sport_id)
+
             await bot.edit_message_text('Выберите матч для судейства:',
                                         chat_id=chat_id,
                                         message_id=message_id,
@@ -96,19 +101,64 @@ async def judge_callback_handler(callback: CallbackQuery, state: FSMContext, bot
             print(match_info)
             team_1 = match_info['team1']
             team_2 = match_info['team2']
-            await bot.edit_message_text(f'Начинаем матч между {team_1["name"]}, {team_2["name"]}\n'
-                                        f'В группе: {match_info["group"]}',
+            await state.clear()
+
+            await state.update_data(team_1=team_1, team_2=team_2)
+
+            await bot.edit_message_text(f'группа: {match_info["group"]}\n{team_1["name"]} 0 : 0 {team_2["name"]}\n',
                                         chat_id=chat_id,
                                         message_id=message_id,
-                                        reply_markup=await football_goal_add_kb(match_id, team_1, team_2, session))
+                                        reply_markup=await football_goal_add_kb(match_id, team_1, team_2))
 
         # забили гол
         if entity_id == 'm' and action == 'g':
             """j_5_m_g_{team_1["id"]}_m{match}"""
+            print('забили гол')
+
             match_id = int(data[5][1:])
             team_id = int(data[4])
-            await callback.message.answer(text='Гол забит!',
-                                          reply_markup=await football_choose_goal_participant_kb(match_id, team_id, session))
+
+            text = callback.message.text
+            await state.update_data(text=text)
+
+            await bot.edit_message_text('Выбери автора гола:',
+                                        chat_id=chat_id,
+                                        message_id=message_id,
+                                        reply_markup=await football_choose_goal_participant_kb(match_id,
+                                                                                               team_id,
+                                                                                               session))
+
+        # выбрали автора гола
+        if entity_id == 'm' and action == 'p':
+            """ f'j_5_ m_g_m{match}_p{id_}'"""
+            match_id = int(data[4][1:])
+            participant_id = int(data[5][1:])
+
+            data = await state.get_data()
+            old_text = data['text']
+            team_1 = data['team_1']
+            team_2 = data['team_2']
+
+            pprint(data)
+
+            await add_goal(match_id, participant_id)
+
+            await bot.edit_message_text(text=old_text + f'гол от {participant_id}',
+                                           chat_id=chat_id,
+                                        message_id=message_id,
+                                        reply_markup=await football_goal_add_kb(match_id, team_1, team_2))
+
+        # кнопка Назад если не тот матч
+        if entity_id == 'm' and action == 'b':
+            print('Назад')
+            data = await state.get_data()
+            matches = data['matches']
+            sport_id = data['sport_id']
+            await bot.edit_message_text(f'Выберите матч для судейства:',
+                                        chat_id=chat_id,
+                                        message_id=message_id,
+                                        reply_markup=choose_football_match_kb(matches, sport_id))
+
     await callback.answer(text='выбор сделан')
 
 
@@ -144,20 +194,27 @@ def activate_chosen_match_kb(sport: str, entity: str, action: str, match: int) -
     :return:
     """
     kb_builder = InlineKeyboardBuilder()
-    old_callback = create_judge_callback_text(sport, entity, action, match)
+    # old_callback = create_judge_callback_text(sport, entity, action, match)
 
     kb_builder.button(text='Начать матч', callback_data=f'j_{sport}_{entity}_s_{match}')
-    kb_builder.button(text='Назад', callback_data=old_callback)
+    kb_builder.button(text='Назад', callback_data=f'j_{sport}_m_b')
 
     return kb_builder.as_markup()
 
 
-async def football_goal_add_kb(match: int, team_1: dict, team_2: dict, session: AsyncSession) -> InlineKeyboardMarkup:
-    # users = await get_team_participants_by_sport()
+async def football_goal_add_kb(match: int, team_1: dict, team_2: dict) -> InlineKeyboardMarkup:
+    """
+    Клавиатура для выбора команды которая забила гол
+
+    :param match:
+    :param team_1:
+    :param team_2:
+    :return:
+    """
     kb_builder = InlineKeyboardBuilder()
     """await add_goal(match_id, user_id)"""
 
-    # TODO поменять callback
+    ## TODO поменять callback - Исправоено?
     kb_builder.row(InlineKeyboardButton(text=team_1['name'], callback_data=f'j_5_m_g_{team_1["id"]}_m{match}'),
                    InlineKeyboardButton(text=team_2['name'], callback_data=f'j_5_m_g_{team_2["id"]}_m{match}'), width=2)
 
@@ -168,15 +225,16 @@ async def football_goal_add_kb(match: int, team_1: dict, team_2: dict, session: 
 
 async def football_choose_goal_participant_kb(match: int, team: int, session: AsyncSession) -> InlineKeyboardMarkup:
     kb_builder = InlineKeyboardBuilder()
-
+    print('Goal!')
+    print(f'{match} - {team}')
     participants = await get_team_participants_by_sport(team, 'football', session)
-    # {'Ахметшин Айнур Ансарович': 20, 'Бушинский Дмитрий Юрьевич': 56, 'Емельянов Вадим Валерьевич': 103,
-    #  'Мамонтов Андрей Валерьевич': 194, 'Латыпов Ренар Тагирович': 232, 'Потупчик Артем Николаевич': 255,
-    #  'Карамутдинов Ильяс Ильдусович': 303, 'Хамидуллин Дамир Инсафович': 335, 'Хуснутдинов Ринат Зиннурович': 338,
-    #  'Красин Артем Сергеевич': 342}
-
     for name, id_ in participants.items():
-        kb_builder.button(text=f'{name.split(" ")[0]} {id_}', callback_data=f'j_5_m_g_m{match}_p{id_}')
+        print(f'{name} - {id_}')
+        kb_builder.button(text=f'{name.split(" ")[0]} {id_}', callback_data=f'j_5_m_p_m{match}_p{id_}')
+
+    # обдумать callback
+    kb_builder.button(text='Ручной ввод', callback_data=f'j_5_m_p_m{match}_manual')
+    kb_builder.button(text='Назад', callback_data=f'j_5_m_p_m{match}_back')
 
     kb_builder.adjust(1)
 
