@@ -36,12 +36,14 @@ class FootballMatch(Base):
     goals = relationship(
         "FootballGoal",
         back_populates="match",
-        cascade="all, delete-orphan"  # Автоматически удалит голы при удалении матча
+        cascade="all, delete-orphan",  # Автоматическое удаление голов при удалении матча
+        passive_deletes=True
     )
 
     def __str__(self):
         return (f'match_id: {self.match_id}, team1_id: {self.team1_id}, team2_id: {self.team2_id}, '
                f'group_name: {self.group_name}, score1: {self.score1}, score2: {self.score2}, ')
+
 
 class FootballGoal(Base):
     __tablename__ = 'football_goals'

@@ -1,11 +1,9 @@
 from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.kbd import Button
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.football_requests import change_match_status, add_goal, create_match
 from database.models import MatchStatus, async_session
-from database.service_requests import get_teams_by_sport
 from handlers.judge.state import FootballStates, MainJudgeStates
 
 
@@ -23,7 +21,6 @@ async def choose_sport_handler(call: CallbackQuery, button: Button, dialog_manag
 async def choose_match_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, match_id: int):
     dialog_manager.dialog_data['match'] = match_id
     dialog_manager.dialog_data['sport'] = 5
-    print(dialog_manager.dialog_data)
     await call.answer('Выбран матч!')
     await dialog_manager.next()
 
@@ -38,7 +35,6 @@ async def start_match_handler(call: CallbackQuery, button: Button, dialog_manage
 
 async def add_goal_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, team_id: str):
     dialog_manager.dialog_data['goal_team_id'] = team_id
-    print(dialog_manager.dialog_data)
     await dialog_manager.next()
 
 

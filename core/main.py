@@ -9,9 +9,14 @@ from aiogram.fsm.storage.base import DefaultKeyBuilder
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.jobstores.redis import RedisJobStore
+from apscheduler_di import ContextSchedulerDecorator
+
 from aiohttp import web
 
 from handlers.admin.admin_callback_handler import admin_callback_handler
+from handlers.admin.start_game import start_game
 # from handlers.judge.dialog import football_dialog
 from loader import RedisSettings, MainSettings, WebhookSettings
 
@@ -24,7 +29,7 @@ from handlers.judge.choose_sport import choose_sport
 from handlers.judge.dialog import dialog_router
 from utils.filters import IsAdmin
 # from handlers.judge.callback_handlers import judge_callback_handler
-from utils.middleware import DatabaseMiddleware
+from utils.middleware import DatabaseMiddleware, ApschedulerMiddleware
 
 from database.models import async_session
 
@@ -32,7 +37,17 @@ from aiogram_dialog import setup_dialogs
 
 from utils.states import GroupCreationStates
 
-r = redis.Redis(host='127.0.0.1', port=6379, db=0, decode_responses=True)
+r = redis.Redis(host=RedisSettings.REDIS_HOST, port=RedisSettings.REDIS_PORT, db=0, decode_responses=True)
+
+jobstores = {
+    'default': RedisJobStore(
+        jobs_key='dispatcher_trips_jobs',
+        run_times_key='dispatcher_trips_running',
+        host='localhost',
+        db=2,
+        port=6379,
+    )
+}
 
 
 async def start_bot():
@@ -43,20 +58,29 @@ async def start_bot():
     bot = Bot(token=MainSettings.TOKEN, default=DefaultBotProperties(parse_mode='HTML'))
     dp = Dispatcher(storage=storage)
 
+    # Создаем планировщик задач
+    scheduler = ContextSchedulerDecorator(AsyncIOScheduler(timezone='Europe/Moscow', jobjobstores=jobstores))
+    scheduler.ctx.add_instance(bot, declared_class=Bot)
+    scheduler.start()
+
     dp.include_router(dialog_router)
 
     dp.update.middleware(DatabaseMiddleware(session_pool=async_session))
+    dp.update.middleware.register(ApschedulerMiddleware(scheduler))
 
     dp.startup.register(start_bot_sup_handler)
     dp.shutdown.register(stop_bot_sup_handler)
 
     dp.message.register(update, Command('update'))
 
+    # Регистрируем хэндлеры судей
     dp.message.register(choose_sport, Command('choose_sport'))
+
+    # Регистрируем хэндлеры админов
     dp.message.register(create_football_group, Command('create_football_group'), IsAdmin())
+    dp.message.register(start_game, Command('start_game'), IsAdmin())
     dp.message.register(get_teams_amount, GroupCreationStates.get_teams_amount)
 
-    # dp.callback_query.register(judge_callback_handler, F.data.startswith('j'))
     dp.callback_query.register(admin_callback_handler, F.data.startswith('a'), IsAdmin())
 
     setup_dialogs(dp)

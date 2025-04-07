@@ -19,5 +19,6 @@ async def admin_callback_handler(call: CallbackQuery, state: FSMContext):
                 await create_match(team_1, team_2, group)
                 matches_count += 1
 
+    await call.message.delete_reply_markup()
     await call.answer(f'Было создано {matches_count} матчей в группах {formated_groups}')
     await call.message.answer(f'Было создано {matches_count} матчей в группах {formated_groups}')

@@ -23,6 +23,8 @@ async def create_match(team1_id: int, team2_id: int, group_name: str = None) -> 
 
 async def clear_matches(session: AsyncSession) -> str:
     async with session as session:
+        stmt = delete(FootballGoal)
+        await session.execute(stmt)
         stmt = delete(FootballMatch)
         await session.execute(stmt)
         await session.commit()
