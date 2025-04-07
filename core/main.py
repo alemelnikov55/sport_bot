@@ -11,20 +11,26 @@ from aiogram.webhook.aiohttp_server import SimpleRequestHandler
 
 from aiohttp import web
 
+from handlers.admin.admin_callback_handler import admin_callback_handler
 # from handlers.judge.dialog import football_dialog
 from loader import RedisSettings, MainSettings, WebhookSettings
 
 from handlers.support_handlers import start_bot_sup_handler, stop_bot_sup_handler
 from handlers.update import update
 
+from handlers.admin.create_football_group import create_football_group, get_teams_amount
+
 from handlers.judge.choose_sport import choose_sport
 from handlers.judge.dialog import dialog_router
+from utils.filters import IsAdmin
 # from handlers.judge.callback_handlers import judge_callback_handler
 from utils.middleware import DatabaseMiddleware
 
 from database.models import async_session
 
 from aiogram_dialog import setup_dialogs
+
+from utils.states import GroupCreationStates
 
 r = redis.Redis(host='127.0.0.1', port=6379, db=0, decode_responses=True)
 
@@ -46,8 +52,12 @@ async def start_bot():
 
     dp.message.register(update, Command('update'))
 
-    # dp.callback_query.register(judge_callback_handler, F.data.startswith('j'))
     dp.message.register(choose_sport, Command('choose_sport'))
+    dp.message.register(create_football_group, Command('create_football_group'), IsAdmin())
+    dp.message.register(get_teams_amount, GroupCreationStates.get_teams_amount)
+
+    # dp.callback_query.register(judge_callback_handler, F.data.startswith('j'))
+    dp.callback_query.register(admin_callback_handler, F.data.startswith('a'), IsAdmin())
 
     setup_dialogs(dp)
 

@@ -32,7 +32,12 @@ class FootballMatch(Base):
     )
     team1 = relationship("Team", foreign_keys=[team1_id])
     team2 = relationship("Team", foreign_keys=[team2_id])
-    goals = relationship("FootballGoal", back_populates="match")
+    # goals = relationship("FootballGoal", back_populates="match")
+    goals = relationship(
+        "FootballGoal",
+        back_populates="match",
+        cascade="all, delete-orphan"  # Автоматически удалит голы при удалении матча
+    )
 
     def __str__(self):
         return (f'match_id: {self.match_id}, team1_id: {self.team1_id}, team2_id: {self.team2_id}, '

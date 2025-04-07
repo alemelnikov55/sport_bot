@@ -214,7 +214,6 @@ async def football_goal_add_kb(match: int, team_1: dict, team_2: dict) -> Inline
     kb_builder = InlineKeyboardBuilder()
     """await add_goal(match_id, user_id)"""
 
-    ## TODO поменять callback - Исправоено?
     kb_builder.row(InlineKeyboardButton(text=team_1['name'], callback_data=f'j_5_m_g_{team_1["id"]}_m{match}'),
                    InlineKeyboardButton(text=team_2['name'], callback_data=f'j_5_m_g_{team_2["id"]}_m{match}'), width=2)
 

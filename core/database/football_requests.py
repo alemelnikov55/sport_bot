@@ -1,6 +1,6 @@
-from typing import Dict, Union, List, Optional, Any
+from typing import Dict, List, Optional, Any
 
-from sqlalchemy import select, exists, update
+from sqlalchemy import select, exists, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, aliased, selectinload
 
@@ -19,6 +19,14 @@ async def create_match(team1_id: int, team2_id: int, group_name: str = None) -> 
             session.add(match)
             await session.commit()
             return match
+
+
+async def clear_matches(session: AsyncSession) -> str:
+    async with session as session:
+        stmt = delete(FootballMatch)
+        await session.execute(stmt)
+        await session.commit()
+        return 'Таблица матчей удалена.'
 
 
 async def add_goal(match_id: int, participant_id: int, half: int = 1) -> FootballMatch:
