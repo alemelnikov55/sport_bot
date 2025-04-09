@@ -81,7 +81,7 @@ async def start_bot():
     dp.message.register(start_game, Command('start_game'), IsAdmin())
     dp.message.register(get_teams_amount, GroupCreationStates.get_teams_amount)
 
-    dp.callback_query.register(admin_callback_handler, F.data.startswith('a'), IsAdmin())
+    dp.callback_query.register(admin_callback_handler, F.data.startswith('adm'), IsAdmin())
 
     setup_dialogs(dp)
 

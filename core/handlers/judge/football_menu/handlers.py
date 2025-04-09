@@ -12,12 +12,6 @@ async def choose_match_back_handler(call: CallbackQuery, button: Button, dialog_
     await dialog_manager.start(MainJudgeStates.sport)
 
 
-async def choose_sport_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, sport_id: str):
-    """Обработчик выбора видов спорта"""
-    await call.answer('Выбран спорт!')
-    await dialog_manager.start(FootballStates.match)
-
-
 async def choose_match_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, match_id: int):
     dialog_manager.dialog_data['match'] = match_id
     dialog_manager.dialog_data['sport'] = 5

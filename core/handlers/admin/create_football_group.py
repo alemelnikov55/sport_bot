@@ -121,6 +121,6 @@ def format_matches_for_referees(group_matches, teams_dict):
 def confirm_groups_keyboard() -> InlineKeyboardMarkup:
     kb_builder = InlineKeyboardBuilder()
 
-    kb_builder.button(text='Подтвердить', callback_data='a_confirmGroups')
+    kb_builder.button(text='Подтвердить', callback_data='adm_confirmGroups')
 
     return kb_builder.as_markup()

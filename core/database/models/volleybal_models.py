@@ -41,6 +41,9 @@ class VolleyballMatch(Base):
         order_by="VolleyballSet.set_number"
     )
 
+    def __str__(self):
+        return f"match_id:{self.match_id}\nteam1_id: {self.team1_id} - team2_id: {self.team2_id}\n{self.team1_set_wins} - {self.team2_set_wins}\n{self.status}"
+
 
 class VolleyballSet(Base):
     __tablename__ = 'volleyball_sets'
@@ -63,10 +66,14 @@ class VolleyballSet(Base):
         CheckConstraint('set_number BETWEEN 1 AND 3'),
     )
 
+    def __str__(self):
+        return (f"{self.match_id} - {self.set_number}\n"
+                f"{self.team1_score} - {self.team2_score}\n{self.status}")
+
     @property
     def winner(self) -> Optional[int]:
         """Возвращает 1 (team1), 2 (team2) или None если сет не завершён или ничья"""
-        if self.status != VolleyballMatchStatus.COMPLETED:
+        if self.status != VolleyballMatchStatus.FINISHED:
             return None
 
         if self.team1_score > self.team2_score:

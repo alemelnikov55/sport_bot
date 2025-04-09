@@ -378,8 +378,8 @@ async def get_match_info_by_id(match_id: int) -> Dict[str, Any]:
 
         return {
             "match_id": match.match_id,
-            "team1_name": match.team1.name if match.team1 else "Unknown Team",
-            "team2_name": match.team2.name if match.team2 else "Unknown Team",
+            "team1_name": match.team1.name,
+            "team2_name": match.team2.name,
             "team1_score": match.score1,
             "team2_score": match.score2,
             "total_score": f"{match.score1}:{match.score2}"
@@ -389,6 +389,10 @@ async def get_match_info_by_id(match_id: int) -> Dict[str, Any]:
 async def get_match_teams_optimized(match_id: int) -> List[Dict[str, Any]]:
     """
     Оптимизированная версия с прямым JOIN запросом
+
+    Возвращает список словарей с информацией о командах, участвующих в матче.
+
+    returns: [{name: ..., id: ...}, {name: ..., id: ...}]
     """
     async with async_session() as session:
         stmt = (

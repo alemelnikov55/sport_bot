@@ -5,18 +5,18 @@ from database.football_requests import get_active_matches, get_match_info_by_id,
     get_match_teams_optimized
 from database.service_requests import get_all_sports, get_teams_by_sport, get_team_participants_by_sport
 
-
-async def get_sports(dialog_manager: DialogManager, **kwargs):
-    """Получение списка видов сопорта"""
-    sports = await get_all_sports()
-
-    return {'sports': [{'name': name, 'id': id_} for name, id_ in sports.items()]}
+# Под удаление
+# async def get_sports(dialog_manager: DialogManager, **kwargs):
+#     """Получение списка видов сопорта"""
+#     sports = await get_all_sports()
+#
+#     return {'sports': [{'name': name, 'id': id_} for name, id_ in sports.items()]}
 
 
 async def active_matches_getter(dialog_manager: DialogManager, **kwargs):
     """Получение списка активных матчей"""
     matches = await get_active_matches()
-    
+
     return {'matches': matches}
 
 

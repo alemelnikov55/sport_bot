@@ -7,7 +7,9 @@ from database.football_requests import create_match
 async def admin_callback_handler(call: CallbackQuery, state: FSMContext):
     call_data = call.data.split('_')
     state_data = await state.get_data()
-    groups_matches = state_data['groups_matches']
+    groups_matches = state_data.get('groups_matches')
+    if groups_matches is None:
+        return
 
     matches_count = 0
     formated_groups = ' '.join([group for group, matches in groups_matches.items()])

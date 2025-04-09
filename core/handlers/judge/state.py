@@ -1,8 +1,11 @@
 from aiogram.fsm.state import StatesGroup, State
 
 
-class FootballStates(StatesGroup):
+class MainJudgeStates(StatesGroup):
     sport = State()
+
+
+class FootballStates(StatesGroup):
     match = State()
     start_match = State()
     goal = State()
@@ -13,5 +16,15 @@ class FootballStates(StatesGroup):
     manual_match_create_2 = State()
 
 
-class MainJudgeStates(StatesGroup):
-    sport = State()
+class VolleyballStates(StatesGroup):
+    match = State()
+    start_match = State()
+    set = State()
+    process_set = State()
+
+    finish_set = State()
+    finish_match = State()
+
+    confirm_finish_match = State()
+    manual_match_create_1 = State()
+    manual_match_create_2 = State()

@@ -1,11 +1,11 @@
 from aiogram_dialog import Window
-from aiogram_dialog.widgets.kbd import Button, Group, Select, Back, Cancel
+from aiogram_dialog.widgets.kbd import Button, Group, Select, Back
 from aiogram_dialog.widgets.text import Const, Format
 
-from handlers.judge.getters import get_sports, active_matches_getter, start_match_getter, match_info_getter, \
+from handlers.judge.football_menu.getters import active_matches_getter, start_match_getter, match_info_getter, \
     choose_scorer_getter, football_teams_getter
 from handlers.judge.state import FootballStates
-from handlers.judge.handlers import choose_sport_handler, choose_match_handler, start_match_handler, add_goal_handler, \
+from handlers.judge.football_menu.handlers import choose_match_handler, start_match_handler, add_goal_handler, \
     finish_match_handler, choose_scorer_handler, choose_match_back_handler, confirm_finish_match_handler, \
     manual_football_match_add_handler, first_team_select_handler, second_team_select_handler
 
@@ -129,7 +129,6 @@ def get_manual_match_create_window_2() -> Window:
             id='manual_match_create_2_group',
             width=2,
         ),
-        Back(Const("Назад"), id="back_choose_team_2"),
         state=FootballStates.manual_match_create_2,
         getter=football_teams_getter
     )

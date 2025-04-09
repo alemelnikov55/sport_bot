@@ -2,8 +2,8 @@ from aiogram_dialog import Window
 from aiogram_dialog.widgets.kbd import Group, Select
 from aiogram_dialog.widgets.text import Const, Format
 
-from handlers.judge.getters import get_sports
-from handlers.judge.handlers import choose_sport_handler
+from handlers.judge.main_getters import get_sports
+from handlers.judge.main_handlers import choose_sport_handler
 from handlers.judge.state import MainJudgeStates
 
 
