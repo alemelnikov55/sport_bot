@@ -6,9 +6,7 @@ from datetime import datetime
 from aiogram import Bot
 from aiogram.types import BotCommandScopeAllGroupChats, BotCommand, BotCommandScopeAllPrivateChats
 
-from database.football_requests import get_football_matches_with_goals
 from loader import MainSettings
-from utils.google_supports.requests_to_google import update_google_sheet
 
 
 async def set_commands(bot: Bot):

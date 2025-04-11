@@ -35,6 +35,7 @@ class Participant(Base):
 
     team = relationship("Team", back_populates="participants")
     sports = relationship("ParticipantSport", back_populates="participant")
+    football_falls = relationship("FootballFallers", back_populates="faller")
 
     def __str__(self):
         return f'participant: {self.participant_id}, full name: {self.full_name}, age: {self.age}, team: {self.team_id}'

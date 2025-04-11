@@ -84,6 +84,7 @@ async def update_volleyball_match_status(
             .where(VolleyballMatch.match_id == match_id)
         )
         match = match_result.scalar_one()
+        print(f"Проверка матча {match_id}: {match.team1_set_wins} - {match.team2_set_wins}")
         # Если победитель не указан явно, определяем его по сетам
         if winner_id is None:
             if match.team1_set_wins > match.team2_set_wins:
@@ -144,9 +145,22 @@ async def update_volleyball_set_status(
         raise ValueError(f"Сет {set_number} не найден в матче {match_id}")
 
     if new_status == VolleyballMatchStatus.FINISHED:
+        if volleyball_set.status == VolleyballMatchStatus.FINISHED:
+            print("Сет уже завершен, пропускаем обновление")
+            return
         # Проверяем, что счет валидный
         if volleyball_set.team1_score == volleyball_set.team2_score:
-            raise ValueError("Нельзя завершить сет с равным счетом")
+            if volleyball_set.team1_score == 0:
+                set_info = await session.execute(
+                    update(VolleyballSet).returning(VolleyballSet)
+                    .where(VolleyballSet.set_number == set_number)
+                    .where(VolleyballSet.match_id == match_id)
+                    .values(status=new_status)
+                )
+                await session.commit()
+                return set_info.scalar_one_or_none()
+            else:
+                raise ValueError("Нельзя завершить сет с равным счетом")
 
         # Обновляем счет в матче
         if volleyball_set.team1_score > volleyball_set.team2_score:
@@ -305,8 +319,9 @@ async def get_volleyball_match_info_by_id(session: AsyncSession, match_id: int) 
 
     result = await session.execute(stmt)
     match = result.scalars().first()
-    print(match.match_id)
-    print(True if match.status is VolleyballMatchStatus.IN_PROGRESS else False)
+    print(match)
+    test = True if match.status is VolleyballMatchStatus.IN_PROGRESS else False
+    print(f'True if match.status is VolleyballMatchStatus.IN_PROGRESS else False: {test}')
     return {
         'match_id': match.match_id,
         'team1_name': match.team1.name,
@@ -469,7 +484,7 @@ async def get_volleyball_match_full_info(
 async def get_next_available_set(
         session: AsyncSession,
         match_id: int
-) -> Optional[int]:
+) -> VolleyballSet:
     """
     Возвращает номер сета с наименьшим значением, который имеет статус IN_PROGRESS или NOT_STARTED.
     Если таких сетов нет, возвращает None.
@@ -479,7 +494,7 @@ async def get_next_available_set(
     :return: Номер сета (1-3) или None, если нет доступных сетов
     """
     result = await session.execute(
-        select(VolleyballSet.set_number)
+        select(VolleyballSet)
         .where(
             VolleyballSet.match_id == match_id,
             VolleyballSet.status.in_([
@@ -493,3 +508,84 @@ async def get_next_available_set(
 
     set_number = result.scalar_one_or_none()
     return set_number
+
+
+async def get_active_volleyball_matches(
+        session: AsyncSession
+) -> Dict[str, List[Dict]]:
+    """
+    Возвращает данные по всем активным волейбольным матчам с детализацией по сетам
+    в формате:
+    {
+        'group_name': [
+            {
+                'team1': {
+                    'name': str,
+                    'sets_won': int,
+                    'scores': [{'set_number': int, 'score': int}, ...]
+                },
+                'team2': {
+                    'name': str,
+                    'sets_won': int,
+                    'scores': [{'set_number': int, 'score': int}, ...]
+                }
+            },
+            ...
+        ],
+        ...
+    }
+    """
+    # Получаем все активные матчи с предзагруженными командами и сетами
+    result = await session.execute(
+        select(VolleyballMatch)
+        .options(
+            joinedload(VolleyballMatch.team1),
+            joinedload(VolleyballMatch.team2),
+            joinedload(VolleyballMatch.sets)
+        )
+        .where(VolleyballMatch.status != VolleyballMatchStatus.NOT_STARTED)
+        .order_by(VolleyballMatch.group_name, VolleyballMatch.match_id)
+    )
+
+    matches = result.unique().scalars().all()
+
+    # Группируем матчи по названию группы
+    grouped_matches = {}
+
+    for match in matches:
+        # Сортируем сеты по номеру
+        sorted_sets = sorted(match.sets, key=lambda x: x.set_number)
+
+        # Формируем данные по командам
+        team1_scores = []
+        team2_scores = []
+
+        for s in sorted_sets:
+            team1_scores.append({
+                'set_number': s.set_number,
+                'score': s.team1_score
+            })
+            team2_scores.append({
+                'set_number': s.set_number,
+                'score': s.team2_score
+            })
+
+        match_data = {
+            'team1': {
+                'name': match.team1.name,
+                'sets_won': match.team1_set_wins,
+                'scores': team1_scores
+            },
+            'team2': {
+                'name': match.team2.name,
+                'sets_won': match.team2_set_wins,
+                'scores': team2_scores
+            }
+        }
+
+        if match.group_name not in grouped_matches:
+            grouped_matches[match.group_name] = []
+
+        grouped_matches[match.group_name].append(match_data)
+
+    return grouped_matches

@@ -42,7 +42,7 @@ async def start_volleyball_match_getter(dialog_manager: DialogManager, **kwargs)
     match_id = int(dialog_manager.dialog_data['volleyball_match'])
 
     matches = await get_volleyball_match_info_by_id(session, match_id)
-    print(matches)
+
     return {'volleyball_match': matches}
 
 

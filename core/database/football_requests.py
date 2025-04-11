@@ -1,10 +1,11 @@
 from typing import Dict, List, Optional, Any
 
-from sqlalchemy import select, exists, update, delete
+from sqlalchemy import select, exists, update, delete, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, aliased, selectinload
 
-from database.models import FootballGoal, FootballMatch, Participant, async_session, ParticipantSport, Sport, Team
+from database.models import FootballGoal, FootballMatch, Participant, async_session, ParticipantSport, Sport, Team, \
+    FootballFallers
 from database.models import MatchStatus
 
 
@@ -133,8 +134,8 @@ async def get_football_matches_with_goals() -> dict:
         for match in matches:
             group = match.group_name or "NoGroup"
 
-            if group not in result["football"]:
-                result["football"][group] = []
+            if group not in result:
+                result[group] = []
 
             # Получаем игроков, забивших голы в этом матче (уже предзагружены)
             goal_scorers = [goal.scorer for goal in match.goals]
@@ -176,7 +177,134 @@ async def get_football_matches_with_goals() -> dict:
                 }
             }
 
-            result["football"][group].append(match_data)
+            result[group].append(match_data)
+
+    return result
+
+
+async def get_football_matches_with_goals_and_fallers(session: AsyncSession) -> dict:
+    """
+    Возвращает статистику футбольных матчей с голами и фолами, сгруппированную по группам.
+    Формат возвращаемых данных:
+    {
+        "group_name": [
+            {
+                "team_1": {
+                    "match_id": int,
+                    "name": str,
+                    "goals": int,
+                    "players": [(short_name, participant_id)],  # забившие голы
+                    "fallers": [(short_name, participant_id)]  # получившие фолы
+                },
+                "team_2": {
+                    ...
+                }
+            },
+            ...
+        ],
+        ...
+    }
+    """
+    result = {"football": {}}
+
+
+    # Получаем ID футбола из таблицы Sport
+    football_sport = await session.execute(
+        select(Sport.sport_id).where(Sport.name == "football")
+    )
+    football_sport_id = football_sport.scalar_one_or_none()
+
+    if football_sport_id is None:
+        return result
+
+    # Получаем все матчи с предзагруженными данными
+    matches_query = (
+        select(FootballMatch)
+        .options(
+            joinedload(FootballMatch.team1),
+            joinedload(FootballMatch.team2),
+            joinedload(FootballMatch.goals).joinedload(FootballGoal.scorer),
+            joinedload(FootballMatch.fallers).joinedload(FootballFallers.faller)
+        )
+    )
+    matches = (await session.execute(matches_query)).scalars().unique().all()
+
+    for match in matches:
+        group = match.group_name or "NoGroup"
+
+        if group not in result["football"]:
+            result["football"][group] = []
+
+        # Получаем игроков, забивших голы в этом матче
+        goal_scorers = [goal.scorer for goal in match.goals if goal.scorer]
+
+        # Получаем игроков, получивших фолы в этом матче
+        fallers = [f.faller for f in match.fallers if f.faller]
+
+        # Формируем данные по командам
+        team1_data = {
+            "match_id": match.match_id,
+            "name": match.team1.name,
+            "goals": match.score1,
+            "players": []
+        }
+
+        team2_data = {
+            "match_id": match.match_id,
+            "name": match.team2.name,
+            "goals": match.score2,
+            "players": []
+        }
+
+        # Обрабатываем забивших голы
+        for player in goal_scorers:
+            # plays_football = await session.execute(
+            #     select(exists().where(
+            #         ParticipantSport.participant_id == player.participant_id,
+            #         ParticipantSport.sport_id == football_sport_id
+            #     ))
+            # )
+            #
+            # if not plays_football.scalar():
+            #     continue
+
+            if player.team_id == match.team1_id:
+                team1_data["players"].append((player.short_name, player.participant_id))
+            else:
+                team2_data["players"].append((player.short_name, player.participant_id))
+
+        formated_fallers = []
+
+        # Обрабатываем получивших фолы
+        for faller in fallers:
+            # plays_football = await session.execute(
+            #     select(exists().where(
+            #         ParticipantSport.participant_id == faller.participant_id,
+            #         ParticipantSport.sport_id == football_sport_id
+            #     ))
+            # )
+
+            # if not plays_football.scalar():
+            #     continue
+
+            formated_fallers.append((faller.short_name, faller.participant_id))
+            # fallers.append(faller)
+            # print(faller)
+            #
+            # if faller.team_id == match.team1_id:
+            #     team1_data["fallers"].append((faller.short_name, faller.participant_id))
+            # else:
+            #     team2_data["fallers"].append((faller.short_name, faller.participant_id))
+
+
+        # Добавляем матч в результат
+        match_data = {
+            'red_cards': formated_fallers,
+            "team_1": team1_data,
+            "team_2": team2_data
+        }
+
+        result["football"][group].append(match_data)
 
     return result
 
@@ -386,7 +514,7 @@ async def get_match_info_by_id(match_id: int) -> Dict[str, Any]:
         }
 
 
-async def get_match_teams_optimized(match_id: int) -> List[Dict[str, Any]]:
+async def get_match_teams_optimized(session: AsyncSession ,match_id: int) -> List[Dict[str, Any]]:
     """
     Оптимизированная версия с прямым JOIN запросом
 
@@ -394,25 +522,31 @@ async def get_match_teams_optimized(match_id: int) -> List[Dict[str, Any]]:
 
     returns: [{name: ..., id: ...}, {name: ..., id: ...}]
     """
-    async with async_session() as session:
-        stmt = (
+    stmt = (
+        select(
+            Team.team_id.label("id"),
+            Team.name
+        )
+        .select_from(FootballMatch)
+        .join(Team, FootballMatch.team1_id == Team.team_id)
+        .where(FootballMatch.match_id == match_id)
+        .union_all(
             select(
                 Team.team_id.label("id"),
                 Team.name
             )
             .select_from(FootballMatch)
-            .join(Team, FootballMatch.team1_id == Team.team_id)
+            .join(Team, FootballMatch.team2_id == Team.team_id)
             .where(FootballMatch.match_id == match_id)
-            .union_all(
-                select(
-                    Team.team_id.label("id"),
-                    Team.name
-                )
-                .select_from(FootballMatch)
-                .join(Team, FootballMatch.team2_id == Team.team_id)
-                .where(FootballMatch.match_id == match_id)
-            )
         )
+    )
 
-        result = await session.execute(stmt)
-        return [{"id": row.id, "name": row.name} for row in result.all()]
+    result = await session.execute(stmt)
+    return [{"id": row.id, "name": row.name} for row in result.all()]
+
+
+async def add_faller(session: AsyncSession, player_id: int, match_id: int) -> None:
+    """Добавляет игрока как фаллера в матч."""
+    faller = FootballFallers(faller_id=player_id, match_id=match_id)
+    session.add(faller)
+    await session.commit()

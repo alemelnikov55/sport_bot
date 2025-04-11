@@ -8,8 +8,11 @@ class MainJudgeStates(StatesGroup):
 class FootballStates(StatesGroup):
     match = State()
     start_match = State()
-    goal = State()
+    process_match = State()
     choose_scorer = State()
+
+    red_card_choose_team = State()
+    red_card_choose_player = State()
 
     confirm_finish_match = State()
     manual_match_create_1 = State()

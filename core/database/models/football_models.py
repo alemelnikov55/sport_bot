@@ -39,6 +39,12 @@ class FootballMatch(Base):
         cascade="all, delete-orphan",  # Автоматическое удаление голов при удалении матча
         passive_deletes=True
     )
+    fallers = relationship(
+        "FootballFallers",
+        back_populates="match",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
 
     def __str__(self):
         return (f'match_id: {self.match_id}, team1_id: {self.team1_id}, team2_id: {self.team2_id}, '
@@ -55,3 +61,27 @@ class FootballGoal(Base):
 
     match = relationship("FootballMatch", back_populates="goals")
     scorer = relationship("Participant")
+
+
+class FootballFallers(Base):
+    __tablename__ = 'football_fallers'
+
+    id = Column(Integer, primary_key=True)
+    faller_id = Column(Integer, ForeignKey('participants.participant_id'))
+    match_id = Column(Integer, ForeignKey('football_matches.match_id', ondelete="CASCADE"))
+
+    # Связи
+    faller = relationship(
+        "Participant",
+        back_populates="football_falls",  # Обратная ссылка в Participant
+        lazy="joined"  # Опционально: автоматическая загрузка связанного участника
+    )
+
+    match = relationship(
+        "FootballMatch",
+        back_populates="fallers",  # Обратная ссылка в FootballMatch
+        lazy="select"  # Стандартная ленивая загрузка
+    )
+
+    def __repr__(self):
+        return f"<FootballFaller {self.id}: Participant {self.faller_id} in Match {self.match_id}>"

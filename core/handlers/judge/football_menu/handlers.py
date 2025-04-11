@@ -35,7 +35,7 @@ async def add_goal_handler(call: CallbackQuery, button: Button, dialog_manager: 
 async def choose_scorer_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, scorer_id: str):
     match_id = int(dialog_manager.dialog_data['match'])
     await add_goal(match_id, int(scorer_id))
-    await dialog_manager.switch_to(FootballStates.goal)
+    await dialog_manager.switch_to(FootballStates.process_match)
 
 
 async def finish_match_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
@@ -71,3 +71,51 @@ async def second_team_select_handler(call: CallbackQuery, button: Button, dialog
 
     await dialog_manager.switch_to(FootballStates.match)
     await call.answer(f'Выбрана команда {team_id}')
+
+
+async def back_start_football_match_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(FootballStates.match)
+    await call.answer('Меню матчей')
+
+
+async def back_process_match_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(FootballStates.match)
+    await call.answer('Меню матчей')
+
+
+async def back_choose_scorer_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(FootballStates.process_match)
+    await call.answer('Меню матча')
+
+
+async def back_finish_match_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(FootballStates.process_match)
+    await call.answer('Меню матчей')
+
+
+async def back_manual_match_create_1_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(FootballStates.match)
+    await call.answer('Меню матчей')
+
+
+async def back_manual_match_create_2_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(FootballStates.manual_match_create_1)
+    await call.answer('Назад')
+
+
+async def red_card_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(FootballStates.red_card_choose_team)
+
+
+async def red_card_team_select_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, team_id: str):
+    dialog_manager.dialog_data['red_card_team_id'] = team_id
+    await dialog_manager.switch_to(FootballStates.red_card_choose_player)
+
+
+async def red_card_player_select_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, player_id: str):
+    # team_id = dialog_manager.dialog_data['red_card_team_id']
+    match_id = int(dialog_manager.dialog_data['match'])
+    # await add_red_card(team_id, player_id)
+    print(f'Сюда отправить команду на удаление игрока из команды\nmatch {match_id} player {player_id}')
+    await dialog_manager.switch_to(FootballStates.process_match)
+    await call.answer('Карточка выдана!')

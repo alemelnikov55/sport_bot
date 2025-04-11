@@ -28,9 +28,9 @@ def get_volleyball_matches_window() -> Window:
                 on_click=choose_volleyball_match_handler
             ),
             Button(Const("Создать матч"), id="manual_match_add", on_click=manual_volleyball_match_add_handler),
-            Back(Const("Назад"), id="back_choose_match",
-                 on_click=back_choose_match_handler
-                 ),
+            Button(Const("Назад"), id="back_choose_match",
+                   on_click=back_choose_match_handler
+                   ),
             width=1,
             id="volleyball_matches_group"
         ),
@@ -74,7 +74,7 @@ def get_volleyball_process_window() -> Window:
         Button(Const("Завершить матч"),
                id="finish_volleyball_match",
                on_click=ask_finish_volleyball_match_handler),
-        Back(Const("Назад"), id="back_volleyball_process_set", on_click=back_volleyball_process_handler),
+        Button(Const("Назад"), id="back_volleyball_process_set", on_click=back_volleyball_process_handler),
         state=VolleyballStates.process_set,
         getter=volleyball_set_info_getter
     )
