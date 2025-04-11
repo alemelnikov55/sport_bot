@@ -16,6 +16,7 @@ from apscheduler_di import ContextSchedulerDecorator
 from aiohttp import web
 
 from handlers.admin.admin_callback_handler import admin_callback_handler
+from handlers.admin.pannel_handler import start_admin_panel
 from handlers.admin.start_game import start_game
 # from handlers.judge.dialog import football_dialog
 from loader import RedisSettings, MainSettings, WebhookSettings
@@ -80,6 +81,7 @@ async def start_bot():
     dp.message.register(create_football_group, Command('create_football_group'), IsAdmin())
     dp.message.register(start_game, Command('start_game'), IsAdmin())
     dp.message.register(get_teams_amount, GroupCreationStates.get_teams_amount)
+    dp.message.register(start_admin_panel, Command('panel'), IsAdmin())
 
     dp.callback_query.register(admin_callback_handler, F.data.startswith('adm'), IsAdmin())
 

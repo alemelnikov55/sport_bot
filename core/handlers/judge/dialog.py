@@ -2,6 +2,9 @@ from aiogram import Router
 
 from aiogram_dialog import Dialog
 
+from handlers.admin.admin_windows import get_admin_start_window, get_admin_choose_sport_to_fix_window, \
+    get_admin_choose_team_to_fix_window, get_admin_choose_match_to_fix_window, get_admin_choose_goal_to_fix_window, \
+    get_admin_fix_goal_approve_window
 from handlers.judge.main_windows import get_sports_window
 from handlers.judge.football_menu.windows import get_matches_window, get_start_match_window, get_process_window, \
     get_choose_scorer_window, get_finish_match_window, get_manual_match_create_window_1, \
@@ -41,7 +44,18 @@ volleyball_dialog = Dialog(
 
 main_judge_dialog = Dialog(get_sports_window())
 
+admin_dialog = Dialog(
+    get_admin_start_window(),
+    get_admin_choose_sport_to_fix_window(),
+    get_admin_choose_team_to_fix_window(),
+    get_admin_choose_match_to_fix_window(),
+    get_admin_choose_goal_to_fix_window(),
+    get_admin_fix_goal_approve_window()
+
+)
+
 
 dialog_router.include_router(main_judge_dialog)
 dialog_router.include_router(football_dialog)
 dialog_router.include_router(volleyball_dialog)
+dialog_router.include_router(admin_dialog)

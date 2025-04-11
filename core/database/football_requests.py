@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Any
 
-from sqlalchemy import select, exists, update, delete, insert
+from sqlalchemy import select, exists, update, delete, insert, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, aliased, selectinload
 
@@ -56,52 +56,6 @@ async def add_goal(match_id: int, participant_id: int, half: int = 1) -> Footbal
 
 
 # под удаление
-# async def get_team_sport_participants(team_id: int, sport: Union[str, int]) -> Dict[str, int]:
-#     """
-#     Возвращает участников команды, которые играют в указанный вид спорта.
-#
-#     Args:
-#         team_id: ID команды в таблице Team
-#         sport: вид спорта (название или sport_id)
-#
-#     Returns:
-#         Словарь в формате {short_name: participant_id}
-#     """
-#     async with async_session() as session:
-#         # Определяем sport_id в зависимости от типа входного параметра
-#         if isinstance(sport, int):
-#             # Если передан ID вида спорта, проверяем его существование
-#             sport_exists = await session.execute(
-#                 select(exists().where(Sport.sport_id == sport))
-#             )
-#             if not sport_exists.scalar():
-#                 return {}
-#             sport_id = sport
-#         else:
-#             # Если передано название, ищем соответствующий ID
-#             sport_result = await session.execute(
-#                 select(Sport.sport_id).where(Sport.name == sport.lower())
-#             )
-#             sport_id = sport_result.scalar_one_or_none()
-#             if sport_id is None:
-#                 return {}
-#
-#         # Выполняем основной запрос
-#         result = await session.execute(
-#             select(
-#                 Participant.short_name,
-#                 Participant.participant_id
-#             )
-#             .join(Participant.sports)  # Соединяем с таблицей participant_sports
-#             .where(
-#                 Participant.team_id == team_id,
-#                 ParticipantSport.sport_id == sport_id
-#             )
-#         )
-#
-#         return {row.short_name: row.participant_id for row in result.all()}
-
-
 async def get_football_matches_with_goals() -> dict:
     """
     Возвращает статистику футбольных матчей с голами, сгруппированную по группам.
@@ -355,10 +309,7 @@ async def get_active_matches() -> List[Dict[str, Any]]:
     return result
 
 
-async def get_match_teams_info(
-    session: AsyncSession,
-    match_id: int
-) -> Optional[Dict[str, Any]]:
+async def get_match_teams_info(session: AsyncSession, match_id: int) -> Optional[Dict[str, Any]]:
     """
     Получает информацию о командах (с ID) и группе матча по ID.
 
@@ -505,16 +456,18 @@ async def get_match_info_by_id(match_id: int) -> Dict[str, Any]:
             return None
 
         return {
-            "match_id": match.match_id,
-            "team1_name": match.team1.name,
-            "team2_name": match.team2.name,
-            "team1_score": match.score1,
-            "team2_score": match.score2,
-            "total_score": f"{match.score1}:{match.score2}"
+            'match_id': match.match_id,
+            'team1_name': match.team1.name,
+            'team2_name': match.team2.name,
+            'team1_score': match.score1,
+            'team2_score': match.score2,
+            'team1_id': match.team1_id,
+            'team2_id': match.team2_id,
+            'total_score': f'{match.score1}:{match.score2}'
         }
 
 
-async def get_match_teams_optimized(session: AsyncSession ,match_id: int) -> List[Dict[str, Any]]:
+async def get_match_teams_optimized(session: AsyncSession, match_id: int) -> List[Dict[str, Any]]:
     """
     Оптимизированная версия с прямым JOIN запросом
 
@@ -550,3 +503,146 @@ async def add_faller(session: AsyncSession, player_id: int, match_id: int) -> No
     faller = FootballFallers(faller_id=player_id, match_id=match_id)
     session.add(faller)
     await session.commit()
+
+
+async def get_football_matches_for_team( session: AsyncSession, team_id: int) -> List[Dict[str, Any]]:
+    """
+    Возвращает все футбольные матчи для указанной команды
+
+    :param session: Асинхронная сессия SQLAlchemy
+    :param team_id: ID команды
+    :return: Список словарей с информацией о матчах в формате:
+        [
+            {
+                'match_id': int,
+                'group_name': str,
+                'status': str,
+                'team1': {
+                    'team_id': int,
+                    'name': str,
+                    'score': int
+                },
+                'team2': {
+                    'team_id': int,
+                    'name': str,
+                    'score': int
+                },
+            },
+            ...
+        ]
+    """
+    # Основной запрос для матчей
+    match_stmt = (
+        select(FootballMatch)
+        .where(or_(
+            FootballMatch.team1_id == team_id,
+            FootballMatch.team2_id == team_id
+        ))
+    )
+    match_result = await session.execute(match_stmt)
+    matches = match_result.scalars().all()
+
+    if not matches:
+        return []
+
+    match_ids = [m.match_id for m in matches]
+
+    # Получаем данные о командах
+    team_ids = {m.team1_id for m in matches} | {m.team2_id for m in matches}
+    team_stmt = select(Team).where(Team.team_id.in_(team_ids))
+    team_result = await session.execute(team_stmt)
+    teams = {t.team_id: t for t in team_result.scalars()}
+
+    # Формируем итоговый результат
+    result = [
+        {
+            'match_id': m.match_id,
+            'group_name': m.group_name,
+            'status': m.status.value,
+            'team1': {
+                'team_id': m.team1_id,
+                'name': teams[m.team1_id].name,
+                'score': m.score1
+            },
+            'team2': {
+                'team_id': m.team2_id,
+                'name': teams[m.team2_id].name,
+                'score': m.score2
+            },
+        }
+        for m in matches
+    ]
+    return result
+
+
+async def get_team_goals_in_match(
+        session: AsyncSession,
+        match_id: int,
+        team_id: int
+) -> List[Dict[str, Any]]:
+    """
+    Возвращает все голы указанной команды в конкретном матче
+
+    :param session: Асинхронная сессия SQLAlchemy
+    :param match_id: ID матча
+    :param team_id: ID команды
+    :return: Список словарей с информацией о голах в формате:
+        [
+            {
+                'goal_id': int,
+                'scorer_id': int,
+                'scorer_name': str,
+                'half': int (1 или 2)
+            },
+            ...
+        ]
+    """
+    # Проверяем, что команда участвует в матче
+    match_stmt = select(FootballMatch).where(
+        FootballMatch.match_id == match_id,
+        or_(
+            FootballMatch.team1_id == team_id,
+            FootballMatch.team2_id == team_id
+        )
+    )
+    match_result = await session.execute(match_stmt)
+    if not match_result.scalar_one_or_none():
+        return []
+
+    # Получаем голы команды в матче
+    stmt = (
+        select(FootballGoal, Participant)
+        .join(Participant, FootballGoal.scorer_id == Participant.participant_id, )
+        .where(
+            FootballGoal.match_id == match_id,
+            Participant.team_id == team_id
+        )
+        .order_by(FootballGoal.id)
+    )
+
+    result = await session.execute(stmt)
+
+    return [
+        {
+            'goal_id': goal.id,
+            'scorer_id': scorer.participant_id,
+            'scorer_name': scorer.short_name,
+        }
+        for goal, scorer in result
+    ]
+
+
+async def delete_goal(session: AsyncSession, match_id: int, goal_id: int, team_id: int) -> None:
+    """Удаляет гол из таблицы FootballGoal."""
+    stmt = delete(FootballGoal).where(FootballGoal.id == goal_id)
+    await session.execute(stmt)
+
+    match = await session.get(FootballMatch, match_id)
+
+    if match.team1_id == team_id:
+        match.score1 -= 1
+    else:
+        match.score2 -= 1
+
+    await session.commit()
+

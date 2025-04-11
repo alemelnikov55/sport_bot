@@ -31,3 +31,12 @@ class VolleyballStates(StatesGroup):
     confirm_finish_match = State()
     manual_match_create_1 = State()
     manual_match_create_2 = State()
+
+
+class AdminStates(StatesGroup):
+    start_menu = State()
+    choose_sport_to_fix = State()
+    football_choose_team_to_fix = State()
+    football_choose_match_to_fix = State()
+    football_choose_goal_to_fix = State()
+    football_fix_goal_approve = State()

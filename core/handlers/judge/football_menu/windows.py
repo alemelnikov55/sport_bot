@@ -1,5 +1,5 @@
 from aiogram_dialog import Window
-from aiogram_dialog.widgets.kbd import Button, Group, Select, Back
+from aiogram_dialog.widgets.kbd import Button, Group, Select
 from aiogram_dialog.widgets.text import Const, Format
 
 from handlers.judge.football_menu.getters import active_matches_getter, start_match_getter, match_info_getter, \
