@@ -5,8 +5,9 @@ from aiogram_dialog.widgets.text import Const, Format
 from magic_filter import F
 
 from handlers.judge.state import VolleyballStates
-from handlers.judge.volleyball_menu.volleyball_getters import get_volleyball_matches, start_volleyball_match_getter, \
-    volleyball_set_info_getter, finish_volleyball_set_getter, volleyball_teams_getter, volleyball_match_result_getter
+from handlers.judge.volleyball_menu.volleyball_getters import start_volleyball_match_getter, \
+    volleyball_set_info_getter, finish_volleyball_set_getter, volleyball_teams_getter, volleyball_match_result_getter, \
+    volleyball_matches_getter
 from handlers.judge.volleyball_menu.volleyball_handlers import choose_volleyball_match_handler, \
     manual_volleyball_match_add_handler, start_volleyball_match_handler, add_volleyball_goal_handler, \
     finish_volleyball_set_handler, confirm_finish_volleyball_set_handler, back_volleyball_process_handler, \
@@ -35,7 +36,7 @@ def get_volleyball_matches_window() -> Window:
             id="volleyball_matches_group"
         ),
         state=VolleyballStates.match,
-        getter=get_volleyball_matches
+        getter=volleyball_matches_getter
     )
 
 

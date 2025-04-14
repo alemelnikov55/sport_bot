@@ -274,7 +274,7 @@ def handle_football(data):
             players_2 = ', '.join([f"{p[0]} ({p[1]})" for p in team_2['players']]) if team_2['players'] else "-"
 
             red_cards = ', '.join([f"{p[0]} ({p[1]})" for p in red_cards]) if red_cards else "-"
-            print(f"Красные карточки: {red_cards}")
+
             row = [group, team_1['name'], team_1['goals'], team_2['goals'], team_2['name'], players_1, players_2, red_cards]
             rows.append(row)
 

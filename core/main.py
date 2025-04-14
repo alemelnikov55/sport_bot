@@ -15,7 +15,7 @@ from apscheduler_di import ContextSchedulerDecorator
 
 from aiohttp import web
 
-from handlers.admin.admin_callback_handler import admin_callback_handler
+# from handlers.admin.admin_callback_handler import admin_callback_handler
 from handlers.admin.pannel_handler import start_admin_panel
 from handlers.admin.start_game import start_game
 # from handlers.judge.dialog import football_dialog
@@ -24,7 +24,7 @@ from loader import RedisSettings, MainSettings, WebhookSettings
 from handlers.support_handlers import start_bot_sup_handler, stop_bot_sup_handler
 from handlers.update import update
 
-from handlers.admin.create_football_group import create_football_group, get_teams_amount
+# from handlers.admin.create_football_group import get_teams_amount
 
 from handlers.judge.choose_sport import choose_sport
 from handlers.judge.dialog import dialog_router
@@ -78,12 +78,12 @@ async def start_bot():
     dp.message.register(choose_sport, Command('choose_sport'))
 
     # Регистрируем хэндлеры админов
-    dp.message.register(create_football_group, Command('create_football_group'), IsAdmin())
+    # dp.message.register(create_football_group, Command('create_football_group'), IsAdmin())
     dp.message.register(start_game, Command('start_game'), IsAdmin())
-    dp.message.register(get_teams_amount, GroupCreationStates.get_teams_amount)
+    # dp.message.register(get_teams_amount, GroupCreationStates.get_teams_amount)
     dp.message.register(start_admin_panel, Command('panel'), IsAdmin())
 
-    dp.callback_query.register(admin_callback_handler, F.data.startswith('adm'), IsAdmin())
+    # dp.callback_query.register(admin_callback_handler, F.data.startswith('adm'), IsAdmin())
 
     setup_dialogs(dp)
 

@@ -219,9 +219,9 @@ async def increment_set_score(
     return
 
 
-async def get_volleyball_active_matches(session: AsyncSession) -> List[Dict[str, Any]]:
+async def get_volleyball_matches(session: AsyncSession) -> List[Dict[str, Any]]:
     """
-        Возвращает все матчи не в статусе FINISHED, сгруппированные по группам.
+        Возвращает все матчи, сгруппированные по группам.
 
         Returns:
             Словарь в формате:
@@ -243,7 +243,6 @@ async def get_volleyball_active_matches(session: AsyncSession) -> List[Dict[str,
              .options(joinedload(VolleyballMatch.team1),
                       joinedload(VolleyballMatch.team2)
                       )
-             .where(VolleyballMatch.status != VolleyballMatchStatus.FINISHED)
              .order_by(VolleyballMatch.group_name))
 
     result = await session.execute(query)
@@ -298,7 +297,7 @@ async def get_volleyball_matches_data(
             grouped_matches[match.group_name] = []
 
         grouped_matches[match.group_name].append(match_data)
-
+    print(grouped_matches)
     return grouped_matches
 
 
@@ -510,6 +509,7 @@ async def get_next_available_set(
     return set_number
 
 
+# под удаление
 async def get_active_volleyball_matches(
         session: AsyncSession
 ) -> Dict[str, List[Dict]]:
@@ -543,7 +543,6 @@ async def get_active_volleyball_matches(
             joinedload(VolleyballMatch.team2),
             joinedload(VolleyballMatch.sets)
         )
-        .where(VolleyballMatch.status != VolleyballMatchStatus.NOT_STARTED)
         .order_by(VolleyballMatch.group_name, VolleyballMatch.match_id)
     )
 

@@ -3,7 +3,7 @@ from typing import Any, Dict
 from aiogram_dialog import DialogManager
 
 from database.service_requests import get_teams_by_sport
-from database.volleyball_requests import get_volleyball_active_matches, get_volleyball_match_info_by_id, \
+from database.volleyball_requests import get_volleyball_matches, get_volleyball_match_info_by_id, \
     get_current_volleyball_match_info, get_volleyball_match_full_info
 
 
@@ -31,9 +31,9 @@ def format_volleyball_match_info(data: dict) -> str:
     return "\n".join(result)
 
 
-async def get_volleyball_matches(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
+async def volleyball_matches_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     session = dialog_manager.middleware_data['session']
-    matches = await get_volleyball_active_matches(session)
+    matches = await get_volleyball_matches(session)
     return {'volleyball_matches': matches}
 
 

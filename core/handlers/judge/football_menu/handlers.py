@@ -64,10 +64,11 @@ async def first_team_select_handler(call: CallbackQuery, button: Button, dialog_
 
 
 async def second_team_select_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, team_id: str):
+    session = dialog_manager.middleware_data['session']
     second_team = int(team_id)
     first_team = int(dialog_manager.dialog_data['manual_team1'])
 
-    await create_match(first_team, second_team)
+    await create_match(session, first_team, second_team)
 
     await dialog_manager.switch_to(FootballStates.match)
     await call.answer(f'Выбрана команда {team_id}')

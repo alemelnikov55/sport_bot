@@ -1,22 +1,55 @@
 from aiogram_dialog import Window
+from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button, Group, Select, Back
 from aiogram_dialog.widgets.text import Const, Format
 
 from handlers.admin.admin_handlers import fix_score_handler, choose_sport_to_fix_handler, choose_team_to_fix_handler, \
     choose_match_to_fix_handler, choose_goal_to_fix_handler, admin_fix_goal_approve_handler, \
     admin_fix_goal_refuse_handler, back_admin_choose_goal_to_fix, \
-    back_admin_choose_match_to_fix, back_admin_choose_team_to_fix, back_admin_choose_sport_to_fix
+    back_admin_choose_match_to_fix, back_admin_choose_team_to_fix, back_admin_choose_sport_to_fix, \
+    create_groups_handler, create_football_tournament_groups, groups_football_count_inpout_handler, \
+    groups_volleyball_count_inpout_handler, create_volleyball_tournament_groups
 from handlers.admin.admin_getters import football_teams_getter, football_matches_getter, football_goal_getter, \
-    admin_fix_goal_approve_getter
+    admin_fix_goal_approve_getter, create_groups_tournament_football_getter, create_groups_tournament_volleyball_getter
 from handlers.judge.main_getters import get_sports
 from handlers.judge.state import AdminStates
 
 
 def get_admin_start_window() -> Window:
     return Window(
-        Const("Главное меню админа"),
-        Button(Const("Корректировка счета"), id="admin_fix_score", on_click=fix_score_handler),
+        Const('Главное меню админа'),
+        Button(Const('Корректировка счета'), id='admin_fix_score', on_click=fix_score_handler),
+        Button(Const('Создание групп/матчей'), id='admin_create_groups', on_click=create_groups_handler),
         state=AdminStates.start_menu,
+    )
+
+
+def get_create_groups_window() -> Window:
+    return Window(
+        Const('Создание групп'),
+        Button(Const('Предварительные группы football'),
+               id='create_groups_tournament_football', on_click=create_football_tournament_groups),
+        Button(Const('Предварительные группы volleyball'),
+               id='create_groups_tournament_volleyball', on_click=create_volleyball_tournament_groups),
+        state=AdminStates.create_groups,
+    )
+
+
+def get_create_groups_tournament_football_window() -> Window:
+    return Window(
+        Format('Зарегистрировано {teams_count} футбольных команд.\nЧерез пробел введите число команд в каждой группе'),
+        MessageInput(groups_football_count_inpout_handler),
+        state=AdminStates.create_football_tournament_groups,
+        getter=create_groups_tournament_football_getter
+    )
+
+
+def get_create_groups_tournament_volleyball_window() -> Window:
+    return Window(
+        Format('Зарегистрировано {teams_count} волейбольных команд.\nЧерез пробел введите число команд в каждой группе'),
+        MessageInput(groups_volleyball_count_inpout_handler),
+        state=AdminStates.create_volleyball_tournament_groups,
+        getter=create_groups_tournament_volleyball_getter
     )
 
 
@@ -107,5 +140,3 @@ def get_admin_fix_goal_approve_window() -> Window:
         state=AdminStates.football_fix_goal_approve,
         getter=admin_fix_goal_approve_getter
     )
-
-

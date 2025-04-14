@@ -47,3 +47,22 @@ async def admin_fix_goal_approve_getter(dialog_manager: DialogManager, **kwargs)
     return {'team_name': team_name, 'march_name': march_name}
 
 
+async def create_groups_tournament_football_getter(dialog_manager: DialogManager, **kwargs):
+    session = dialog_manager.middleware_data['session']
+
+    teams = await get_teams_by_sport('football', session)
+    teams_amount = len(teams)
+    dialog_manager.dialog_data['teams_count'] = teams_amount
+    dialog_manager.dialog_data['teams_for_groups'] = teams
+
+    return {'teams_count': teams_amount}
+
+
+async def create_groups_tournament_volleyball_getter(dialog_manager: DialogManager, **kwargs):
+    session = dialog_manager.middleware_data['session']
+    teams = await get_teams_by_sport('volleyball', session)
+    teams_amount = len(teams)
+    dialog_manager.dialog_data['teams_count'] = teams_amount
+    dialog_manager.dialog_data['teams_for_groups'] = teams
+
+    return {'teams_count': teams_amount}

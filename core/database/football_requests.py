@@ -9,17 +9,16 @@ from database.models import FootballGoal, FootballMatch, Participant, async_sess
 from database.models import MatchStatus
 
 
-async def create_match(team1_id: int, team2_id: int, group_name: str = None) -> FootballMatch:
-    async with async_session() as session:
-        async with session.begin():
-            match = FootballMatch(
-                team1_id=team1_id,
-                team2_id=team2_id,
-                group_name=group_name
-            )
-            session.add(match)
-            await session.commit()
-            return match
+async def create_match(session: AsyncSession, team1_id: int, team2_id: int, group_name: str = None) -> FootballMatch:
+    async with session.begin():
+        match = FootballMatch(
+            team1_id=team1_id,
+            team2_id=team2_id,
+            group_name=group_name
+        )
+        session.add(match)
+        await session.commit()
+        return match
 
 
 async def clear_matches(session: AsyncSession) -> str:
@@ -100,15 +99,15 @@ async def get_football_matches_with_goals() -> dict:
 
             for player in goal_scorers:
                 # Проверяем, что игрок действительно играет в футбол
-                plays_football = await session.execute(
-                    select(exists().where(
-                        ParticipantSport.participant_id == player.participant_id,
-                        ParticipantSport.sport_id == football_sport_id
-                    ))
-                )
-
-                if not plays_football.scalar():
-                    continue
+                # plays_football = await session.execute(
+                #     select(exists().where(
+                #         ParticipantSport.participant_id == player.participant_id,
+                #         ParticipantSport.sport_id == football_sport_id
+                #     ))
+                # )
+                #
+                # if not plays_football.scalar():
+                #     continue
 
                 if player.team_id == match.team1_id:
                     team1_players.append((player.short_name, player.participant_id))
@@ -159,7 +158,7 @@ async def get_football_matches_with_goals_and_fallers(session: AsyncSession) -> 
         ...
     }
     """
-    result = {"football": {}}
+    result = {}
 
 
     # Получаем ID футбола из таблицы Sport
@@ -186,8 +185,8 @@ async def get_football_matches_with_goals_and_fallers(session: AsyncSession) -> 
     for match in matches:
         group = match.group_name or "NoGroup"
 
-        if group not in result["football"]:
-            result["football"][group] = []
+        if group not in result:
+            result[group] = []
 
         # Получаем игроков, забивших голы в этом матче
         goal_scorers = [goal.scorer for goal in match.goals if goal.scorer]
@@ -258,7 +257,7 @@ async def get_football_matches_with_goals_and_fallers(session: AsyncSession) -> 
             "team_2": team2_data
         }
 
-        result["football"][group].append(match_data)
+        result[group].append(match_data)
 
     return result
 

@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.football_requests import get_football_matches_with_goals_and_fallers
 from database.models import async_session
-from database.volleyball_requests import get_active_volleyball_matches
+from database.volleyball_requests import get_active_volleyball_matches, get_volleyball_matches
 from utils.google_supports.requests_to_google import update_multiple_sheets
 
 
@@ -17,9 +17,9 @@ async def start_game(message: Message, scheduler: AsyncIOScheduler, session: Asy
 
 async def update_google_sheets():
     total_spartakiada_data = dict()
-    football_tournament_info = await get_football_matches_with_goals_and_fallers()
     async with async_session() as session:
         volleyball_tournament_info = await get_active_volleyball_matches(session)
+        football_tournament_info = await get_football_matches_with_goals_and_fallers(session)
     # print(goals)
     total_spartakiada_data['football'] = football_tournament_info
     total_spartakiada_data['volleyball'] = volleyball_tournament_info

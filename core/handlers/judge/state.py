@@ -40,3 +40,8 @@ class AdminStates(StatesGroup):
     football_choose_match_to_fix = State()
     football_choose_goal_to_fix = State()
     football_fix_goal_approve = State()
+
+    create_groups = State()
+    create_football_tournament_groups = State()
+    create_volleyball_tournament_groups = State()
+
