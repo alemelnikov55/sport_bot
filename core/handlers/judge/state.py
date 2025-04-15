@@ -15,8 +15,11 @@ class FootballStates(StatesGroup):
     red_card_choose_player = State()
 
     confirm_finish_match = State()
+
     manual_match_create_1 = State()
     manual_match_create_2 = State()
+
+    manual_scorer_add = State()
 
 
 class VolleyballStates(StatesGroup):

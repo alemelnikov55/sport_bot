@@ -194,12 +194,3 @@ async def get_team_participants_by_sport(
         participants = {full_name: participant_id for participant_id, full_name in query.all()}
 
     return participants
-
-
-async def get_all_matches_by_team(session: AsyncSession, sport_id: int, team_id: int) -> List[Dict[str, Any]]:
-    """Возвращает все матчи, в которых участвует команда с указанным ID и спорту.
-    :param sport_id:
-    :param session:
-    :param team_id:
-    :return:
-    """

@@ -2,7 +2,7 @@ from aiogram_dialog import DialogManager
 
 from database.football_requests import get_football_matches_for_team, get_team_goals_in_match, get_match_info_by_id
 from database.service_requests import get_teams_by_sport
-from handlers.judge.football_menu.getters import football_teams_getter
+from handlers.judge.football_menu.football_getters import football_teams_getter
 
 
 def get_team_name_from_match(match: dict, team_id: int) -> str:

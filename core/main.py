@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import logging.config
 
 from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
@@ -28,6 +29,7 @@ from handlers.update import update
 
 from handlers.judge.choose_sport import choose_sport
 from handlers.judge.dialog import dialog_router
+from logger_config import LOGGING_CONFIG
 from utils.filters import IsAdmin
 # from handlers.judge.callback_handlers import judge_callback_handler
 from utils.middleware import DatabaseMiddleware, ApschedulerMiddleware
@@ -36,7 +38,6 @@ from database.models import async_session
 
 from aiogram_dialog import setup_dialogs
 
-from utils.states import GroupCreationStates
 
 r = redis.Redis(host=RedisSettings.REDIS_HOST, port=RedisSettings.REDIS_PORT, db=0, decode_responses=True)
 
@@ -49,6 +50,14 @@ jobstores = {
         port=6379,
     )
 }
+
+# def setup_logging():
+logging.config.dictConfig(LOGGING_CONFIG)
+logger = logging.getLogger(__name__)
+
+logging.getLogger("apscheduler").setLevel(logging.WARNING)
+logging.getLogger("aiogram").setLevel(logging.WARNING)
+logging.getLogger("aiogram.dispatcher").setLevel(logging.WARNING)
 
 
 async def start_bot():
@@ -84,7 +93,7 @@ async def start_bot():
     dp.message.register(start_admin_panel, Command('panel'), IsAdmin())
 
     # dp.callback_query.register(admin_callback_handler, F.data.startswith('adm'), IsAdmin())
-
+    logger.info('Бот запущен в режиме поллинга')
     setup_dialogs(dp)
 
     try:

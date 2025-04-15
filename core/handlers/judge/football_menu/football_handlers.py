@@ -1,8 +1,9 @@
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager
+from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 
-from database.football_requests import change_match_status, add_goal, create_match
+from database.football_requests import change_match_status, add_goal, create_match, add_faller
 from database.models import MatchStatus, async_session
 from handlers.judge.state import FootballStates, MainJudgeStates
 
@@ -114,9 +115,32 @@ async def red_card_team_select_handler(call: CallbackQuery, button: Button, dial
 
 
 async def red_card_player_select_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, player_id: str):
-    # team_id = dialog_manager.dialog_data['red_card_team_id']
+    session = dialog_manager.middleware_data['session']
+    player_id = int(player_id)
     match_id = int(dialog_manager.dialog_data['match'])
-    # await add_red_card(team_id, player_id)
-    print(f'Сюда отправить команду на удаление игрока из команды\nmatch {match_id} player {player_id}')
+
+    await add_faller(session, player_id, match_id)
+
+    # print(f'Сюда отправить команду на удаление игрока из команды\nmatch {match_id} player {player_id}')
+
     await dialog_manager.switch_to(FootballStates.process_match)
     await call.answer('Карточка выдана!')
+
+
+async def add_manual_scorer_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(FootballStates.manual_scorer_add)
+    await call.answer('Выберите игрока')
+
+
+async def manual_scorer_inpout_handler(message: Message, message_input: MessageInput, dialog_manager: DialogManager,):
+    text = message.text
+
+    if not text.isdigit():
+        await message.reply('Номер игрока должен быть числом')
+        return
+
+    scorer_id = int(text)
+    match_id = int(dialog_manager.dialog_data['match'])
+
+    await add_goal(match_id, scorer_id)
+    await dialog_manager.switch_to(FootballStates.process_match)
