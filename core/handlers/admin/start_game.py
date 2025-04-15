@@ -28,4 +28,5 @@ async def update_google_sheets():
     total_spartakiada_data['football'] = football_tournament_info
     total_spartakiada_data['volleyball'] = volleyball_tournament_info
     update_multiple_sheets(total_spartakiada_data)
+
     logger.info(f'Обновлены данные в таблице {datetime.now()}')

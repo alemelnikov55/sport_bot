@@ -5,7 +5,7 @@ from aiogram_dialog import Dialog
 from handlers.admin.admin_windows import get_admin_start_window, get_admin_choose_sport_to_fix_window, \
     get_admin_choose_team_to_fix_window, get_admin_choose_match_to_fix_window, get_admin_choose_goal_to_fix_window, \
     get_admin_fix_goal_approve_window, get_create_groups_window, get_create_groups_tournament_football_window, \
-    get_create_groups_tournament_volleyball_window
+    get_create_groups_tournament_volleyball_window, get_admin_add_judge_window
 from handlers.judge.main_windows import get_sports_window
 from handlers.judge.football_menu.football_windows import get_matches_window, get_start_match_window, \
     get_process_window, \
@@ -61,8 +61,9 @@ admin_dialog = Dialog(
     get_create_groups_window(),
     get_create_groups_tournament_football_window(),
 
-    get_create_groups_tournament_volleyball_window()
+    get_create_groups_tournament_volleyball_window(),
 
+    get_admin_add_judge_window()
 )
 
 

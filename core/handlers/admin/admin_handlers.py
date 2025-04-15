@@ -1,9 +1,13 @@
+from aiogram import Bot
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager
+from aiogram_dialog.api.protocols import MessageNotModified
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button, Select
 
 from database.football_requests import delete_goal, create_match
+from database.service_requests import add_judge
 from database.volleyball_requests import create_volleyball_matches
 from handlers.admin.create_football_group import distribute_teams_to_groups, generate_group_matches
 from handlers.judge.state import AdminStates
@@ -31,7 +35,8 @@ async def create_volleyball_tournament_groups(call: CallbackQuery, button: Butto
     await call.answer('Создание групп для волейбола')
 
 
-async def choose_sport_to_fix_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, sport_id: str):
+async def choose_sport_to_fix_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager,
+                                      sport_id: str):
     dialog_manager.dialog_data['sport_to_fix'] = sport_id
     await dialog_manager.switch_to(SPORTS[sport_id])
     await call.answer('Выбран спорт')
@@ -42,7 +47,8 @@ async def choose_team_to_fix_handler(call: CallbackQuery, button: Button, dialog
     await dialog_manager.next()
 
 
-async def choose_match_to_fix_handler(call: CallbackQuery, button: Select, dialog_manager: DialogManager, match_id: str):
+async def choose_match_to_fix_handler(call: CallbackQuery, button: Select, dialog_manager: DialogManager,
+                                      match_id: str):
     dialog_manager.dialog_data['match_to_fix'] = match_id
     await dialog_manager.switch_to(AdminStates.football_choose_goal_to_fix)
     await call.answer('Выбран матч')
@@ -87,7 +93,8 @@ async def back_admin_choose_sport_to_fix(call: CallbackQuery, button: Button, di
     await dialog_manager.back()
 
 
-async def groups_football_count_inpout_handler(message: Message, message_inpout: MessageInput, dialog_manager: DialogManager):
+async def groups_football_count_inpout_handler(message: Message, message_inpout: MessageInput,
+                                               dialog_manager: DialogManager):
     session = dialog_manager.middleware_data['session']
 
     expected_total = dialog_manager.dialog_data['teams_count']
@@ -123,7 +130,9 @@ async def groups_football_count_inpout_handler(message: Message, message_inpout:
     await dialog_manager.switch_to(AdminStates.start_menu)
 
 
-async def groups_volleyball_count_inpout_handler(message: Message, message_inpout: MessageInput, dialog_manager: DialogManager):
+# TODO эта и предыдущая функции - почти копии. Обдумать как объединить
+async def groups_volleyball_count_inpout_handler(message: Message, message_inpout: MessageInput,
+                                                 dialog_manager: DialogManager):
     session = dialog_manager.middleware_data['session']
     expected_total = dialog_manager.dialog_data['teams_count']
     teams = dialog_manager.dialog_data['teams_for_groups']
@@ -152,3 +161,29 @@ async def groups_volleyball_count_inpout_handler(message: Message, message_inpou
 
     await message.answer(f'Создано групповых матчей: {matches_count}')
     await dialog_manager.switch_to(AdminStates.start_menu)
+
+
+async def add_judge_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(AdminStates.add_judge)
+    await call.answer('Добавление судей')
+
+
+async def add_judge_inpout_handler(message: Message, message_inpout: MessageInput, dialog_manager: DialogManager):
+    session = dialog_manager.middleware_data['session']
+    bot: Bot = dialog_manager.middleware_data['bot']
+    text = message.text
+
+    if not text.isdigit():
+        await message.answer('Пожалуйста, введите только id пользователя.')
+        return
+
+    try:
+        await bot.send_message(text, 'Вам добавлена роль судьи')
+    except TelegramBadRequest:
+        await message.answer('Не удалось добавить судью, проверьте правильность ввода id.')
+        return
+
+    await add_judge(session, int(text))
+
+    await dialog_manager.switch_to(AdminStates.start_menu)
+    await message.answer(f'Судья добавлен')

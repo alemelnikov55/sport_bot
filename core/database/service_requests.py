@@ -1,9 +1,11 @@
 from typing import List, Dict, Union, Any
-
+import logging
 from sqlalchemy import text, select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.models import Base, Team, Participant, Sport, ParticipantSport, engine, async_session
+from database.models import Base, Team, Participant, Sport, ParticipantSport, engine, async_session, Judges, Admins
+
+logger = logging.getLogger(__name__)
 
 
 async def init_db():
@@ -194,3 +196,27 @@ async def get_team_participants_by_sport(
         participants = {full_name: participant_id for participant_id, full_name in query.all()}
 
     return participants
+
+
+async def add_judge(session: AsyncSession, judge_id: int):
+    """Добавляет судью в базу данных."""
+    judge = Judges(judge_id=judge_id)
+    session.add(judge)
+
+    await session.commit()
+
+
+async def get_all_judges(session: AsyncSession) -> List[int]:
+    """Получает список всех судей из базы данных."""
+
+    query = await session.execute(select(Judges.judge_id))
+
+    return [row[0] for row in query.fetchall()]
+
+
+async def get_all_admins(session: AsyncSession) -> List[int]:
+    """Получает список всех администраторов из базы данных."""
+
+    query = await session.execute(select(Admins.admin_id))
+
+    return [row[0] for row in query.fetchall()]

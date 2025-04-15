@@ -48,3 +48,5 @@ class AdminStates(StatesGroup):
     create_football_tournament_groups = State()
     create_volleyball_tournament_groups = State()
 
+    add_judge = State()
+

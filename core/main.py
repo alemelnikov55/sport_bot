@@ -14,29 +14,28 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler_di import ContextSchedulerDecorator
 
+from aiogram_dialog import setup_dialogs
+
 from aiohttp import web
 
-# from handlers.admin.admin_callback_handler import admin_callback_handler
-from handlers.admin.pannel_handler import start_admin_panel
-from handlers.admin.start_game import start_game
-# from handlers.judge.dialog import football_dialog
+from handlers.text_handler import text_handler
 from loader import RedisSettings, MainSettings, WebhookSettings
+from logger_config import LOGGING_CONFIG
 
 from handlers.support_handlers import start_bot_sup_handler, stop_bot_sup_handler
-from handlers.update import update
 
-# from handlers.admin.create_football_group import get_teams_amount
+from handlers.admin.pannel_handler import start_admin_panel
+from handlers.admin.start_game import start_game
+
+from handlers.update import update
 
 from handlers.judge.choose_sport import choose_sport
 from handlers.judge.dialog import dialog_router
-from logger_config import LOGGING_CONFIG
-from utils.filters import IsAdmin
-# from handlers.judge.callback_handlers import judge_callback_handler
+
+from utils.filters import IsAdmin, IsJudge
 from utils.middleware import DatabaseMiddleware, ApschedulerMiddleware
 
 from database.models import async_session
-
-from aiogram_dialog import setup_dialogs
 
 
 r = redis.Redis(host=RedisSettings.REDIS_HOST, port=RedisSettings.REDIS_PORT, db=0, decode_responses=True)
@@ -51,7 +50,6 @@ jobstores = {
     )
 }
 
-# def setup_logging():
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
 
@@ -66,14 +64,12 @@ async def start_bot():
     # Создаем хранилище состояний
     storage = RedisStorage(r, key_builder=DefaultKeyBuilder(with_destiny=True))
     bot = Bot(token=MainSettings.TOKEN, default=DefaultBotProperties(parse_mode='HTML'))
-    dp = Dispatcher(storage=storage)
-
+    dp = Dispatcher()
+    dp.include_router(dialog_router)
     # Создаем планировщик задач
     scheduler = ContextSchedulerDecorator(AsyncIOScheduler(timezone='Europe/Moscow', jobjobstores=jobstores))
     scheduler.ctx.add_instance(bot, declared_class=Bot)
     scheduler.start()
-
-    dp.include_router(dialog_router)
 
     dp.update.middleware(DatabaseMiddleware(session_pool=async_session))
     dp.update.middleware.register(ApschedulerMiddleware(scheduler))
@@ -81,24 +77,22 @@ async def start_bot():
     dp.startup.register(start_bot_sup_handler)
     dp.shutdown.register(stop_bot_sup_handler)
 
-    dp.message.register(update, Command('update'))
+    # dp.message.register(update, Command('update'))
 
     # Регистрируем хэндлеры судей
-    dp.message.register(choose_sport, Command('choose_sport'))
+    dp.message.register(choose_sport, Command(commands='choose_sport'), IsJudge())
 
     # Регистрируем хэндлеры админов
-    # dp.message.register(create_football_group, Command('create_football_group'), IsAdmin())
     dp.message.register(start_game, Command('start_game'), IsAdmin())
-    # dp.message.register(get_teams_amount, GroupCreationStates.get_teams_amount)
     dp.message.register(start_admin_panel, Command('panel'), IsAdmin())
+    # dp.message.register(text_handler, F.text)
 
-    # dp.callback_query.register(admin_callback_handler, F.data.startswith('adm'), IsAdmin())
-    logger.info('Бот запущен в режиме поллинга')
     setup_dialogs(dp)
 
     try:
         if not WebhookSettings.WEBHOOK_DOMAIN:
             await bot.delete_webhook()
+            logger.info('Бот запущен в режиме поллинга')
             await dp.start_polling(
                 bot,
                 allowed_updates=dp.resolve_used_update_types()

@@ -8,7 +8,8 @@ from handlers.admin.admin_handlers import fix_score_handler, choose_sport_to_fix
     admin_fix_goal_refuse_handler, back_admin_choose_goal_to_fix, \
     back_admin_choose_match_to_fix, back_admin_choose_team_to_fix, back_admin_choose_sport_to_fix, \
     create_groups_handler, create_football_tournament_groups, groups_football_count_inpout_handler, \
-    groups_volleyball_count_inpout_handler, create_volleyball_tournament_groups
+    groups_volleyball_count_inpout_handler, create_volleyball_tournament_groups, add_judge_handler, \
+    add_judge_inpout_handler
 from handlers.admin.admin_getters import football_teams_getter, football_matches_getter, football_goal_getter, \
     admin_fix_goal_approve_getter, create_groups_tournament_football_getter, create_groups_tournament_volleyball_getter
 from handlers.judge.main_getters import get_sports
@@ -20,7 +21,16 @@ def get_admin_start_window() -> Window:
         Const('Главное меню админа'),
         Button(Const('Корректировка счета'), id='admin_fix_score', on_click=fix_score_handler),
         Button(Const('Создание групп/матчей'), id='admin_create_groups', on_click=create_groups_handler),
+        Button(Const('Добавить судью'), id='admin_add_judge', on_click=add_judge_handler),
         state=AdminStates.start_menu,
+    )
+
+
+def get_admin_add_judge_window() -> Window:
+    return Window(
+        Const('Введите id судьи'),
+        MessageInput(add_judge_inpout_handler),
+        state=AdminStates.add_judge,
     )
 
 
