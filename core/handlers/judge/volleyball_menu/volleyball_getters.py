@@ -41,9 +41,9 @@ async def start_volleyball_match_getter(dialog_manager: DialogManager, **kwargs)
     session = dialog_manager.middleware_data['session']
     match_id = int(dialog_manager.dialog_data['volleyball_match'])
 
-    matches = await get_volleyball_match_info_by_id(session, match_id)
+    match_info = await get_volleyball_match_info_by_id(session, match_id)
 
-    return {'volleyball_match': matches}
+    return {'volleyball_match': match_info}
 
 
 async def volleyball_set_info_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:

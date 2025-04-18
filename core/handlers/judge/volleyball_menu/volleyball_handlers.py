@@ -4,7 +4,7 @@ from aiogram_dialog.widgets.kbd import Button
 
 from database.models import VolleyballMatchStatus
 from database.volleyball_requests import update_volleyball_set_status, update_volleyball_match_status, \
-    increment_set_score, get_volleyball_set, create_volleyball_matches, get_next_available_set
+    increment_volleyball_set_score, get_volleyball_set, create_volleyball_matches, get_next_available_set
 from handlers.judge.state import VolleyballStates, MainJudgeStates
 
 
@@ -23,13 +23,8 @@ async def start_volleyball_match_handler(call: CallbackQuery, button: Button, di
 
     set_info = await get_next_available_set(session, match_id)
     set_num = set_info.set_number
-    print(f'set_number = {set_num}')
-    dialog_manager.dialog_data['set_number'] = set_num
 
-    # print(dialog_manager.dialog_data.get('set_number'))
-    # if not dialog_manager.dialog_data.get('set_number'):
-    #     dialog_manager.dialog_data['set_number'] = 1
-    # print(dialog_manager.dialog_data.get('set_number'))
+    dialog_manager.dialog_data['set_number'] = set_num
 
     await update_volleyball_match_status(session, match_id, VolleyballMatchStatus.IN_PROGRESS)
 
@@ -46,14 +41,14 @@ async def add_volleyball_goal_handler(call: CallbackQuery, button: Button, dialo
     current_set_id = int(dialog_manager.dialog_data['volleyball_set_id'])
     team_id = int(team_id)
 
-    await increment_set_score(session, current_set_id, team_id)
+    await increment_volleyball_set_score(session, current_set_id, team_id)
     await dialog_manager.switch_to(VolleyballStates.process_set)
     await call.answer('Гол добавлен!')
 
 
 async def finish_volleyball_set_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
     await dialog_manager.switch_to(VolleyballStates.finish_set)
-    await call.answer()
+    await call.answer('Подтвердите завершение сета')
 
 
 async def confirm_finish_volleyball_set_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
@@ -62,20 +57,6 @@ async def confirm_finish_volleyball_set_handler(call: CallbackQuery, button: But
     old_set_num = int(dialog_manager.dialog_data['set_number'])
 
     await update_volleyball_set_status(session, match_id, old_set_num, VolleyballMatchStatus.FINISHED)
-
-    # if old_set_num != 3:
-    #     old_set_num += 1
-    # else:
-    #     pass
-    #
-    # set_info = await get_volleyball_set(session, match_id, old_set_num)
-    # set_id = set_info.set_id
-    #
-    # dialog_manager.dialog_data['set_number'] = old_set_num
-    # dialog_manager.dialog_data['volleyball_set_id'] = set_id
-    #
-    # if old_set_num != 3:
-    #     await update_volleyball_set_status(session, match_id, old_set_num, VolleyballMatchStatus.IN_PROGRESS)
 
     new_set = await get_next_available_set(session, match_id)
     new_set_id = new_set.set_id
@@ -90,7 +71,7 @@ async def confirm_finish_volleyball_set_handler(call: CallbackQuery, button: But
     await dialog_manager.switch_to(VolleyballStates.process_set, ShowMode.EDIT)
 
 
-async def ask_finish_volleyball_match_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+async def finish_volleyball_match_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
     await dialog_manager.switch_to(VolleyballStates.finish_match)
 
 
@@ -98,8 +79,7 @@ async def confirm_finish_volleyball_match_handler(call: CallbackQuery, button: B
     session = dialog_manager.middleware_data['session']
     match_id = int(dialog_manager.dialog_data['volleyball_match'])
     set_num = int(dialog_manager.dialog_data['set_number'])
-    print(f'set_ number = {set_num}')
-    print(match_id)
+
     await update_volleyball_set_status(session, match_id, set_num, VolleyballMatchStatus.FINISHED)
     await update_volleyball_match_status(session, match_id, VolleyballMatchStatus.FINISHED)
 
@@ -132,7 +112,7 @@ async def second_volleyball_team_select_handler(call: CallbackQuery, button: But
 async def continue_volleyball_match_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
     session = dialog_manager.middleware_data['session']
     match_id = int(dialog_manager.dialog_data['volleyball_match'])
-    print(match_id)
+
     actual_set_info = await get_next_available_set(session, match_id)
 
     dialog_manager.dialog_data['set_number'] = actual_set_info.set_number
@@ -157,3 +137,9 @@ async def back_volleyball_finish_match_handler(call: CallbackQuery, button: Butt
     await dialog_manager.switch_to(VolleyballStates.process_set)
 
 
+async def back_volleyball_manual_add_match(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    try:
+        del dialog_manager.dialog_data['volleyball_manual_team1']
+    except KeyError:
+        pass
+    await dialog_manager.switch_to(VolleyballStates.match)

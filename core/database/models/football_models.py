@@ -85,3 +85,14 @@ class FootballFallers(Base):
 
     def __repr__(self):
         return f"<FootballFaller {self.id}: Participant {self.faller_id} in Match {self.match_id}>"
+
+
+class FootballScores(Base):
+    __tablename__ = 'football_scores'
+
+    id = Column(Integer, primary_key=True)
+    match_id = Column(Integer, ForeignKey('football_matches.match_id'))
+    team1_id = Column(Integer, ForeignKey('teams.team_id'))
+    team2_id = Column(Integer, ForeignKey('teams.team_id'))
+    score1 = Column(Integer, default=0)
+    score2 = Column(Integer, default=0)

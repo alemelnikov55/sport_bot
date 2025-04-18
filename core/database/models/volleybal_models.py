@@ -70,14 +70,15 @@ class VolleyballSet(Base):
         return (f"{self.match_id} - {self.set_number}\n"
                 f"{self.team1_score} - {self.team2_score}\n{self.status}")
 
-    @property
-    def winner(self) -> Optional[int]:
-        """Возвращает 1 (team1), 2 (team2) или None если сет не завершён или ничья"""
-        if self.status != VolleyballMatchStatus.FINISHED:
-            return None
-
-        if self.team1_score > self.team2_score:
-            return 1
-        elif self.team2_score > self.team1_score:
-            return 2
-        return None  # Ничья (хотя в волейболе такого быть не должно)
+# Под удаление
+    # @property
+    # def winner(self) -> Optional[int]:
+    #     """Возвращает 1 (team1), 2 (team2) или None если сет не завершён или ничья"""
+    #     if self.status != VolleyballMatchStatus.FINISHED:
+    #         return None
+    #
+    #     if self.team1_score > self.team2_score:
+    #         return 1
+    #     elif self.team2_score > self.team1_score:
+    #         return 2
+    #     return None  # Ничья (хотя в волейболе такого быть не должно)

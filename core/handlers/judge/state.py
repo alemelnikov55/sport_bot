@@ -36,6 +36,22 @@ class VolleyballStates(StatesGroup):
     manual_match_create_2 = State()
 
 
+class PongStates(StatesGroup):
+    match = State()
+    start_match = State()
+    set = State()
+    process_set = State()
+
+    finish_set = State()
+    finish_match = State()
+
+    confirm_finish_match = State()
+    manual_match_create_1 = State()
+    manual_match_create_team_1 = State()
+    manual_match_create_player_1 = State()
+    manual_match_create_2 = State()
+
+
 class AdminStates(StatesGroup):
     start_menu = State()
     choose_sport_to_fix = State()

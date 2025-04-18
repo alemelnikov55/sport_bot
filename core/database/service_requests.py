@@ -123,7 +123,7 @@ async def get_teams_by_sport(sport_identifier: Union[int, str], session: AsyncSe
         .join(Participant, Team.team_id == Participant.team_id)
         .join(ParticipantSport, Participant.participant_id == ParticipantSport.participant_id)
         .filter(ParticipantSport.sport_id == sport_id)
-        .group_by(Team.team_id, Team.name)  # Группировка вместо distinct()
+        .group_by(Team.team_id, Team.name)
     )
 
     teams = {team_name: team_id for team_id, team_name in query.all()}
@@ -185,7 +185,7 @@ async def get_team_participants_by_sport(
 
         if not sport_id:
             return {}
-        print(f'in query{team_id}, {sport_id}')
+        logger.info(f' get_team_participants_by_sport in query{team_id}, {sport_id}')
         # Запрос на получение спортсменов
         query = await session.execute(
             select(Participant.participant_id, Participant.full_name)

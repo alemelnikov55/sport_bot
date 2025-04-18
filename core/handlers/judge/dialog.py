@@ -12,6 +12,9 @@ from handlers.judge.football_menu.football_windows import get_matches_window, ge
     get_choose_scorer_window, get_finish_match_window, get_manual_match_create_window_1, \
     get_manual_match_create_window_2, get_red_card_choose_team_window, get_red_card_choose_player_window, \
     get_scorer_id_window
+from handlers.judge.pong_menu.pong_windows import get_pong_matches_window, get_pong_start_match_window, \
+    get_pong_progress_window, get_pong_finish_set_window, get_pong_finish_match_window, \
+    get_pong_manual_add_match_team_window_1, get_pong_manual_add_match_player_window_1
 from handlers.judge.volleyball_menu.volleyball_windows import get_volleyball_matches_window, \
     get_volleyball_start_match_window, get_volleyball_process_window, get_volleyball_finish_set_window, \
     get_volleyball_manual_add_match_window_2, get_volleyball_manual_add_match_window_1, \
@@ -47,6 +50,17 @@ volleyball_dialog = Dialog(
 )
 
 
+pong_dialog = Dialog(
+    get_pong_matches_window(),
+    get_pong_start_match_window(),
+    get_pong_progress_window(),
+    get_pong_manual_add_match_team_window_1(),
+    get_pong_manual_add_match_player_window_1(),
+
+    get_pong_finish_set_window(),
+    get_pong_finish_match_window(),
+)
+
 main_judge_dialog = Dialog(get_sports_window())
 
 admin_dialog = Dialog(
@@ -71,3 +85,4 @@ dialog_router.include_router(main_judge_dialog)
 dialog_router.include_router(football_dialog)
 dialog_router.include_router(volleyball_dialog)
 dialog_router.include_router(admin_dialog)
+dialog_router.include_router(pong_dialog)

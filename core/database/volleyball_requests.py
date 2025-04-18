@@ -187,7 +187,7 @@ async def update_volleyball_set_status(
     return set_info.scalar_one_or_none()
 
 
-async def increment_set_score(
+async def increment_volleyball_set_score(
         session: AsyncSession,
         set_id: int,
         scoring_team_id: int
@@ -253,7 +253,8 @@ async def get_volleyball_matches(session: AsyncSession) -> List[Dict[str, Any]]:
         match_data = {
             "match_id": match.match_id,
             "team1": match.team1.name,
-            "team2": match.team2.name
+            "team2": match.team2.name,
+            'status': '♦️' if match.status == VolleyballMatchStatus.FINISHED else '🟢'
         }
         teams_scope.append(match_data)
 
@@ -451,6 +452,7 @@ async def get_volleyball_match_full_info(
     )
     sets = sets_result.scalars().all()
 
+    # Формируем результат
     result = {
         'match_id': match.match_id,
         'team1': {
@@ -476,7 +478,6 @@ async def get_volleyball_match_full_info(
         'match_status': match.status.value
     }
 
-    # Формируем результат
     return result
 
 

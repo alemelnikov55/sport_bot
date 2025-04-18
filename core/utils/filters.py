@@ -20,7 +20,6 @@ class IsAdmin(BaseFilter):
         session = data.get('session')
         admins = await get_all_admins(session)
         if message.from_user.id in admins or message.from_user.id == MainSettings.SUPERUSER:
-            logger.info('True')
             return True
         await message.answer('Вы не являетесь администратором соревнования.')
         logger.info('False')
@@ -34,7 +33,6 @@ class IsJudge(BaseFilter):
         session = data.get('session')
         judges = await get_all_judges(session)
         if message.from_user.id in judges or message.from_user.id == MainSettings.SUPERUSER:
-            logger.info('True')
             return True
         await message.answer('Вы не являетесь судьей соревнования.')
         logger.info('False')

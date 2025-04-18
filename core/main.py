@@ -23,6 +23,7 @@ from loader import RedisSettings, MainSettings, WebhookSettings
 from logger_config import LOGGING_CONFIG
 
 from handlers.support_handlers import start_bot_sup_handler, stop_bot_sup_handler
+from handlers.cancel_handler import cancel_handler
 
 from handlers.admin.pannel_handler import start_admin_panel
 from handlers.admin.start_game import start_game
@@ -64,7 +65,7 @@ async def start_bot():
     # Создаем хранилище состояний
     storage = RedisStorage(r, key_builder=DefaultKeyBuilder(with_destiny=True))
     bot = Bot(token=MainSettings.TOKEN, default=DefaultBotProperties(parse_mode='HTML'))
-    dp = Dispatcher()
+    dp = Dispatcher(storage=storage)
     dp.include_router(dialog_router)
     # Создаем планировщик задач
     scheduler = ContextSchedulerDecorator(AsyncIOScheduler(timezone='Europe/Moscow', jobjobstores=jobstores))
@@ -78,6 +79,7 @@ async def start_bot():
     dp.shutdown.register(stop_bot_sup_handler)
 
     # dp.message.register(update, Command('update'))
+    dp.message.register(cancel_handler, Command('cancel'))
 
     # Регистрируем хэндлеры судей
     dp.message.register(choose_sport, Command(commands='choose_sport'), IsJudge())

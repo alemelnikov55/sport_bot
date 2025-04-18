@@ -12,8 +12,8 @@ from handlers.judge.volleyball_menu.volleyball_handlers import choose_volleyball
     manual_volleyball_match_add_handler, start_volleyball_match_handler, add_volleyball_goal_handler, \
     finish_volleyball_set_handler, confirm_finish_volleyball_set_handler, back_volleyball_process_handler, \
     back_choose_match_handler, first_volleyball_team_select_handler, second_volleyball_team_select_handler, \
-    ask_finish_volleyball_match_handler, confirm_finish_volleyball_match_handler, back_volleyball_finish_set_handler, \
-    back_volleyball_finish_match_handler, continue_volleyball_match_handler
+    finish_volleyball_match_handler, confirm_finish_volleyball_match_handler, back_volleyball_finish_set_handler, \
+    back_volleyball_finish_match_handler, continue_volleyball_match_handler, back_volleyball_manual_add_match
 
 
 def get_volleyball_matches_window() -> Window:
@@ -22,16 +22,14 @@ def get_volleyball_matches_window() -> Window:
         Const('Выберите матч:'),
         Group(
             Select(
-                Format("{item[team1]} - {item[team2]}"),
+                Format("{item[team1]} - {item[team2]} {item[status]}"),
                 id="volleyball_matches_select",
                 item_id_getter=lambda item: item["match_id"],
                 items="volleyball_matches",
                 on_click=choose_volleyball_match_handler
             ),
             Button(Const("Создать матч"), id="manual_match_add", on_click=manual_volleyball_match_add_handler),
-            Button(Const("Назад"), id="back_choose_match",
-                   on_click=back_choose_match_handler
-                   ),
+            Button(Const("Назад"), id="back_choose_match", on_click=back_choose_match_handler),
             width=1,
             id="volleyball_matches_group"
         ),
@@ -74,7 +72,7 @@ def get_volleyball_process_window() -> Window:
         Button(Const('Завершить сет'), id="finish_volleyball_set", on_click=finish_volleyball_set_handler),
         Button(Const("Завершить матч"),
                id="finish_volleyball_match",
-               on_click=ask_finish_volleyball_match_handler),
+               on_click=finish_volleyball_match_handler),
         Button(Const("Назад"), id="back_volleyball_process_set", on_click=back_volleyball_process_handler),
         state=VolleyballStates.process_set,
         getter=volleyball_set_info_getter
@@ -128,7 +126,7 @@ def get_volleyball_manual_add_match_window_1() -> Window:
             ),
             width=2
         ),
-        Back(Const("Назад"), id="back_choose_team_2"),
+        Button(Const("Назад"), id="back_choose_team_2", on_click=back_volleyball_manual_add_match),
         state=VolleyballStates.manual_match_create_1,
         getter=volleyball_teams_getter,
     )
@@ -148,7 +146,7 @@ def get_volleyball_manual_add_match_window_2() -> Window:
             ),
             width=2
         ),
-        Back(Const("Назад"), id="back_manual_match_create"),
+        Button(Const("Назад"), id="back_manual_match_create", on_click=back_volleyball_manual_add_match),
         state=VolleyballStates.manual_match_create_2,
         getter=volleyball_teams_getter,
     )
