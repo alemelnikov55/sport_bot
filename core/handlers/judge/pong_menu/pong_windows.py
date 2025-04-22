@@ -1,5 +1,5 @@
 from aiogram_dialog import Window
-from aiogram_dialog.widgets.kbd import Group, Select, Button
+from aiogram_dialog.widgets.kbd import Group, Select, Button, ScrollingGroup
 from aiogram_dialog.widgets.text import Const, Format
 from magic_filter import F
 
@@ -17,7 +17,7 @@ from handlers.judge.state import PongStates
 def get_pong_matches_window() -> Window:
     return Window(
         Const('Выберите матч по настольному теннису'),
-        Group(
+        ScrollingGroup(
             Select(
                 Format('{item[player1]} - {item[player2]} {item[status]}'),
                 id='select_pong_matches',
@@ -30,6 +30,7 @@ def get_pong_matches_window() -> Window:
             Button(Const('Назад'), id='back', on_click=back_pong_matches_handler),
             id='pong_matches_select',
             width=1,
+            height=8
         ),
         state=PongStates.match,
         getter=pong_matches_getter

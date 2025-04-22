@@ -3,9 +3,11 @@ from .engine import engine, async_session
 from .main_models import Sport, Team, Participant, ParticipantSport
 from .football_models import FootballMatch, FootballGoal, MatchStatus, FootballFallers
 from .volleybal_models import VolleyballMatchStatus, VolleyballMatch, VolleyballSet
+from .run_100_models import RunningResult
 from .support_models import Admins, Judges
 
 __all__ = [
+    'RunningResult',
     'VolleyballMatchStatus',
     'VolleyballMatch',
     'VolleyballSet',

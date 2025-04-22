@@ -148,7 +148,7 @@ async def get_all_sports() -> Dict[str, int]:
         return {name: sport_id for name, sport_id in result.all()}
 
 
-async def get_team_participants_by_sport(
+async def get_team_participants_by_team_and_sport(
         team_identifier: Union[int, str],
         sport_identifier: Union[int, str],
         session: AsyncSession
@@ -198,9 +198,57 @@ async def get_team_participants_by_sport(
     return participants
 
 
-async def add_judge(session: AsyncSession, judge_id: int):
+async def get_participants_by_sport(
+        session: AsyncSession,
+        sport_identifier: Union[int, str]
+) -> List[int]:
+    """
+    Возвращает список ID участников, записанных на указанный вид спорта.
+
+    :param session: Асинхронная сессия SQLAlchemy
+    :param sport_identifier: ID или название вида спорта
+    :return: Список participant_id участников
+    :raises ValueError: Если вид спорта не найден
+    """
+    # Определяем условие для поиска спорта
+    if isinstance(sport_identifier, int):
+        sport_condition = Sport.sport_id == sport_identifier
+    else:
+        sport_condition = Sport.name == sport_identifier
+
+    # Проверяем существование спорта
+    sport_exists = await session.execute(
+        select(exists().where(sport_condition))
+    )
+    if not sport_exists.scalar():
+        raise ValueError(f"Вид спорта '{sport_identifier}' не найден")
+
+    # Получаем участников этого вида спорта
+    participants_result = await session.execute(
+        select(ParticipantSport.participant_id)
+        .join(Sport, ParticipantSport.sport_id == Sport.sport_id)
+        .where(sport_condition)
+    )
+
+    return [row[0] for row in participants_result.all()]
+
+
+async def get_participants_by_id(session: AsyncSession, participant_id: int) -> Participant:
+    """Получает информацию о участнике по его ID и проверяет, записан ли он на указанный вид спорта."""
+
+    # Получаем информацию о спортсмене по ID
+    participant_result = await session.execute(
+        select(Participant)
+        .where(Participant.participant_id == participant_id)
+    )
+
+    participant = participant_result.scalar()
+    return participant
+
+
+async def add_judge(session: AsyncSession, telegram_id: int):
     """Добавляет судью в базу данных."""
-    judge = Judges(judge_id=judge_id)
+    judge = Judges(telegram_id=telegram_id)
     session.add(judge)
 
     await session.commit()
@@ -209,7 +257,7 @@ async def add_judge(session: AsyncSession, judge_id: int):
 async def get_all_judges(session: AsyncSession) -> List[int]:
     """Получает список всех судей из базы данных."""
 
-    query = await session.execute(select(Judges.judge_id))
+    query = await session.execute(select(Judges.telegram_id))
 
     return [row[0] for row in query.fetchall()]
 

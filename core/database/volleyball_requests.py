@@ -382,24 +382,24 @@ async def get_current_volleyball_match_info(
 
     return info
 
-
-async def get_volleyball_set(session: AsyncSession, match_id: int, set_number: int) -> VolleyballSet:
-    """
-    Получает ID сета по ID матча и номеру сета.
-
-    :param session: AsyncSession
-    :param match_id: ID матча
-    :param set_number: номер сета
-    :return: ID сета или None, если сет не найден"""
-
-    stmt = (select(VolleyballSet)
-            .where(VolleyballSet.match_id == match_id).
-            where(VolleyballSet.set_number == set_number))
-
-    result = await session.execute(stmt)
-    set = result.scalar_one_or_none()
-
-    return set
+#Под удаление
+# async def get_volleyball_set(session: AsyncSession, match_id: int, set_number: int) -> VolleyballSet:
+#     """
+#     Получает ID сета по ID матча и номеру сета.
+#
+#     :param session: AsyncSession
+#     :param match_id: ID матча
+#     :param set_number: номер сета
+#     :return: ID сета или None, если сет не найден"""
+#
+#     stmt = (select(VolleyballSet)
+#             .where(VolleyballSet.match_id == match_id).
+#             where(VolleyballSet.set_number == set_number))
+#
+#     result = await session.execute(stmt)
+#     set = result.scalar_one_or_none()
+#
+#     return set
 
 
 async def get_volleyball_match_full_info(

@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.football_requests import get_active_matches, get_match_info_by_id, get_match_teams_info, \
     get_match_teams_optimized
-from database.service_requests import get_all_sports, get_teams_by_sport, get_team_participants_by_sport
+from database.service_requests import get_all_sports, get_teams_by_sport, get_team_participants_by_team_and_sport
 
 
 async def active_matches_getter(dialog_manager: DialogManager, **kwargs):
@@ -36,7 +36,7 @@ async def choose_scorer_getter(dialog_manager: DialogManager, **kwargs):
     team_id = int(dialog_manager.dialog_data['goal_team_id'])
     sport_id = int(dialog_manager.dialog_data['sport'])
 
-    all_participants = await get_team_participants_by_sport(team_id, sport_id, session)
+    all_participants = await get_team_participants_by_team_and_sport(team_id, sport_id, session)
 
     return {'participants': [{'name': name.split(' ')[0], 'id': id_} for name, id_ in all_participants.items()]}
 
@@ -63,6 +63,6 @@ async def choose_faller_getter(dialog_manager: DialogManager, **kwargs):
     team_id = int(dialog_manager.dialog_data['red_card_team_id'])
     sport_id = int(dialog_manager.dialog_data['sport'])
 
-    all_participants = await get_team_participants_by_sport(team_id, sport_id, session)
+    all_participants = await get_team_participants_by_team_and_sport(team_id, sport_id, session)
 
     return {'players': [{'name': name.split(' ')[0], 'id': id_} for name, id_ in all_participants.items()]}

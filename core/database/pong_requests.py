@@ -478,80 +478,102 @@ async def get_pong_match_full_info(
             }
             for s in sorted_sets
         ],
-        'winner_id': match.winner_id,
         'match_status': match.status.value
     }
 
     return result
 
 
-# async def update_table_tennis_set_status_ia(
-#         session: AsyncSession,
-#         match_id: int,
-#         set_number: int,
-#         new_status: TableTennisMatchStatus
-# ) -> TableTennisSet:
-#     """
-#     Обновляет статус сета в матче по настольному теннису
-#
-#     :param session: Асинхронная сессия SQLAlchemy
-#     :param match_id: ID матча
-#     :param set_number: Номер сета (1-3)
-#     :param new_status: Новый статус из TableTennisMatchStatus
-#     :return: Обновленный объект сета
-#     :raises ValueError: Если сет не найден или некорректный счет
-#     """
-#     # Получаем сет с проверкой принадлежности к матчу
-#     result = await session.execute(
-#         select(TableTennisSet)
-#         .where(
-#             TableTennisSet.set_number == set_number,
-#             TableTennisSet.match_id == match_id
-#         )
-#     )
-#     tennis_set = result.scalar_one_or_none()
-#
-#     if tennis_set is None:
-#         raise ValueError(f"Сет {set_number} не найден в матче {match_id}")
-#
-#     if new_status == TableTennisMatchStatus.FINISHED:
-#         if tennis_set.status == TableTennisMatchStatus.FINISHED:
-#             print("Сет уже завершен, пропускаем обновление")
-#             return tennis_set
-#
-#         # Проверка корректности счета
-#         if tennis_set.player1_score == tennis_set.player2_score:
-#             if tennis_set.player1_score == 0:
-#                 # Сет без игры (техническое завершение)
-#                 await session.execute(
-#                     update(TableTennisSet)
-#                     .where(TableTennisSet.set_id == tennis_set.set_id)
-#                     .values(status=new_status)
-#                 )
-#             else:
-#                 raise ValueError("Нельзя завершить сет с равным счетом")
-#
-#         # Обновляем счет в матче
-#         if tennis_set.player1_score > tennis_set.player2_score:
-#             await session.execute(
-#                 update(TableTennisMatch)
-#                 .where(TableTennisMatch.match_id == match_id)
-#                 .values(player1_set_wins=TableTennisMatch.player1_set_wins + 1)
-#             )
-#         else:
-#             await session.execute(
-#                 update(TableTennisMatch)
-#                 .where(TableTennisMatch.match_id == match_id)
-#                 .values(player2_set_wins=TableTennisMatch.player2_set_wins + 1)
-#             )
-#
-#     # Обновляем статус сета
-#     await session.execute(
-#         update(TableTennisSet)
-#         .where(TableTennisSet.set_id == tennis_set.set_id)
-#         .values(status=new_status)
-#     )
-#
-#     await session.commit()
-#     await session.refresh(tennis_set)
-#     return tennis_set
+async def get_all_pong_matches_grouped(
+        session: AsyncSession
+) -> Dict[str, List[Dict[str, Any]]]:
+    """
+    Возвращает все матчи по настольному теннису, сгруппированные по группам.
+
+    Формат возвращаемых данных:
+    {
+        "group_name1": [
+            {
+                'match_id': int,
+                'player1': {
+                    'id': int,
+                    'name': str,
+                    'sets_won': int
+                },
+                'player2': {
+                    'id': int,
+                    'name': str,
+                    'sets_won': int
+                },
+                'sets': [
+                    {
+                        'set_number': int,
+                        'player1_score': int,
+                        'player2_score': int,
+                        'status': str
+                    },
+                    ...
+                ],
+                'winner_id': Optional[int],
+                'match_status': str
+            },
+            ...
+        ],
+        "group_name2": [...],
+        ...
+    }
+    """
+    # Получаем все матчи с предзагруженными данными
+    matches_result = await session.execute(
+        select(TableTennisMatch)
+        .options(
+            joinedload(TableTennisMatch.player1),
+            joinedload(TableTennisMatch.player2),
+            joinedload(TableTennisMatch.sets),
+            joinedload(TableTennisMatch.winner)
+        )
+        .order_by(TableTennisMatch.group_name, TableTennisMatch.match_id)
+    )
+
+    matches = matches_result.unique().scalars().all()
+
+    # Группируем матчи по названию группы
+    grouped_matches = {}
+
+    for match in matches:
+        # Сортируем сеты по номеру
+        sorted_sets = sorted(match.sets, key=lambda x: x.set_number)
+
+        match_data = {
+            'match_id': match.match_id,
+            'player1': {
+                'id': match.player1_id,
+                'name': match.player1.short_name,
+                'sets_won': match.player1_set_wins
+            },
+            'player2': {
+                'id': match.player2_id,
+                'name': match.player2.short_name,
+                'sets_won': match.player2_set_wins
+            },
+            'sets': [
+                {
+                    'set_number': s.set_number,
+                    'player1_score': s.player1_score,
+                    'player2_score': s.player2_score,
+                    'status': s.status.value
+                }
+                for s in sorted_sets
+            ],
+            'winner_id': match.winner_id,
+            'match_status': match.status.value
+        }
+
+        # Добавляем в соответствующую группу
+        group_name = match.group_name or "Без группы"
+        if group_name not in grouped_matches:
+            grouped_matches[group_name] = []
+
+        grouped_matches[group_name].append(match_data)
+
+    return grouped_matches

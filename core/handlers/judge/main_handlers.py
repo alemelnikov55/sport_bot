@@ -4,7 +4,7 @@ from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.kbd import Button
 
-from handlers.judge.state import FootballStates, VolleyballStates, PongStates
+from handlers.judge.state import FootballStates, VolleyballStates, PongStates, RunStates
 
 logger = logging.getLogger(__name__)
 
@@ -20,5 +20,10 @@ async def choose_sport_handler(call: CallbackQuery, button: Button, dialog_manag
         await dialog_manager.start(VolleyballStates.match)
     elif sport_name == 'pong':
         await dialog_manager.start(PongStates.match)
+    elif sport_name == 'run_100m':
+        await dialog_manager.start(RunStates.get_runner_number,
+                                   data={'sport_name': sport_name,
+                                         'sport_id': sport_id,
+                                         'judge_telegram_id': call.message.chat.id})
     else:
         logger.error(f'Неизвестный вид спорта: {sport_name}')

@@ -1,7 +1,7 @@
 from aiogram_dialog import DialogManager
 
 from database.football_requests import get_football_matches_for_team, get_team_goals_in_match, get_match_info_by_id
-from database.service_requests import get_teams_by_sport
+from database.service_requests import get_teams_by_sport, get_participants_by_sport
 from handlers.judge.football_menu.football_getters import football_teams_getter
 
 
@@ -66,3 +66,15 @@ async def create_groups_tournament_volleyball_getter(dialog_manager: DialogManag
     dialog_manager.dialog_data['teams_for_groups'] = teams
 
     return {'teams_count': teams_amount}
+
+
+async def create_groups_tournament_pong_getter(dialog_manager: DialogManager, **kwargs):
+    session = dialog_manager.middleware_data['session']
+
+    players_id = await get_participants_by_sport(session, 'pong')
+
+    teams_amount = len(players_id)
+    dialog_manager.dialog_data['player_count'] = teams_amount
+    dialog_manager.dialog_data['player_for_groups'] = players_id
+
+    return {'players_count': teams_amount}

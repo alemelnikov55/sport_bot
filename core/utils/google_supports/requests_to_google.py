@@ -1,6 +1,7 @@
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
+import logging
 
 import gspread
 from typing import List, Dict, Union, Any, Callable
@@ -9,7 +10,9 @@ from oauth2client.service_account import ServiceAccountCredentials
 from gspread.utils import ValueRenderOption
 from gspread.exceptions import WorksheetNotFound
 
-from core.utils.data_converters import transform_participants, transform_participant
+from core.utils.data_converters import transform_participants
+
+logger = logging.getLogger(__name__)
 
 missing_counter = {"count": 0}
 
@@ -31,96 +34,6 @@ spreadsheet = client.open(TABLE_NAME)
 
 # === Регистрация обработчиков по листам ===
 sheet_handlers: Dict[str, Callable[[Any], list]] = {}
-
-test_data = {'football':
-                 {'1/2': [{'team_1': {'goals': 0,
-                                      'match_id': 5,
-                                      'name': 'ШК и корпслужбы',
-                                      'players': []},
-                           'team_2': {'goals': 1,
-                                      'match_id': 5,
-                                      'name': 'ОК Казахстан',
-                                      'players': [('Билан', 40)]}},
-                          {'team_1': {'goals': 0,
-                                      'match_id': 6,
-                                      'name': 'ШК и корпслужбы',
-                                      'players': []},
-                           'team_2': {'goals': 1,
-                                      'match_id': 6,
-                                      'name': 'ОК Казахстан',
-                                      'players': [('Билан', 40)]}},
-                          {'team_1': {'goals': 0,
-                                      'match_id': 10,
-                                      'name': 'ШК и корпслужбы',
-                                      'players': []},
-                           'team_2': {'goals': 1,
-                                      'match_id': 10,
-                                      'name': 'ОК Казахстан',
-                                      'players': [('Билан', 40)]}},
-                          {'team_1': {'goals': 0,
-                                      'match_id': 11,
-                                      'name': 'ШК и корпслужбы',
-                                      'players': []},
-                           'team_2': {'goals': 1,
-                                      'match_id': 11,
-                                      'name': 'ОК Казахстан',
-                                      'players': [('Билан', 40)]}}],
-                  'A': [{'team_1': {'goals': 0,
-                                    'match_id': 1,
-                                    'name': 'ОК Волга-Дон',
-                                    'players': []},
-                         'team_2': {'goals': 2,
-                                    'match_id': 1,
-                                    'name': 'КСЦ',
-                                    'players': [('Билан', 40), ('Билан', 40)]}},
-                        {'team_1': {'goals': 2,
-                                    'match_id': 2,
-                                    'name': 'ОК БиС',
-                                    'players': [('Билан', 40), ('Билан', 40)]},
-                         'team_2': {'goals': 0,
-                                    'match_id': 2,
-                                    'name': 'ППК Шторм',
-                                    'players': []}},
-                        {'team_1': {'goals': 2,
-                                    'match_id': 7,
-                                    'name': 'ОК БиС',
-                                    'players': [('Билан', 40), ('Билан', 40)]},
-                         'team_2': {'goals': 0,
-                                    'match_id': 7,
-                                    'name': 'ППК Шторм',
-                                    'players': []}}],
-                  'B': [{'team_1': {'goals': 1,
-                                    'match_id': 3,
-                                    'name': 'ОК БиС',
-                                    'players': [('Билан', 40)]},
-                         'team_2': {'goals': 0,
-                                    'match_id': 3,
-                                    'name': 'ППК Шторм',
-                                    'players': []}},
-                        {'team_1': {'goals': 0,
-                                    'match_id': 4,
-                                    'name': 'ОК БиС',
-                                    'players': []},
-                         'team_2': {'goals': 0,
-                                    'match_id': 4,
-                                    'name': 'ППК Шторм',
-                                    'players': []}},
-                        {'team_1': {'goals': 1,
-                                    'match_id': 8,
-                                    'name': 'ОК БиС',
-                                    'players': [('Билан', 40)]},
-                         'team_2': {'goals': 0,
-                                    'match_id': 8,
-                                    'name': 'ППК Шторм',
-                                    'players': []}},
-                        {'team_1': {'goals': 0,
-                                    'match_id': 9,
-                                    'name': 'ОК БиС',
-                                    'players': []},
-                         'team_2': {'goals': 0,
-                                    'match_id': 9,
-                                    'name': 'ППК Шторм',
-                                    'players': []}}]}}
 
 
 def get_filtered_participants_data(sheet_name: str) -> List[Dict[str, Union[int, str, None, List[str]]]]:
@@ -199,55 +112,9 @@ def get_filtered_participants_data(sheet_name: str) -> List[Dict[str, Union[int,
         if row_dict and row_dict.get('ФИО участника') != 'Итог':
             result.append(row_dict)
 
-    print(f"Получено {len(result)} отфильтрованных записей участников")
+    logger.info(f"Получено {len(result)} отфильтрованных записей участников")
     result = transform_participants(result, missing_counter)
     return result
-
-
-# def update_football_sheet(groups: dict, worksheet):
-#     # Очистка листа перед записью новых данных
-#     worksheet.clear()
-#
-#     headers = ["Группа", "Команда 1", "Голы 1", "Голы 2", "Команда 2", "Игроки (Команда 1)", "Игроки (Команда 2)"]
-#     worksheet.append_row(headers)
-#
-#     rows = []
-#     for group, matches in groups.items():
-#         for match in matches:
-#             team_1 = match['team_1']
-#             team_2 = match['team_2']
-#             players_1 = ', '.join([f"{p[0]} ({p[1]})" for p in team_1['players']]) if team_1['players'] else "-"
-#             players_2 = ', '.join([f"{p[0]} ({p[1]})" for p in team_2['players']]) if team_2['players'] else "-"
-#
-#             row = [group, team_1['name'], team_1['goals'], team_2['goals'], team_2['name'], players_1, players_2]
-#             rows.append(row)
-#
-#     # Записываем все строки разом
-#     worksheet.append_rows(rows)
-
-
-# def update_google_sheet(data: dict):
-#     """
-#     Фнкция обновления таблицы в Google Sheets
-#
-#     полностью перезаписывает данные в листе, создает лист, если его нет
-#     :param data:
-#     :return:
-#     """
-#
-#     for sport, groups in data.items():
-#         try:
-#             worksheet = client.open(TABLE_NAME).worksheet(sport)
-#         except gspread.exceptions.WorksheetNotFound:
-#             worksheet = client.open(TABLE_NAME).add_worksheet(title=sport, rows=100, cols=10)
-#
-#         if sport == 'football':
-#             update_football_sheet(groups, worksheet)
-#
-#         if sport == 'volleyball':
-#             update_volleyball_sheet(groups, worksheet)
-#
-#     print("Таблица успешно обновлена")
 
 
 def register_sheet_handler(sheet_name: str):
@@ -318,13 +185,46 @@ def handle_volleyball(data):
     return rows
 
 
+@register_sheet_handler('pong')
+def handle_pong(data):
+    headers = ["Группа", "Игрок 1", "Счёт по сетам", "Счёт по сетам", "Игрок 2", "Сеты"]
+    rows = [headers]
+
+    for group, matches in data.items():
+        for match in matches:
+            player1 = match['player1']
+            player2 = match['player2']
+
+            # Счёт по сетам
+            sets_player1 = player1['sets_won']
+            sets_player2 = player2['sets_won']
+
+            # Очки по сетам
+            set_scores = []
+            # for s1, s2 in zip(player1['scores'], player2['scores']):
+            #     set_scores.append(f"{s1['score']} - {s2['score']}")
+            for set_ in match['sets']:
+                set_scores.append(f"{set_['player1_score']} - {set_['player2_score']}")
+
+            row = [
+                group,
+                player1['name'],
+                sets_player1,
+                sets_player2,
+                player2['name'],
+                ", ".join(set_scores)
+            ]
+            rows.append(row)
+
+    return rows
+
+
 # === Основная функция ===
 def update_multiple_sheets(sheet_data_map: Dict[str, Any], use_threads: bool = True):
     """
     Обновляет несколько листов в Google таблице, каждый по своей логике обработки.
 
     :param sheet_data_map: Словарь {название_листа: данные}
-    :param spreadsheet_title: Название Google таблицы
     :param use_threads: Использовать многопоточность для ускорения
     """
     # spreadsheet = client.open(spreadsheet_title)
@@ -344,12 +244,12 @@ def update_multiple_sheets(sheet_data_map: Dict[str, Any], use_threads: bool = T
 
             sheet.clear()
             sheet.update(values, "A1")
-            print(f"[OK] Updated sheet: {sheet_name}")
+            logger.info(f"[OK] Updated sheet: {sheet_name}")
         except Exception as e:
-            print(f"[ERROR] Failed to update '{sheet_name}': {e}")
+            logger.exception(f"[ERROR] Failed to update '{sheet_name}': {e}")
 
     if use_threads:
-        with ThreadPoolExecutor(max_workers=3) as executor:
+        with ThreadPoolExecutor(max_workers=2) as executor:
             futures = [executor.submit(process_sheet, sheet_name, data) for sheet_name, data in sheet_data_map.items()]
             for future in as_completed(futures):
                 pass  # все логи уже выведены внутри process_sheet

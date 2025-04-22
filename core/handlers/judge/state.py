@@ -52,6 +52,15 @@ class PongStates(StatesGroup):
     manual_match_create_2 = State()
 
 
+class RunStates(StatesGroup):
+    get_runner_number = State()
+    get_runner_time = State()
+    confirm_runner_time = State()
+    last_runners = State()
+
+    inpout_history = State()
+
+
 class AdminStates(StatesGroup):
     start_menu = State()
     choose_sport_to_fix = State()
@@ -63,6 +72,7 @@ class AdminStates(StatesGroup):
     create_groups = State()
     create_football_tournament_groups = State()
     create_volleyball_tournament_groups = State()
+    create_pong_tournament_groups = State()
 
     add_judge = State()
 

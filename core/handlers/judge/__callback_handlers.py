@@ -24,7 +24,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.football_requests import get_active_matches, get_match_teams_info, change_match_status, add_goal
 from database.models import MatchStatus
-from database.service_requests import get_team_participants_by_sport
+from database.service_requests import get_team_participants_by_team_and_sport
 
 
 def transform_match_data(matches_dict):
@@ -226,7 +226,7 @@ async def football_choose_goal_participant_kb(match: int, team: int, session: As
     kb_builder = InlineKeyboardBuilder()
     print('Goal!')
     print(f'{match} - {team}')
-    participants = await get_team_participants_by_sport(team, 'football', session)
+    participants = await get_team_participants_by_team_and_sport(team, 'football', session)
     for name, id_ in participants.items():
         print(f'{name} - {id_}')
         kb_builder.button(text=f'{name.split(" ")[0]} {id_}', callback_data=f'j_5_m_p_m{match}_p{id_}')

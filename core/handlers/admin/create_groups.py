@@ -60,7 +60,10 @@ def distribute_teams_to_groups(teams_dict, group_sizes):
     :param group_sizes: список с количеством команд в каждой группе
     :return: словарь {название_группы: [индексы_команд]}
     """
-    team_indices = [idx for name, idx in teams_dict.items()]
+    try:
+        team_indices = [idx for name, idx in teams_dict.items()]
+    except AttributeError:
+        team_indices = teams_dict
 
     result = {}
     start = 0

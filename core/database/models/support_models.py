@@ -18,5 +18,5 @@ class Judges(Base):
     """Судьи"""
     __tablename__ = 'judges'
 
-    id = Column(Integer, primary_key=True)
-    judge_id = Column(BigInteger)
+    judge_id = Column(Integer, primary_key=True)
+    telegram_id = Column(BigInteger)

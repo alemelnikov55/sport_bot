@@ -4,7 +4,7 @@ from aiogram_dialog.widgets.kbd import Button
 
 from database.models import VolleyballMatchStatus
 from database.volleyball_requests import update_volleyball_set_status, update_volleyball_match_status, \
-    increment_volleyball_set_score, get_volleyball_set, create_volleyball_matches, get_next_available_set
+    increment_volleyball_set_score, create_volleyball_matches, get_next_available_set
 from handlers.judge.state import VolleyballStates, MainJudgeStates
 
 
@@ -142,4 +142,8 @@ async def back_volleyball_manual_add_match(call: CallbackQuery, button: Button, 
         del dialog_manager.dialog_data['volleyball_manual_team1']
     except KeyError:
         pass
+    await dialog_manager.switch_to(VolleyballStates.match)
+
+
+async def back_volleyball_start_match_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
     await dialog_manager.switch_to(VolleyballStates.match)

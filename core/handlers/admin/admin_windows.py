@@ -9,9 +9,10 @@ from handlers.admin.admin_handlers import fix_score_handler, choose_sport_to_fix
     back_admin_choose_match_to_fix, back_admin_choose_team_to_fix, back_admin_choose_sport_to_fix, \
     create_groups_handler, create_football_tournament_groups, groups_football_count_inpout_handler, \
     groups_volleyball_count_inpout_handler, create_volleyball_tournament_groups, add_judge_handler, \
-    add_judge_inpout_handler
+    add_judge_inpout_handler, groups_pong_count_inpout_handler, create_pong_tournament_groups
 from handlers.admin.admin_getters import football_teams_getter, football_matches_getter, football_goal_getter, \
-    admin_fix_goal_approve_getter, create_groups_tournament_football_getter, create_groups_tournament_volleyball_getter
+    admin_fix_goal_approve_getter, create_groups_tournament_football_getter, create_groups_tournament_volleyball_getter, \
+    create_groups_tournament_pong_getter
 from handlers.judge.main_getters import get_sports
 from handlers.judge.state import AdminStates
 
@@ -41,6 +42,8 @@ def get_create_groups_window() -> Window:
                id='create_groups_tournament_football', on_click=create_football_tournament_groups),
         Button(Const('Предварительные группы volleyball'),
                id='create_groups_tournament_volleyball', on_click=create_volleyball_tournament_groups),
+        Button(Const('Предварительные группы pong'),
+               id='create_groups_tournament_pong', on_click=create_pong_tournament_groups),
         state=AdminStates.create_groups,
     )
 
@@ -60,6 +63,15 @@ def get_create_groups_tournament_volleyball_window() -> Window:
         MessageInput(groups_volleyball_count_inpout_handler),
         state=AdminStates.create_volleyball_tournament_groups,
         getter=create_groups_tournament_volleyball_getter
+    )
+
+
+def get_create_groups_tournament_pong_window() -> Window:
+    return Window(
+        Format('Зарегистрировано {players_count} игроков в натольный тенис.\nЧерез пробел введите число игроков в каждой группе'),
+        MessageInput(groups_pong_count_inpout_handler),
+        state=AdminStates.create_pong_tournament_groups,
+        getter=create_groups_tournament_pong_getter
     )
 
 
