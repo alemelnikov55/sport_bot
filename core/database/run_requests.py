@@ -1,11 +1,14 @@
 import logging
-from typing import List, Tuple
+from collections import defaultdict
+from typing import List, Tuple, Dict
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
 
-from database.models import Participant, RunningResult, Judges
+from database.models import Participant, RunningResult, Judges, Team
+
+logger = logging.getLogger(__name__)
 
 
 async def save_running_result(session: AsyncSession,
@@ -81,4 +84,49 @@ async def get_last_judge_results(session: AsyncSession, telegram_id: int, distan
     )
     result = await session.execute(query)
     return result.all()
+
+
+async def get_running_results_by_distance(session: AsyncSession) -> Dict[str, List[Dict]]:
+    """
+    Возвращает результаты всех забегов, сгруппированные по дистанции.
+    Формат:
+    {
+        100: [
+            {
+                "participant_id": 1,
+                "full_name": "Иванов Иван",
+                "team_name": "ОК Центр",
+                "result_time": 12.45
+            },
+            ...
+        ],
+        ...
+    }
+    """
+    stmt = (
+        select(
+            RunningResult.distance_m,
+            Participant.participant_id,
+            Participant.full_name,
+            Team.name,
+            RunningResult.result_time
+        )
+        .join(Participant, RunningResult.participant_id == Participant.participant_id)
+        .join(Team, Team.team_id == RunningResult.team_id)
+        .order_by(RunningResult.distance_m, RunningResult.result_time)
+    )
+
+    result = await session.execute(stmt)
+    rows = result.all()
+
+    grouped: Dict[int, List[Dict]] = defaultdict(list)
+    for distance, participant_id, full_name, team_name, result_time in rows:
+        grouped[str(distance)].append({
+            "participant_id": participant_id,
+            "full_name": full_name,
+            "team_name": team_name,
+            "result_time": float(result_time)
+        })
+
+    return dict(grouped)
 

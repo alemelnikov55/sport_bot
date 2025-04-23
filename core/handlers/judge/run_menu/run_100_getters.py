@@ -1,11 +1,9 @@
 import logging
 from typing import Any, Dict
 
-from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager
 
 from database.run_requests import get_last_judge_results
-from database.service_requests import get_participants_by_id
 from handlers.judge.run_menu.run_100_handlers import format_seconds_to_time_string
 
 logger = logging.getLogger(__name__)
@@ -23,7 +21,7 @@ async def run_time_confirm_getter(dialog_manager: DialogManager, **kwargs) -> Di
     distance = dialog_manager.start_data['sport_name']
     runner_id = int(dialog_manager.dialog_data['runner_id'])
     runner_name = dialog_manager.dialog_data['runner_name']
-    runner_time = dialog_manager.dialog_data['runner_time']
+    runner_time = format_seconds_to_time_string(dialog_manager.dialog_data['runner_time'])
 
     return {'runner_name': runner_name, 'runner_id': runner_id, 'distance': distance, 'runner_time': runner_time}
 

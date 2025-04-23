@@ -11,6 +11,7 @@ from gspread.utils import ValueRenderOption
 from gspread.exceptions import WorksheetNotFound
 
 from core.utils.data_converters import transform_participants
+from handlers.judge.run_menu.run_100_handlers import format_seconds_to_time_string
 
 logger = logging.getLogger(__name__)
 
@@ -51,9 +52,9 @@ def get_filtered_participants_data(sheet_name: str) -> List[Dict[str, Union[int,
         "football",
         "volleyball",
         "run_100m",
-        "run_1000m",
+        "run_2000m",
+        "run_3000m",
         "relay_race_4x100",
-        "cheerleading",
         "pong",
         "tug_of_war"
     }
@@ -215,6 +216,26 @@ def handle_pong(data):
                 ", ".join(set_scores)
             ]
             rows.append(row)
+
+    return rows
+
+
+@register_sheet_handler('run_3000')
+@register_sheet_handler('run_2000')
+@register_sheet_handler('run_100')
+def handle_run(data):
+    headers = ['№', 'ФИО', 'Команда', 'Время, с']
+    rows = [headers]
+
+    for result in data:
+        row = [
+            result['participant_id'],
+            result['full_name'],
+            result['team_name'],
+            format_seconds_to_time_string(result['result_time'])
+        ]
+
+        rows.append(row)
 
     return rows
 

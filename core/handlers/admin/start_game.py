@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database.football_requests import get_football_matches_with_goals_and_fallers
 from database.models import async_session
 from database.pong_requests import get_all_pong_matches_grouped
+from database.run_requests import get_running_results_by_distance
 from database.volleyball_requests import get_active_volleyball_matches
 from utils.google_supports.requests_to_google import update_multiple_sheets
 
@@ -26,10 +27,15 @@ async def update_google_sheets():
         volleyball_tournament_info = await get_active_volleyball_matches(session)
         football_tournament_info = await get_football_matches_with_goals_and_fallers(session)
         pong_tournament_info = await get_all_pong_matches_grouped(session)
-
+        run_tournament_info = await get_running_results_by_distance(session)
+        logger.info(run_tournament_info)
     total_spartakiada_data['football'] = football_tournament_info
     total_spartakiada_data['volleyball'] = volleyball_tournament_info
     total_spartakiada_data['pong'] = pong_tournament_info
+    total_spartakiada_data['run_100'] = run_tournament_info.get('100')
+    total_spartakiada_data['run_2000'] = run_tournament_info.get('2000')
+    total_spartakiada_data['run_3000'] = run_tournament_info.get('3000')
+
     update_multiple_sheets(total_spartakiada_data)
 
     logger.info(f'Обновлены данные в таблице {datetime.now()}')

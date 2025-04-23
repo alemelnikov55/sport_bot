@@ -1,7 +1,7 @@
 import logging
 
 from aiogram.types import CallbackQuery, Message
-from aiogram_dialog import DialogManager, ShowMode
+from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 
@@ -77,6 +77,7 @@ async def runner_number_handler(message: Message, message_inpout: MessageInput,
         runner_id = int(message.text.strip())
     except ValueError:
         await message.answer('В номере должны быть только цифры, попробуйте еще раз')
+        return
 
     session = dialog_manager.middleware_data['session']
     runner = await get_participants_by_id(session, runner_id)
@@ -128,7 +129,7 @@ async def back_run_time_register_handler(call: CallbackQuery, button: Button, di
 
 
 async def back_run_result_register_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    await dialog_manager.switch_to(MainJudgeStates.sport)
+    await dialog_manager.start(MainJudgeStates.sport)
     await call.answer('Назад!')
 
 

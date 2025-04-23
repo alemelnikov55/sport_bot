@@ -8,6 +8,7 @@ from handlers.judge.state import FootballStates, VolleyballStates, PongStates, R
 
 logger = logging.getLogger(__name__)
 
+
 async def choose_sport_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, sport_id: str):
     """Обработчик выбора видов спорта"""
     await call.answer('Выбран спорт!')
@@ -20,7 +21,7 @@ async def choose_sport_handler(call: CallbackQuery, button: Button, dialog_manag
         await dialog_manager.start(VolleyballStates.match)
     elif sport_name == 'pong':
         await dialog_manager.start(PongStates.match)
-    elif sport_name == 'run_100m':
+    elif sport_name in ('run_100m', 'run_2000m', 'run_3000m'):
         await dialog_manager.start(RunStates.get_runner_number,
                                    data={'sport_name': sport_name,
                                          'sport_id': sport_id,
