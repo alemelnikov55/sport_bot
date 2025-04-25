@@ -4,7 +4,7 @@ import logging
 from aiogram_dialog import DialogManager
 
 from database.service_requests import get_teams_by_sport
-from database.tug_of_war_requests import get_tug_of_war_matches, get_tug_match_info_by_id, \
+from database.tug_of_war_requests import get_tug_matches, get_tug_match_info_by_id, \
     get_tug_match_info_for_process_by_id
 
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 async def tug_matches_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     session = dialog_manager.middleware_data['session']
 
-    pulls = await get_tug_of_war_matches(session)
+    pulls = await get_tug_matches(session)
 
     return {'tug_matches': pulls}
 

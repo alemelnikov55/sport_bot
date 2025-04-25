@@ -509,11 +509,11 @@ async def get_next_available_set(
 
 
 # под удаление
-async def get_active_volleyball_matches(
+async def get_all_volleyball_matches(
         session: AsyncSession
 ) -> Dict[str, List[Dict]]:
     """
-    Возвращает данные по всем активным волейбольным матчам с детализацией по сетам
+    Возвращает данные по всем волейбольным матчам с детализацией по сетам
     в формате:
     {
         'group_name': [

@@ -39,7 +39,7 @@ async def create_tug_matches(
         raise
 
 
-async def get_tug_of_war_matches(session: AsyncSession) -> List[Dict[str, Any]]:
+async def get_tug_matches(session: AsyncSession) -> List[Dict[str, Any]]:
     """
     Возвращает список матчей по перетягиванию каната с основной информацией.
 
@@ -207,3 +207,65 @@ async def increment_tug_match_score(session: AsyncSession, pull_id: int, scoring
 
     await session.execute(stmt)
     await session.commit()
+
+
+async def get_all_tug_matches_grouped(
+        session: AsyncSession
+) -> Dict[str, List[Dict[str, Any]]]:
+    """
+    Возвращает матчи по перетягиванию каната, сгруппированные по группам.
+
+    Returns:
+        Словарь в формате:
+        {
+            'group_name1': [
+                {
+                    'team1': {
+                        'name': str,
+                        'score': int
+                    },
+                    'team2': {
+                        'name': str,
+                        'score': int
+                    }
+                },
+                ...
+            ],
+            'group_name2': [...],
+            ...
+        }
+    """
+    # Получаем все матчи с предзагруженными командами
+    result = await session.execute(
+        select(TugOfWarMatch)
+        .options(
+            joinedload(TugOfWarMatch.team1),
+            joinedload(TugOfWarMatch.team2)
+        )
+        .order_by(TugOfWarMatch.group_name, TugOfWarMatch.pull_id)
+    )
+
+    matches = result.unique().scalars().all()
+
+    # Группируем матчи по названию группы
+    grouped_matches = {}
+
+    for match in matches:
+        match_data = {
+            'team1': {
+                'name': match.team1.name,
+                'score': match.score1
+            },
+            'team2': {
+                'name': match.team2.name,
+                'score': match.score2
+            }
+        }
+
+        group_name = match.group_name or "Без группы"
+        if group_name not in grouped_matches:
+            grouped_matches[group_name] = []
+
+        grouped_matches[group_name].append(match_data)
+
+    return grouped_matches

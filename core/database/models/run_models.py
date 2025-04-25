@@ -1,8 +1,7 @@
 """
-Нужны id зарегистривовавашего судьи
-Время внесения результата
+Модель для хранения результатов бега
 """
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, Float, Numeric
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, Numeric
 
 from database.models import Base
 

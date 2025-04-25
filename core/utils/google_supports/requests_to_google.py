@@ -202,8 +202,6 @@ def handle_pong(data):
 
             # Очки по сетам
             set_scores = []
-            # for s1, s2 in zip(player1['scores'], player2['scores']):
-            #     set_scores.append(f"{s1['score']} - {s2['score']}")
             for set_ in match['sets']:
                 set_scores.append(f"{set_['player1_score']} - {set_['player2_score']}")
 
@@ -227,17 +225,66 @@ def handle_run(data):
     headers = ['№', 'ФИО', 'Команда', 'Время, с']
     rows = [headers]
 
-    for result in data:
-        row = [
-            result['participant_id'],
-            result['full_name'],
-            result['team_name'],
-            format_seconds_to_time_string(result['result_time'])
-        ]
+    # try:
+    if data is not None:
+        for result in data:
+            row = [
+                result['participant_id'],
+                result['full_name'],
+                result['team_name'],
+                format_seconds_to_time_string(result['result_time'])
+            ]
 
-        rows.append(row)
+            rows.append(row)
+    # except Exception as e:
+    #     logger.exception(f"Error: {e}")
 
     return rows
+
+
+@register_sheet_handler('tug')
+def handle_tug(data):
+    headers = ['Группа', 'Команда 1', 'Победы 1', 'Победы 2', 'Команда 2']
+    rows = [headers]
+
+    for group, matches in data.items():
+        for match in matches:
+            team1_name = match['team1']['name']
+            team2_name = match['team2']['name']
+
+            team1_score = match['team1']['score']
+            team2_score = match['team2']['score']
+
+            row = [
+                group,
+                team1_name,
+                team1_score,
+                team2_score,
+                team2_name,
+            ]
+            rows.append(row)
+
+    return rows
+
+
+def process_sheet(sheet_name: str, raw_data):
+    try:
+        handler = sheet_handlers.get(sheet_name)
+        if not handler:
+            logger.info(f"[SKIP] No handler for sheet '{sheet_name}'")
+            return
+        values = handler(raw_data)
+
+        try:
+            sheet = spreadsheet.worksheet(sheet_name)
+        except gspread.exceptions.WorksheetNotFound:
+            sheet = spreadsheet.add_worksheet(title=sheet_name, rows="100", cols="20")
+
+        sheet.clear()
+        sheet.update(values, "A1")
+        logger.info(f"[OK] Updated sheet: {sheet_name}")
+    except Exception as e:
+        logger.exception(f"[ERROR] Failed to update '{sheet_name}': {e}")
 
 
 # === Основная функция ===
@@ -248,29 +295,10 @@ def update_multiple_sheets(sheet_data_map: Dict[str, Any], use_threads: bool = T
     :param sheet_data_map: Словарь {название_листа: данные}
     :param use_threads: Использовать многопоточность для ускорения
     """
-    # spreadsheet = client.open(spreadsheet_title)
-
-    def process_sheet(sheet_name: str, raw_data):
-        try:
-            handler = sheet_handlers.get(sheet_name)
-            if not handler:
-                print(f"[SKIP] No handler for sheet '{sheet_name}'")
-                return
-            values = handler(raw_data)
-
-            try:
-                sheet = spreadsheet.worksheet(sheet_name)
-            except gspread.exceptions.WorksheetNotFound:
-                sheet = spreadsheet.add_worksheet(title=sheet_name, rows="100", cols="20")
-
-            sheet.clear()
-            sheet.update(values, "A1")
-            logger.info(f"[OK] Updated sheet: {sheet_name}")
-        except Exception as e:
-            logger.exception(f"[ERROR] Failed to update '{sheet_name}': {e}")
 
     if use_threads:
         with ThreadPoolExecutor(max_workers=2) as executor:
+            logger.info(sheet_data_map.keys())
             futures = [executor.submit(process_sheet, sheet_name, data) for sheet_name, data in sheet_data_map.items()]
             for future in as_completed(futures):
                 pass  # все логи уже выведены внутри process_sheet
