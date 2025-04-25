@@ -25,7 +25,6 @@ def transform_participant(data: Dict, counter: Dict) -> Participant:
             counter["_counter"] = 9000
         counter["_counter"] += 1
         data["Номер"] = counter["_counter"]
-    print(data)
     return Participant(**data)
 
 

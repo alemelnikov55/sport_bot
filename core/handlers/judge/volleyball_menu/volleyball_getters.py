@@ -50,7 +50,9 @@ async def volleyball_set_info_getter(dialog_manager: DialogManager, **kwargs) ->
     session = dialog_manager.middleware_data['session']
     match_id = int(dialog_manager.dialog_data['volleyball_match'])
     set_number = int(dialog_manager.dialog_data['set_number'])
+
     full_match_data = await get_current_volleyball_match_info(session, match_id, set_number)
+
     team_score_data = {'team1_name': full_match_data[0]['team_name'],
                        'team1_score': full_match_data[0]['set_won'],
                        'team2_name': full_match_data[1]['team_name'],

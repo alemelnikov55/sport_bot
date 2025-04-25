@@ -6,9 +6,9 @@ from aiogram_dialog import Window
 from aiogram_dialog.widgets.kbd import Button, Group, Select, Back
 from aiogram_dialog.widgets.text import Const, Format
 
-from handlers.judge.run_menu.run_100_getters import run_time_register_getter, run_time_confirm_getter, \
+from handlers.judge.run_menu.run_getters import run_time_register_getter, run_time_confirm_getter, \
     get_run_history_getter
-from handlers.judge.run_menu.run_100_handlers import runner_number_handler, back_run_result_register_handler, \
+from handlers.judge.run_menu.run_handlers import runner_number_handler, back_run_result_register_handler, \
     history_runners_handler, back_run_time_register_handler, runner_result_handler, back_run_history_handler, \
     cancel_run_confirm_result_handler, run_confirm_result_handler
 from handlers.judge.state import RunStates

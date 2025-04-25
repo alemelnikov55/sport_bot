@@ -78,3 +78,15 @@ async def create_groups_tournament_pong_getter(dialog_manager: DialogManager, **
     dialog_manager.dialog_data['player_for_groups'] = players_id
 
     return {'players_count': teams_amount}
+
+
+async def create_groups_tournament_tug_getter(dialog_manager: DialogManager, **kwargs):
+    session = dialog_manager.middleware_data['session']
+
+    players_id = await get_teams_by_sport('tug_of_war', session)
+
+    teams_amount = len(players_id)
+    dialog_manager.dialog_data['tug_teams_count'] = teams_amount
+    dialog_manager.dialog_data['tug_teams_for_groups'] = players_id
+
+    return {'tug_team_count': teams_amount}

@@ -9,6 +9,7 @@ from aiogram_dialog.widgets.kbd import Button, Select
 from database.football_requests import delete_goal, create_match
 from database.pong_requests import create_pong_matches
 from database.service_requests import add_judge
+from database.tug_of_war_requests import create_tug_matches
 from database.volleyball_requests import create_volleyball_matches
 from handlers.admin.create_groups import distribute_teams_to_groups, generate_group_matches
 from handlers.judge.state import AdminStates
@@ -39,6 +40,11 @@ async def create_volleyball_tournament_groups(call: CallbackQuery, button: Butto
 async def create_pong_tournament_groups(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
     await dialog_manager.switch_to(AdminStates.create_pong_tournament_groups)
     await call.answer('Создание групп для пинг-понга')
+
+
+async def create_tug_tournament_groups(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(AdminStates.create_tug_tournament_groups)
+    await call.answer('Создание групп для перетягивания каната')
 
 
 async def choose_sport_to_fix_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager,
@@ -132,7 +138,7 @@ async def groups_football_count_inpout_handler(message: Message, message_inpout:
     del dialog_manager.dialog_data['teams_for_groups']
     del dialog_manager.dialog_data['teams_count']
 
-    await message.answer(f'Создано групповых матчей: {matches_count}')
+    await message.answer(f'Создано групповых матчей по футболу: {matches_count}')
     await dialog_manager.switch_to(AdminStates.start_menu)
 
 
@@ -165,7 +171,7 @@ async def groups_volleyball_count_inpout_handler(message: Message, message_inpou
     del dialog_manager.dialog_data['teams_for_groups']
     del dialog_manager.dialog_data['teams_count']
 
-    await message.answer(f'Создано групповых матчей: {matches_count}')
+    await message.answer(f'Создано групповых матчей по волейболу: {matches_count}')
     await dialog_manager.switch_to(AdminStates.start_menu)
 
 
@@ -198,7 +204,40 @@ async def groups_pong_count_inpout_handler(message: Message, message_inpout: Mes
     del dialog_manager.dialog_data['player_for_groups']
     del dialog_manager.dialog_data['player_count']
 
-    await message.answer(f'Создано групповых матчей: {matches_count}')
+    await message.answer(f'Создано групповых матчей по настольному теннису: {matches_count}')
+    await dialog_manager.switch_to(AdminStates.start_menu)
+
+
+async def groups_tug_count_inpout_handler(message: Message, message_inpout: MessageInput,
+                                          dialog_manager: DialogManager):
+    session = dialog_manager.middleware_data['session']
+    expected_total = dialog_manager.dialog_data['tug_teams_count']
+    players = dialog_manager.dialog_data['tug_teams_for_groups']
+    players_amount_array = list(map(int, message.text.split()))
+    teams_amount_sum = sum(players_amount_array)
+
+    # Проверка: только цифры через пробел
+    if not all(part.isdigit() for part in message.text.split()):
+        await message.answer('Пожалуйста, введите только числа, разделённые пробелами.')
+        return
+
+    if teams_amount_sum != expected_total:
+        await message.answer(f"Сумма чисел должна быть равна {expected_total}. Попробуйте снова.")
+        return
+
+    # Подготовка групп для матчей
+    groups_array = distribute_teams_to_groups(players, players_amount_array)
+    groups_matches = generate_group_matches(groups_array)
+
+    await create_tug_matches(session, groups_matches)
+
+    matches_count = sum(len(matches) for matches in groups_matches.values())
+
+    # очистка данных из данных диалога
+    del dialog_manager.dialog_data['tug_teams_count']
+    del dialog_manager.dialog_data['tug_teams_for_groups']
+
+    await message.answer(f'Создано групповых матчей по перетягиванияю каната: {matches_count}')
     await dialog_manager.switch_to(AdminStates.start_menu)
 
 

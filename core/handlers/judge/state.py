@@ -61,6 +61,18 @@ class RunStates(StatesGroup):
     inpout_history = State()
 
 
+class TugStates(StatesGroup):
+    match = State()
+    start_match = State()
+    process_match = State()
+    choose_winner = State()
+
+    confirm_finish_match = State()
+
+    manual_match_create_1 = State()
+    manual_match_create_2 = State()
+
+
 class AdminStates(StatesGroup):
     start_menu = State()
     choose_sport_to_fix = State()
@@ -73,6 +85,7 @@ class AdminStates(StatesGroup):
     create_football_tournament_groups = State()
     create_volleyball_tournament_groups = State()
     create_pong_tournament_groups = State()
+    create_tug_tournament_groups = State()
 
     add_judge = State()
 

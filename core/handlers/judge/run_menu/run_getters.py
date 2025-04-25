@@ -4,7 +4,7 @@ from typing import Any, Dict
 from aiogram_dialog import DialogManager
 
 from database.run_requests import get_last_judge_results
-from handlers.judge.run_menu.run_100_handlers import format_seconds_to_time_string
+from handlers.judge.run_menu.run_handlers import format_seconds_to_time_string
 
 logger = logging.getLogger(__name__)
 

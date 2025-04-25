@@ -47,8 +47,7 @@ def get_volleyball_start_match_window() -> Window:
                when=F['volleyball_match']['is_started']),
         Button(Const('Продолжить матч'), id='continue_volleyball_match',
                when=F['volleyball_match']['is_in_process'],
-               on_click=continue_volleyball_match_handler
-               ),
+               on_click=continue_volleyball_match_handler),
         Button(Const('Назад'), id='back_start_volleyball_match', on_click=back_volleyball_start_match_handler),
         state=VolleyballStates.start_match,
         getter=start_volleyball_match_getter

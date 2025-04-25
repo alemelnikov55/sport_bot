@@ -319,9 +319,7 @@ async def get_volleyball_match_info_by_id(session: AsyncSession, match_id: int) 
 
     result = await session.execute(stmt)
     match = result.scalars().first()
-    print(match)
-    test = True if match.status is VolleyballMatchStatus.IN_PROGRESS else False
-    print(f'True if match.status is VolleyballMatchStatus.IN_PROGRESS else False: {test}')
+
     return {
         'match_id': match.match_id,
         'team1_name': match.team1.name,

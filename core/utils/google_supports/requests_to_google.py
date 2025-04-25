@@ -11,7 +11,7 @@ from gspread.utils import ValueRenderOption
 from gspread.exceptions import WorksheetNotFound
 
 from core.utils.data_converters import transform_participants
-from handlers.judge.run_menu.run_100_handlers import format_seconds_to_time_string
+from handlers.judge.run_menu.run_handlers import format_seconds_to_time_string
 
 logger = logging.getLogger(__name__)
 
