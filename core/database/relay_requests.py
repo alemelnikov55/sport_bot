@@ -78,8 +78,6 @@ async def get_relay_results(session: AsyncSession) -> List[Dict]:
     {
         100: [
             {
-                "participant_id": 1,
-                "full_name": "Иванов Иван",
                 "team_name": "ОК Центр",
                 "result_time": 12.45
             },

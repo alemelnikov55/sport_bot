@@ -242,6 +242,22 @@ def handle_run(data):
     return rows
 
 
+@register_sheet_handler('relay')
+def handle_relay(data):
+    headers = ['Команда', 'Время, с']
+    rows = [headers]
+
+    if data is not None:
+        for result in data:
+            row = [
+                result['team_name'],
+                format_seconds_to_time_string(result['result_time'])
+            ]
+            rows.append(row)
+
+    return rows
+
+
 @register_sheet_handler('tug')
 def handle_tug(data):
     headers = ['Группа', 'Команда 1', 'Победы 1', 'Победы 2', 'Команда 2']
@@ -298,7 +314,6 @@ def update_multiple_sheets(sheet_data_map: Dict[str, Any], use_threads: bool = T
 
     if use_threads:
         with ThreadPoolExecutor(max_workers=2) as executor:
-            logger.info(sheet_data_map.keys())
             futures = [executor.submit(process_sheet, sheet_name, data) for sheet_name, data in sheet_data_map.items()]
             for future in as_completed(futures):
                 pass  # все логи уже выведены внутри process_sheet

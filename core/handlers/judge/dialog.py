@@ -90,6 +90,7 @@ tug_dialog = Dialog(
     get_tug_start_match_window(),
     get_tug_process_window(),
     get_tug_finish_match_window(),
+
     get_tug_manual_add_match_window_1(),
     get_tug_manual_add_match_window_2(),
 
