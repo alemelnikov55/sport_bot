@@ -268,3 +268,17 @@ async def get_all_admins(session: AsyncSession) -> List[int]:
     query = await session.execute(select(Admins.admin_id))
 
     return [row[0] for row in query.fetchall()]
+
+
+async def get_team_name_by_id(session: AsyncSession, team_id: int) -> str:
+    """Получает название команды по её ID."""
+
+    query = await session.execute(select(Team.name).where(Team.team_id == team_id))
+
+    return query.scalar_one_or_none()
+
+
+async def get_sport_name_by_id(session: AsyncSession, sport_id: int) -> str:
+    """Получает название вида спорта по его ID."""
+
+    query = await session.execute(select(Sport.name).where(Sport.sport_id == sport_id))

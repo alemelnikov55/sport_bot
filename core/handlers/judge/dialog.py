@@ -16,8 +16,10 @@ from handlers.judge.football_menu.football_windows import get_matches_window, ge
 from handlers.judge.pong_menu.pong_windows import get_pong_matches_window, get_pong_start_match_window, \
     get_pong_progress_window, get_pong_finish_set_window, get_pong_finish_match_window, \
     get_pong_manual_add_match_team_window_1, get_pong_manual_add_match_player_window_1
+from handlers.judge.relay_menu.relay_windows import get_relay_team_choose, get_relay_confirm_result_window, \
+    get_relay_time_register, get_relay_history_window
 from handlers.judge.run_menu.run_windows import get_run_result_register_window, get_run_time_register_window, \
-    get_confirm_result_window, get_run_history_window
+    get_run_confirm_result_window, get_run_history_window
 from handlers.judge.tug_menu.tug_windows import get_tug_choose_match_window, get_tug_start_match_window, \
     get_tug_process_window, get_tug_finish_match_window, get_tug_manual_add_match_window_1, \
     get_tug_manual_add_match_window_2
@@ -70,8 +72,17 @@ pong_dialog = Dialog(
 run_dialog = Dialog(
     get_run_result_register_window(),
     get_run_time_register_window(),
-    get_confirm_result_window(),
+    get_run_confirm_result_window(),
     get_run_history_window()
+)
+
+relay_dialog = Dialog(
+    get_relay_team_choose(),
+    get_relay_time_register(),
+    get_relay_confirm_result_window(),
+
+    get_relay_history_window()
+
 )
 
 tug_dialog = Dialog(
@@ -112,3 +123,4 @@ dialog_router.include_router(admin_dialog)
 dialog_router.include_router(pong_dialog)
 dialog_router.include_router(run_dialog)
 dialog_router.include_router(tug_dialog)
+dialog_router.include_router(relay_dialog)

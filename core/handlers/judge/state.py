@@ -61,6 +61,14 @@ class RunStates(StatesGroup):
     inpout_history = State()
 
 
+class RelayStates(StatesGroup):
+    choose_team = State()
+    get_team_time = State()
+    conform_team_time = State()
+
+    inpout_history = State()
+
+
 class TugStates(StatesGroup):
     match = State()
     start_match = State()

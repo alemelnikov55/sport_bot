@@ -1,36 +1,26 @@
-import logging
 from collections import defaultdict
+from datetime import datetime
 from typing import List, Tuple, Dict
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.models import Participant, RunningResult, Judges, Team
+from database.models import Judges, Team
+from database.models.relay_race_model import RelayResult
 
-logger = logging.getLogger(__name__)
 
-
-async def save_running_result(session: AsyncSession,
-                              participant_id: int,
-                              result_time: float,
-                              distance_m: int,
-                              judge_telegram_id: int) -> None:
+async def save_relay_result(session: AsyncSession,
+                            team_id: int,
+                            result_time: float,
+                            judge_telegram_id: int) -> None:
     """
     Сохраняет результат забега участника в таблицу running_results.
 
     :param session: Асинхронная сессия SQLAlchemy
-    :param participant_id: ID участника
+    :param team_id: ID команды
     :param result_time: Время в секундах (float)
-    :param distance_m: Дистанция в метрах
     :param judge_telegram_id: ID судьи
     """
-    result = await session.execute(
-        select(Participant.team_id).where(Participant.participant_id == participant_id)
-    )
-
-    team_id = result.scalar_one_or_none()
-    if team_id is None:
-        raise ValueError(f"Участник с ID {participant_id} не найден")
 
     judge_result = await session.execute(
         select(Judges.judge_id).where(Judges.telegram_id == judge_telegram_id)
@@ -38,11 +28,10 @@ async def save_running_result(session: AsyncSession,
 
     judge_id = judge_result.scalar_one_or_none()
 
-    new_result = RunningResult(
-        participant_id=participant_id,
+    new_result = RelayResult(
         team_id=team_id,
-        distance_m=distance_m,
         result_time=round(result_time, 2),
+        timestamp=datetime.now(),
         judge_id=judge_id,
     )
 
@@ -50,7 +39,7 @@ async def save_running_result(session: AsyncSession,
     await session.commit()
 
 
-async def get_last_judge_run_results(session: AsyncSession, telegram_id: int, distance_m: int) -> List[Tuple[str, int, float]]:
+async def get_last_judge_reley_results(session: AsyncSession, telegram_id: int) -> List[Tuple[str, int, float]]:
     """
     Возвращает последние 10 результатов, зарегистрированных судьей по telegram_id
     и указанной дистанции, в виде кортежей:
@@ -65,24 +54,24 @@ async def get_last_judge_run_results(session: AsyncSession, telegram_id: int, di
     result = await session.execute(
         select(Judges.judge_id).where(Judges.telegram_id == telegram_id)
     )
+
     judge_id = result.scalar_one_or_none()
 
     # Получение последних 10 результатов с join на участника
     query = (
-        select(Participant.short_name, Participant.participant_id, RunningResult.result_time)
-        .join(RunningResult, RunningResult.participant_id == Participant.participant_id)
+        select(Team.name, RelayResult.result_time)
+        .join(RelayResult, RelayResult.team_id == Team.team_id)
         .where(
-            RunningResult.judge_id == judge_id,
-            RunningResult.distance_m == distance_m
+            RelayResult.judge_id == judge_id,
         )
-        .order_by(RunningResult.timestamp.desc())
+        .order_by(RelayResult.timestamp.desc())
         .limit(10)
     )
     result = await session.execute(query)
     return result.all()
 
 
-async def get_running_results_by_distance(session: AsyncSession) -> Dict[str, List[Dict]]:
+async def get_relay_results(session: AsyncSession) -> List[Dict]:
     """
     Возвращает результаты всех забегов, сгруппированные по дистанции.
     Формат:
@@ -101,29 +90,20 @@ async def get_running_results_by_distance(session: AsyncSession) -> Dict[str, Li
     """
     stmt = (
         select(
-            RunningResult.distance_m,
-            Participant.participant_id,
-            Participant.full_name,
             Team.name,
-            RunningResult.result_time
+            RelayResult.result_time
         )
-        .join(Participant, RunningResult.participant_id == Participant.participant_id)
-        .join(Team, Team.team_id == RunningResult.team_id)
-        .order_by(RunningResult.distance_m, RunningResult.result_time)
+        .join(Team, Team.team_id == RelayResult.team_id)
     )
 
     result = await session.execute(stmt)
     rows = result.all()
 
-    grouped: Dict[str, List[Dict]] = defaultdict(list)
-    for distance, participant_id, full_name, team_name, result_time in rows:
-        distance = str(distance)
-        grouped[distance].append({
-            "participant_id": participant_id,
-            "full_name": full_name,
+    result = list()
+    for team_name, result_time in rows:
+        result.append({
             "team_name": team_name,
             "result_time": float(result_time)
         })
 
-    return dict(grouped)
-
+    return result

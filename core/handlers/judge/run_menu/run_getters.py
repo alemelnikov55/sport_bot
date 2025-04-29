@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 from aiogram_dialog import DialogManager
 
-from database.run_requests import get_last_judge_results
+from database.run_requests import get_last_judge_run_results
 from handlers.judge.run_menu.run_handlers import format_seconds_to_time_string
 
 logger = logging.getLogger(__name__)
@@ -26,13 +26,13 @@ async def run_time_confirm_getter(dialog_manager: DialogManager, **kwargs) -> Di
     return {'runner_name': runner_name, 'runner_id': runner_id, 'distance': distance, 'runner_time': runner_time}
 
 
-async def get_run_history_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
+async def run_history_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     session = dialog_manager.middleware_data['session']
     sport_name = dialog_manager.start_data['sport_name']
     telegram_id = dialog_manager.start_data['judge_telegram_id']
 
     distance = int(sport_name.split('_')[-1][:-1])
 
-    data = await get_last_judge_results(session, telegram_id, distance)
+    data = await get_last_judge_run_results(session, telegram_id, distance)
     printable_data = [f'{result[0]}_{result[1]}  -  {format_seconds_to_time_string(result[2])}' for result in data]
     return {'history': '\n'.join(printable_data), 'distance': distance}

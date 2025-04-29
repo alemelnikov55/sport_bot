@@ -7,7 +7,7 @@ from aiogram_dialog.widgets.kbd import Button, Group, Select, Back
 from aiogram_dialog.widgets.text import Const, Format
 
 from handlers.judge.run_menu.run_getters import run_time_register_getter, run_time_confirm_getter, \
-    get_run_history_getter
+    run_history_getter
 from handlers.judge.run_menu.run_handlers import runner_number_handler, back_run_result_register_handler, \
     history_runners_handler, back_run_time_register_handler, runner_result_handler, back_run_history_handler, \
     cancel_run_confirm_result_handler, run_confirm_result_handler
@@ -34,7 +34,7 @@ def get_run_time_register_window() -> Window:
     )
 
 
-def get_confirm_result_window() -> Window:
+def get_run_confirm_result_window() -> Window:
     return Window(
         Format('Подтвердите запись:\n'
                '<b>Спортсмен:</b> {runner_name} {runner_id}\n'
@@ -52,5 +52,5 @@ def get_run_history_window() -> Window:
         Format('Последние 6 добавленных записей в забеге на {distance}:\n{history}'),
         Button(Const('Назад'), id='back_run_history', on_click=back_run_history_handler),
         state=RunStates.inpout_history,
-        getter=get_run_history_getter
+        getter=run_history_getter
     )
