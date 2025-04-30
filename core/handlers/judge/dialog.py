@@ -7,6 +7,7 @@ from handlers.admin.admin_windows import get_admin_start_window, get_admin_choos
     get_admin_fix_goal_approve_window, get_create_groups_window, get_create_groups_tournament_football_window, \
     get_create_groups_tournament_volleyball_window, get_admin_add_judge_window, \
     get_create_groups_tournament_pong_window, get_create_tug_tournament_groups_window
+from handlers.judge.kettle_manu.kettle_windows import get_kettle_team_choose_window, get_kettle_choose_lifter_window
 from handlers.judge.main_windows import get_sports_window
 from handlers.judge.football_menu.football_windows import get_matches_window, get_start_match_window, \
     get_process_window, \
@@ -96,6 +97,13 @@ tug_dialog = Dialog(
 
 )
 
+kettle_dialog = Dialog(
+    get_kettle_team_choose_window(),
+    get_kettle_choose_lifter_window(),
+
+
+)
+
 main_judge_dialog = Dialog(get_sports_window())
 
 admin_dialog = Dialog(
@@ -125,3 +133,4 @@ dialog_router.include_router(pong_dialog)
 dialog_router.include_router(run_dialog)
 dialog_router.include_router(tug_dialog)
 dialog_router.include_router(relay_dialog)
+dialog_router.include_router(kettle_dialog)

@@ -5,9 +5,11 @@ from .football_models import FootballMatch, FootballGoal, MatchStatus, FootballF
 from .volleybal_models import VolleyballMatchStatus, VolleyballMatch, VolleyballSet
 from .run_models import RunningResult
 from .tug_of_war_models import TugOfWarMatch, TugStatus
+from .kettle_models import KettleResult
 from .support_models import Admins, Judges
 
 __all__ = [
+    'KettleResult',
     'TugStatus',
     'TugOfWarMatch',
     'RunningResult',

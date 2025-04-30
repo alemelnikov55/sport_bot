@@ -13,6 +13,7 @@ from handlers.judge.run_menu.run_handlers import format_seconds_to_time_string
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+
 async def relay_team_choose_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     session = dialog_manager.middleware_data['session']
     sport = dialog_manager.start_data['sport_name']

@@ -56,7 +56,8 @@ def get_filtered_participants_data(sheet_name: str) -> List[Dict[str, Union[int,
         "run_3000m",
         "relay_race_4x100",
         "pong",
-        "tug_of_war"
+        "tug_of_war",
+        'kettle'
     }
 
     try:

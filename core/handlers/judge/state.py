@@ -81,6 +81,15 @@ class TugStates(StatesGroup):
     manual_match_create_2 = State()
 
 
+class KettleStates(StatesGroup):
+    choose_team = State()
+    chose_lifter = State()
+    get_lift_count = State()
+    confirm_lift_count = State()
+
+    inpout_history = State()
+
+
 class AdminStates(StatesGroup):
     start_menu = State()
     choose_sport_to_fix = State()

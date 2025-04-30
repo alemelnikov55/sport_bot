@@ -29,8 +29,6 @@ async def save_running_result(session: AsyncSession,
     )
 
     team_id = result.scalar_one_or_none()
-    if team_id is None:
-        raise ValueError(f"Участник с ID {participant_id} не найден")
 
     judge_result = await session.execute(
         select(Judges.judge_id).where(Judges.telegram_id == judge_telegram_id)

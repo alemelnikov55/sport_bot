@@ -108,6 +108,6 @@ async def pong_players_getter(dialog_manager: DialogManager, **kwargs) -> Dict[s
     team_id = int(dialog_manager.dialog_data['pong_manual_team1_id'])
 
     players = await get_team_participants_by_team_and_sport(team_id, 'pong', session)
-    logger.warning(f'pong_players {players}')
+
     return {'players': [{'name': f'{name.split(' ')[0]} {id_}', 'id': id_} for name, id_ in players.items()]}
 
