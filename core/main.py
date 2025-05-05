@@ -38,7 +38,7 @@ from utils.middleware import DatabaseMiddleware, ApschedulerMiddleware
 
 from database.models import async_session
 
-
+"""add new"""
 r = redis.Redis(host=RedisSettings.REDIS_HOST, port=RedisSettings.REDIS_PORT, db=0, decode_responses=True)
 
 jobstores = {
