@@ -85,7 +85,6 @@ async def finish_pong_set_getter(dialog_manager: DialogManager, **kwargs) -> Dic
 async def pong_match_result_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     session = dialog_manager.middleware_data['session']
     match_id = int(dialog_manager.dialog_data['pong_match_id'])
-    logger.warning(f'test match id  dialog_manager.dialog_data["volleyball_match"]')
 
     match_full_data = await get_pong_match_full_info(session, match_id)
 

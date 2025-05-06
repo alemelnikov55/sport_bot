@@ -84,6 +84,7 @@ class TugStates(StatesGroup):
 class KettleStates(StatesGroup):
     choose_team = State()
     chose_lifter = State()
+    choose_category = State()
     get_lift_count = State()
     confirm_lift_count = State()
 

@@ -1,9 +1,18 @@
 """
 Модель для хранения результатов гиревого спорта
 """
+from enum import Enum as PyEnum
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, Numeric, func, String
+from sqlalchemy import Enum as SQLAlchemyEnum
 
 from database.models import Base
+
+
+class KettleCategory(PyEnum):
+    female_none = 'female_none'
+    male_50 = 'male_50'
+    male_51_60 = 'male_51_60'
+    male_60_plus = 'male_60_plus'
 
 
 class KettleResult(Base):

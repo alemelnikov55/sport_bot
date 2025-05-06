@@ -4,14 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90527149-afce-4194-abb8-3d631265e7de" name="Changes" comment="" />
+    <list default="true" id="90527149-afce-4194-abb8-3d631265e7de" name="Changes" comment="first commit after copy">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/database/models/kettle_models.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/database/models/kettle_models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/database/models/main_models.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/database/models/main_models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/database/service_requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/database/service_requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/dialog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/kettle_manu/kettle_getters.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/kettle_manu/kettle_getters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/kettle_manu/kettle_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/kettle_manu/kettle_handlers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/kettle_manu/kettle_windows.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/kettle_manu/kettle_windows.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/main_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/main_handlers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/pong_menu/pong_getters.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/pong_menu/pong_getters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/state.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/state.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/sport_bot" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -22,12 +34,12 @@
   <component name="GithubDefaultAccount">
     <option name="defaultAccountId" value="413f4079-c741-4f8c-986a-6fa64b767091" />
   </component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:alemelnikov55/sport_bot",
-    "accountId": "413f4079-c741-4f8c-986a-6fa64b767091"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:alemelnikov55/sport_bot&quot;,
+    &quot;accountId&quot;: &quot;413f4079-c741-4f8c-986a-6fa64b767091&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -39,25 +51,59 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.main.executor": "Run",
+    "Python.test_main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "last_opened_file_path": "/home/alexey/PycharmProjects/sport_bot",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "/home/alexey/PycharmProjects/sport_bot/core",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.keymap",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/core" />
+      <recent name="$PROJECT_DIR$/core/utils/google_supports" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="sport_bot" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/core" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/core/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -75,8 +121,20 @@
       <option name="presentableId" value="Default" />
       <updated>1746449849472</updated>
       <workItem from="1746449850459" duration="3695000" />
-      <workItem from="1746453589671" duration="300000" />
+      <workItem from="1746453589671" duration="423000" />
+      <workItem from="1746454026378" duration="930000" />
+      <workItem from="1746455004564" duration="5200000" />
+      <workItem from="1746514814676" duration="8029000" />
     </task>
+    <task id="LOCAL-00001" summary="first commit after copy">
+      <option name="closed" value="true" />
+      <created>1746454090312</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1746454090312</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -86,5 +144,11 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/sport_bot" />
     </ignored-roots>
+    <MESSAGE value="first commit after copy" />
+    <option name="LAST_COMMIT_MESSAGE" value="first commit after copy" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/sport_bot$main.coverage" NAME="main Coverage Results" MODIFIED="1746523334070" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/sport_bot$test_main.coverage" NAME="test_main Coverage Results" MODIFIED="1746454668908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
   </component>
 </project>

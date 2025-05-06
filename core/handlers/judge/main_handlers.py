@@ -41,7 +41,7 @@ async def choose_sport_handler(call: CallbackQuery, button: Button, dialog_manag
                                          'judge_telegram_id': call.message.chat.id}
                                    )
     elif sport_name == 'kettle':
-        await dialog_manager.start(KettleStates.get_lifter_number,
+        await dialog_manager.start(KettleStates.choose_team,
                                    data={'sport_name': sport_name,
                                          'sport_id': sport_id,
                                          'judge_telegram_id': call.message.chat.id}

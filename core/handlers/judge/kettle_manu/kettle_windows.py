@@ -5,10 +5,13 @@ from aiogram_dialog import Window
 from aiogram_dialog.widgets.kbd import Button, Group, Select, Back
 from aiogram_dialog.widgets.text import Const, Format
 
-from handlers.judge.kettle_manu.kettle_getters import kettle_team_choose_getter, kettle_choose_lifter_getter
+from handlers.judge.kettle_manu.kettle_getters import kettle_team_choose_getter, kettle_choose_lifter_getter, \
+    kettle_count_getter, kettle_choose_category_getter, kettle_confirm_result_getter
 from handlers.judge.kettle_manu.kettle_handlers import history_kettle_handler, back_kettle_team_choose_handler, \
-    kettle_team_choose_handler, back_kettle_choose_lifter_handler, kettle_choose_lifter_handler
+    kettle_team_choose_handler, back_kettle_choose_lifter_handler, kettle_choose_lifter_handler, lifter_result_handler, \
+    back_kettle_count, kettle_choose_category_handler, kettle_confirm_result_handler, cancel_kettle_confirm_result
 from handlers.judge.state import KettleStates
+
 
 
 def get_kettle_team_choose_window() -> Window:
@@ -49,3 +52,44 @@ def get_kettle_choose_lifter_window() -> Window:
         getter=kettle_choose_lifter_getter
     )
 
+
+def get_choose_category_window() -> Window:
+    return Window(
+        Const('Выберите весовую категорию спортсмена:'),
+        Group(
+            Select(
+                Format("{item[category]}"),
+                id="kettle_choose_category",
+                item_id_getter=lambda item: item['category'],
+                items='categories',
+                on_click=kettle_choose_category_handler
+            ),
+            width=1
+        ),
+        state=KettleStates.choose_category,
+        getter=kettle_choose_category_getter
+    )
+
+
+def get_kettle_count_window() -> Window:
+    return Window(
+        Format('Введите число поднятий для:'
+               '<b>{lifter_name}</b>\nВесовая категория: <b>{category}</b>\nвозраст: <b>{age}</b>'),
+        MessageInput(lifter_result_handler),
+        Button(Const('Назад'), id='back_kettle_count', on_click=back_kettle_count),
+        state=KettleStates.get_lift_count,
+        getter=kettle_count_getter
+    )
+
+
+def get_kettle_confirm_result_window() -> Window:
+    return Window(
+        Format('Подтвердите запись:\n'
+               '<b>Спортсмен:</b> {lifter_name}\n'
+               '<b>Весовая категория:</b> {category}\n'
+               '<b>Результат:</b> {lift_count} поднятий'),
+        Button(Const("Записать"), id="confirm_kettle", on_click=kettle_confirm_result_handler),
+        Button(Const("Отменить"), id="back_confirm_kettle", on_click=cancel_kettle_confirm_result),
+        state=KettleStates.confirm_lift_count,
+        getter=kettle_confirm_result_getter
+    )

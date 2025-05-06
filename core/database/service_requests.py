@@ -234,7 +234,7 @@ async def get_participants_by_sport(
 
 
 async def get_participants_by_id(session: AsyncSession, participant_id: int) -> Participant:
-    """Получает информацию о участнике по его ID и проверяет, записан ли он на указанный вид спорта."""
+    """Получает информацию об участнике по его ID и проверяет, записан ли он на указанный вид спорта."""
 
     # Получаем информацию о спортсмене по ID
     participant_result = await session.execute(
