@@ -6,6 +6,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.football_requests import get_football_matches_with_goals_and_fallers
+from database.kettle_requests import get_kettle_export_results
 from database.models import async_session
 from database.pong_requests import get_all_pong_matches_grouped
 from database.relay_requests import get_relay_results
@@ -32,6 +33,7 @@ async def update_google_sheets():
         run_tournament_info = await get_running_results_by_distance(session)
         tug_tournament_info = await get_all_tug_matches_grouped(session)
         relay_tournament_info = await get_relay_results(session)
+        tettle_tournament_info = await get_kettle_export_results(session)
 
     total_spartakiada_data['football'] = football_tournament_info
     total_spartakiada_data['volleyball'] = volleyball_tournament_info
@@ -41,6 +43,7 @@ async def update_google_sheets():
     total_spartakiada_data['run_3000'] = run_tournament_info.get('3000')
     total_spartakiada_data['relay'] = relay_tournament_info
     total_spartakiada_data['tug'] = tug_tournament_info
+    total_spartakiada_data['kettle'] = tettle_tournament_info
 
     update_multiple_sheets(total_spartakiada_data)
 

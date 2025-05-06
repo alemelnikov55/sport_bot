@@ -2,7 +2,7 @@ import logging
 from collections import defaultdict
 from typing import List, Tuple, Dict, Any
 
-from sqlalchemy import select
+from sqlalchemy import select, case
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.models import Participant, KettleResult, Judges, Team
@@ -82,3 +82,45 @@ async def get_all_kettle_results(session: AsyncSession) -> Dict[str, Any]:
         )
 
     return dict(grouped)
+
+
+async def get_kettle_export_results(session: AsyncSession) -> list[dict]:
+    """
+    Получает результаты гиревого спорта из базы данных и сортирует их по полу, категории и количеству повторений.
+    """
+    gender_order = case(
+        (Participant.gender == 'M', 0),
+        else_=1
+    )
+
+    stmt = (
+        select(
+            Participant.full_name,
+            Team.name.label("team_name"),
+            KettleResult.lift_count,
+            KettleResult.category,
+            Participant.age,
+            Participant.gender
+        )
+        .join(Participant, KettleResult.lifter_id == Participant.participant_id)
+        .join(Team, KettleResult.team_id == Team.team_id)
+        .order_by(
+            gender_order,  # сначала мужчины
+            KettleResult.category.asc().nullsfirst(),  # категория по возрастанию (если есть)
+            KettleResult.lift_count.desc()  # по убыванию числа повторений
+        )
+    )
+
+    result = await session.execute(stmt)
+
+    return [
+        {
+            'full_name': row.full_name,
+            'team_name': row.team_name,
+            'lift_count': row.lift_count,
+            'category': row.category,
+            'age': row.age,
+            'gender': row.gender
+        }
+        for row in result.fetchall()
+    ]

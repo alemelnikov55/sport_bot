@@ -284,6 +284,25 @@ def handle_tug(data):
     return rows
 
 
+@register_sheet_handler('kettle')
+def handle_kettle(data):
+    headers = ['Пол', 'Категория', 'Возраст', 'ФИО', 'Команда', 'Результат']
+    rows = [headers]
+
+    for result in data:
+        row = [
+            result['gender'],
+            result['category'],
+            result['age'],
+            result['full_name'],
+            result['team_name'],
+            result['lift_count']
+        ]
+        rows.append(row)
+
+    return rows
+
+
 def process_sheet(sheet_name: str, raw_data):
     try:
         handler = sheet_handlers.get(sheet_name)

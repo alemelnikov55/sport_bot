@@ -1,18 +1,11 @@
 """
 Модель для хранения результатов гиревого спорта
 """
-from enum import Enum as PyEnum
+# from enum import Enum as PyEnum
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, Numeric, func, String
-from sqlalchemy import Enum as SQLAlchemyEnum
+# from sqlalchemy import Enum as SQLAlchemyEnum
 
 from database.models import Base
-
-
-class KettleCategory(PyEnum):
-    female_none = 'female_none'
-    male_50 = 'male_50'
-    male_51_60 = 'male_51_60'
-    male_60_plus = 'male_60_plus'
 
 
 class KettleResult(Base):
@@ -25,3 +18,7 @@ class KettleResult(Base):
     lift_count = Column(Integer, nullable=False)
     timestamp = Column(DateTime, nullable=False, default=func.now())
     judge_id = Column(Integer, ForeignKey('judges.judge_id'), nullable=False)
+
+    def __str__(self):
+        return (f"Result {self.result_id}: {self.lifter_id} from {self.team_id} - {self.lift_count} "
+                f"({self.category}) at {self.timestamp}")
