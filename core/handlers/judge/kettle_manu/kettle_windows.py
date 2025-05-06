@@ -1,4 +1,3 @@
-from magic_filter import F
 from aiogram_dialog.widgets.input import MessageInput
 
 from aiogram_dialog import Window
@@ -6,10 +5,10 @@ from aiogram_dialog.widgets.kbd import Button, Group, Select, Back
 from aiogram_dialog.widgets.text import Const, Format
 
 from handlers.judge.kettle_manu.kettle_getters import kettle_team_choose_getter, kettle_choose_lifter_getter, \
-    kettle_count_getter, kettle_choose_category_getter, kettle_confirm_result_getter
+    kettle_count_getter, kettle_choose_category_getter, kettle_confirm_result_getter, kettle_history_getter
 from handlers.judge.kettle_manu.kettle_handlers import history_kettle_handler, back_kettle_team_choose_handler, \
-    kettle_team_choose_handler, back_kettle_choose_lifter_handler, kettle_choose_lifter_handler, lifter_result_handler, \
-    back_kettle_count, kettle_choose_category_handler, kettle_confirm_result_handler, cancel_kettle_confirm_result
+    kettle_team_choose_handler, kettle_choose_lifter_handler, lifter_result_handler, \
+    kettle_choose_category_handler, kettle_confirm_result_handler, back_to_choose_team
 from handlers.judge.state import KettleStates
 
 
@@ -47,7 +46,7 @@ def get_kettle_choose_lifter_window() -> Window:
             ),
             width=2
         ),
-        Button(Const("Назад"), id="back_kettle_choose_lifter", on_click=back_kettle_choose_lifter_handler),
+        Button(Const("Назад"), id="back_kettle_choose_lifter", on_click=back_to_choose_team),
         state=KettleStates.chose_lifter,
         getter=kettle_choose_lifter_getter
     )
@@ -73,10 +72,10 @@ def get_choose_category_window() -> Window:
 
 def get_kettle_count_window() -> Window:
     return Window(
-        Format('Введите число поднятий для:'
+        Format('Введите число поднятий для:\n'
                '<b>{lifter_name}</b>\nВесовая категория: <b>{category}</b>\nвозраст: <b>{age}</b>'),
         MessageInput(lifter_result_handler),
-        Button(Const('Назад'), id='back_kettle_count', on_click=back_kettle_count),
+        Button(Const('Назад'), id='back_kettle_count', on_click=back_to_choose_team),
         state=KettleStates.get_lift_count,
         getter=kettle_count_getter
     )
@@ -89,7 +88,16 @@ def get_kettle_confirm_result_window() -> Window:
                '<b>Весовая категория:</b> {category}\n'
                '<b>Результат:</b> {lift_count} поднятий'),
         Button(Const("Записать"), id="confirm_kettle", on_click=kettle_confirm_result_handler),
-        Button(Const("Отменить"), id="back_confirm_kettle", on_click=cancel_kettle_confirm_result),
+        Button(Const("Отменить"), id="back_confirm_kettle", on_click=back_to_choose_team),
         state=KettleStates.confirm_lift_count,
         getter=kettle_confirm_result_getter
+    )
+
+
+def get_kettle_history_window() -> Window:
+    return Window(
+        Format('Последние 6 добавленных записей:\n{history}'),
+        Button(Const('Назад'), id='back_kettle_history', on_click=back_to_choose_team),
+        state=KettleStates.inpout_history,
+        getter=kettle_history_getter
     )

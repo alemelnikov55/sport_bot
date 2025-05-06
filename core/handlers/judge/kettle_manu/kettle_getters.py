@@ -2,11 +2,13 @@ import logging
 from typing import Dict, Any
 
 from aiogram_dialog import DialogManager
+from sqlalchemy.orm.attributes import HISTORY_BLANK
 
+from database.kettle_requests import get_judge_history
 from database.service_requests import get_teams_by_sport, get_team_participants_by_team_and_sport
 
 logger = logging.getLogger(__name__)
-
+logger.setLevel(logging.DEBUG)
 
 CATEGORY = {
     'M': ['до 73', 'до 85', '85+'],
@@ -49,3 +51,17 @@ async def kettle_confirm_result_getter(dialog_manager: DialogManager, **kwargs) 
     category = dialog_manager.dialog_data['kettle_category']
     lift_count = dialog_manager.dialog_data['lift_count']
     return {'lifter_name': lifter_info['name'], 'category': category, 'lift_count': lift_count}
+
+
+async def kettle_history_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
+    session = dialog_manager.middleware_data['session']
+    telegram_id = dialog_manager.start_data['judge_telegram_id']
+    history_results = []
+
+    results = await get_judge_history(session, telegram_id)
+
+    for result in results:
+        infoline = f'<b>{result['short_name']}</b>  в  {result['category']}:  {result['lift_count']}'
+        history_results.append(infoline)
+
+    return {'history': '\n'.join(history_results)}

@@ -124,3 +124,43 @@ async def get_kettle_export_results(session: AsyncSession) -> list[dict]:
         }
         for row in result.fetchall()
     ]
+
+
+async def get_judge_history(session: AsyncSession, telegram_id: int) -> list[dict]:
+    """
+    Функция для получения истории последних 10 результатов гиревого спорта для судьи.
+    """
+    judge_stmt = select(Judges.judge_id).where(Judges.telegram_id == telegram_id)
+    result = await session.execute(judge_stmt)
+    judge_id_row = result.scalar_one_or_none()
+
+    if judge_id_row is None:
+        return []  # Судья не найден
+
+    judge_id = judge_id_row
+
+    # Основной запрос по KettleResult
+    stmt = (
+        select(
+            Participant.short_name,
+            KettleResult.category,
+            KettleResult.lift_count
+        )
+        .join(Participant, KettleResult.lifter_id == Participant.participant_id)
+        .where(KettleResult.judge_id == judge_id)
+        .order_by(KettleResult.timestamp.desc())
+        .limit(10)
+    )
+
+    result = await session.execute(stmt)
+
+    history_result = [
+        {
+            "short_name": row.short_name,
+            "category": row.category,
+            "lift_count": row.lift_count
+        }
+        for row in result.fetchall()
+    ]
+
+    return history_result

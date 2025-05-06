@@ -92,7 +92,7 @@ async def kettle_confirm_result_handler(call: CallbackQuery, button: Button, dia
 
 async def history_kettle_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
     await dialog_manager.switch_to(KettleStates.inpout_history)
-    await call.answer('Назад!')
+    await call.answer('Вывод результатов')
 
 
 async def back_kettle_team_choose_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
@@ -100,16 +100,26 @@ async def back_kettle_team_choose_handler(call: CallbackQuery, button: Button, d
     await call.answer('Назад!')
 
 
-async def back_kettle_choose_lifter_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    await dialog_manager.switch_to(KettleStates.choose_team)
+# async def back_kettle_choose_lifter_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+#     await dialog_manager.switch_to(KettleStates.choose_team)
+#     await call.answer('Назад!')
+#
+#
+# async def back_kettle_count(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+#     await dialog_manager.switch_to(KettleStates.choose_team)
+#     await call.answer('Назад!')
+#
+#
+# async def back_kettle_history_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+#     await dialog_manager.switch_to(KettleStates.choose_team)
+#     await call.answer('Назад!')
+#
+#
+# async def cancel_kettle_confirm_result(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+#     await dialog_manager.switch_to(KettleStates.choose_team)
+#     await call.answer('Запись отменена')
+
+
+async def back_to_choose_team(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.start(KettleStates.choose_team)
     await call.answer('Назад!')
-
-
-async def back_kettle_count(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    await dialog_manager.switch_to(KettleStates.choose_team)
-    await call.answer('Назад!')
-
-
-async def cancel_kettle_confirm_result(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    await dialog_manager.switch_to(KettleStates.choose_team)
-    await call.answer('Запись отменена')

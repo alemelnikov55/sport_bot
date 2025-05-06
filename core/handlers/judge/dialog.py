@@ -8,7 +8,7 @@ from handlers.admin.admin_windows import get_admin_start_window, get_admin_choos
     get_create_groups_tournament_volleyball_window, get_admin_add_judge_window, \
     get_create_groups_tournament_pong_window, get_create_tug_tournament_groups_window
 from handlers.judge.kettle_manu.kettle_windows import get_kettle_team_choose_window, get_kettle_choose_lifter_window, \
-    get_kettle_count_window, get_choose_category_window, get_kettle_confirm_result_window
+    get_kettle_count_window, get_choose_category_window, get_kettle_confirm_result_window, get_kettle_history_window
 from handlers.judge.main_windows import get_sports_window
 from handlers.judge.football_menu.football_windows import get_matches_window, get_start_match_window, \
     get_process_window, \
@@ -103,7 +103,9 @@ kettle_dialog = Dialog(
     get_kettle_choose_lifter_window(),
     get_choose_category_window(),
     get_kettle_count_window(),
-    get_kettle_confirm_result_window()
+    get_kettle_confirm_result_window(),
+
+    get_kettle_history_window()
 )
 
 main_judge_dialog = Dialog(get_sports_window())
