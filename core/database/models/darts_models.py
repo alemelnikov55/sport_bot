@@ -13,6 +13,20 @@ class DartsPlayoffType(PyEnum):
     FINAL = "финал"
     THIRD_PLACE = "матч за 3-е место"
 
+    @classmethod
+    def get_data_for_chose_type(cls):
+        data = [
+            {'type_value': cls.ONE_EIGHTH, 'name': cls.ONE_EIGHTH.value, 'id': cls.ONE_EIGHTH.name},
+            {'type_value': cls.ONE_QUARTER, 'name': cls.ONE_QUARTER.value, 'id': cls.ONE_QUARTER.name},
+            {'type_value': cls.ONE_HALF, 'name': cls.ONE_HALF.value, 'id': cls.ONE_HALF.name},
+            {'type_value': cls.THIRD_PLACE, 'name': cls.THIRD_PLACE.value, 'id': cls.THIRD_PLACE.name},
+            {'type_value': cls.FINAL, 'name': cls.FINAL.value, 'id': cls.FINAL.name}
+        ]
+        return data
+
+    # @classmethod
+
+
 
 class DartsQualifiers(Base):
     __tablename__ = 'darts_qualifiers'
@@ -46,4 +60,3 @@ class DartsPlayOff(Base):
         return (f"Playoff {self.playoff_id}: {self.player1_id} vs {self.player2_id}\n"
                 f"Wins: {self.player1_wins}-{self.player2_wins}\n"
                 f"Type: {self.playoff_type}")
-

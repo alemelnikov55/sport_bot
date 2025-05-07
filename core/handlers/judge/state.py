@@ -96,6 +96,12 @@ class DartsStates(StatesGroup):
     get_score = State()
     confirm_score = State()
 
+    playoff_choose_first_player = State()
+    playoff_choose_second_player = State()
+    playoff_choose_type = State()
+    playoff_confirm_start_match = State()
+
+
     inpout_history = State()
 
 

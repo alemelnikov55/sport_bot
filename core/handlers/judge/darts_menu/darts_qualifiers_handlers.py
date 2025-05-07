@@ -55,6 +55,11 @@ async def history_darts_handler(call: CallbackQuery, button: Button, dialog_mana
     await call.answer('История!')
 
 
+async def darts_playoff_start_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(DartsStates.playoff_choose_first_player)
+    await call.answer('Выбор первого игрока')
+
+
 async def back_darts_to_choose_team_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
     await dialog_manager.start(MainJudgeStates.sport)
     await call.answer('Назад!')

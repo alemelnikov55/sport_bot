@@ -4,11 +4,12 @@ from aiogram_dialog import Window
 from aiogram_dialog.widgets.kbd import Button, Group, Select
 from aiogram_dialog.widgets.text import Const, Format
 
-from handlers.judge.darts_menu.darts_getters import darts_team_choose_qualifiers_getter, darts_player_choose_getter, \
+from handlers.judge.darts_menu.darts_qualifiers_getters import darts_team_choose_qualifiers_getter, darts_player_choose_getter, \
     darts_confirm_result_qualifiers_getter, darts_history_getter
-from handlers.judge.darts_menu.darts_handlers import history_darts_handler, \
+from handlers.judge.darts_menu.darts_qualifiers_handlers import history_darts_handler, \
     darts_team_choose_handler, back_darts_to_choose_team_handler, darts_player_choose_qualifiers_handler, \
-    back_to_choose_team_darts_handler, darts_score_input_qualifiers_handler, darts_confirm_result_qualifiers_handler
+    back_to_choose_team_darts_handler, darts_score_input_qualifiers_handler, darts_confirm_result_qualifiers_handler, \
+    darts_playoff_start_handler
 from handlers.judge.state import DartsStates
 
 
@@ -26,6 +27,7 @@ def get_darts_team_choose_qualifiers_window() -> Window:
             width=2
         ),
         Button(Const('История'), id='kettle_history', on_click=history_darts_handler),
+        Button(Const('Play-off'), id='darts_playoff', on_click=darts_playoff_start_handler),
         Button(Const('Назад'), id='back_kettle_team_choose', on_click=back_darts_to_choose_team_handler),
         state=DartsStates.choose_team,
         getter=darts_team_choose_qualifiers_getter
@@ -78,3 +80,6 @@ def get_darts_history_window() -> Window:
         state=DartsStates.inpout_history,
         getter=darts_history_getter
     )
+
+
+
