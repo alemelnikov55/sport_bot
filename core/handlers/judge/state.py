@@ -90,6 +90,14 @@ class KettleStates(StatesGroup):
 
     inpout_history = State()
 
+class DartsStates(StatesGroup):
+    choose_team = State()
+    choose_player = State()
+    get_score = State()
+    confirm_score = State()
+
+    inpout_history = State()
+
 
 class AdminStates(StatesGroup):
     start_menu = State()

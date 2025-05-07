@@ -185,7 +185,6 @@ async def get_team_participants_by_team_and_sport(
 
         if not sport_id:
             return {}
-        logger.info(f' get_team_participants_by_sport in query{team_id}, {sport_id}')
         # Запрос на получение спортсменов
         query = await session.execute(
             select(Participant.participant_id, Participant.full_name)

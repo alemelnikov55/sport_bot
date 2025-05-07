@@ -6,9 +6,13 @@ from .volleybal_models import VolleyballMatchStatus, VolleyballMatch, Volleyball
 from .run_models import RunningResult
 from .tug_of_war_models import TugOfWarMatch, TugStatus
 from .kettle_models import KettleResult
+from .darts_models import DartsPlayOff, DartsQualifiers, DartsPlayoffType
 from .support_models import Admins, Judges
 
 __all__ = [
+    'DartsPlayOff',
+    'DartsQualifiers',
+    'DartsPlayoffType',
     'KettleResult',
     'TugStatus',
     'TugOfWarMatch',

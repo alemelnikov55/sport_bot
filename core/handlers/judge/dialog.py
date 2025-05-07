@@ -7,6 +7,9 @@ from handlers.admin.admin_windows import get_admin_start_window, get_admin_choos
     get_admin_fix_goal_approve_window, get_create_groups_window, get_create_groups_tournament_football_window, \
     get_create_groups_tournament_volleyball_window, get_admin_add_judge_window, \
     get_create_groups_tournament_pong_window, get_create_tug_tournament_groups_window
+from handlers.judge.darts_menu.darts_windows import get_darts_team_choose_qualifiers_window, \
+    get_darts_choose_player_qualifiers_window, \
+    get_darts_get_score_qualifiers_window, get_darts_confirm_result_qualifiers_window, get_darts_history_window
 from handlers.judge.kettle_manu.kettle_windows import get_kettle_team_choose_window, get_kettle_choose_lifter_window, \
     get_kettle_count_window, get_choose_category_window, get_kettle_confirm_result_window, get_kettle_history_window
 from handlers.judge.main_windows import get_sports_window
@@ -59,7 +62,6 @@ volleyball_dialog = Dialog(
     get_volleyball_finish_set_window()
 )
 
-
 pong_dialog = Dialog(
     get_pong_matches_window(),
     get_pong_start_match_window(),
@@ -108,6 +110,14 @@ kettle_dialog = Dialog(
     get_kettle_history_window()
 )
 
+darts_dialog = Dialog(
+    get_darts_team_choose_qualifiers_window(),
+    get_darts_choose_player_qualifiers_window(),
+    get_darts_get_score_qualifiers_window(),
+    get_darts_confirm_result_qualifiers_window(),
+    get_darts_history_window()
+)
+
 main_judge_dialog = Dialog(get_sports_window())
 
 admin_dialog = Dialog(
@@ -128,7 +138,6 @@ admin_dialog = Dialog(
     get_admin_add_judge_window()
 )
 
-
 dialog_router.include_router(main_judge_dialog)
 dialog_router.include_router(football_dialog)
 dialog_router.include_router(volleyball_dialog)
@@ -138,3 +147,4 @@ dialog_router.include_router(run_dialog)
 dialog_router.include_router(tug_dialog)
 dialog_router.include_router(relay_dialog)
 dialog_router.include_router(kettle_dialog)
+dialog_router.include_router(darts_dialog)

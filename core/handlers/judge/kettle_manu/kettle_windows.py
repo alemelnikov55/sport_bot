@@ -1,7 +1,7 @@
 from aiogram_dialog.widgets.input import MessageInput
 
 from aiogram_dialog import Window
-from aiogram_dialog.widgets.kbd import Button, Group, Select, Back
+from aiogram_dialog.widgets.kbd import Button, Group, Select
 from aiogram_dialog.widgets.text import Const, Format
 
 from handlers.judge.kettle_manu.kettle_getters import kettle_team_choose_getter, kettle_choose_lifter_getter, \
