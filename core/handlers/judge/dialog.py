@@ -8,7 +8,9 @@ from handlers.admin.admin_windows import get_admin_start_window, get_admin_choos
     get_create_groups_tournament_volleyball_window, get_admin_add_judge_window, \
     get_create_groups_tournament_pong_window, get_create_tug_tournament_groups_window
 from handlers.judge.darts_menu.darts_playoff_windows import get_darts_playoff_choose_first_player_window, \
-    get_darts_playoff_choose_second_player_window, get_darts_playoff_type_window, get_darts_playoff_confirm_start_match
+    get_darts_playoff_choose_second_player_window, get_darts_playoff_type_window, \
+    get_darts_playoff_confirm_start_match_window, get_darts_playoff_process_match_window, \
+    get_darts_playoff_choose_match_window
 from handlers.judge.darts_menu.darts_qualifiers_windows import get_darts_team_choose_qualifiers_window, \
     get_darts_choose_player_qualifiers_window, \
     get_darts_get_score_qualifiers_window, get_darts_confirm_result_qualifiers_window, get_darts_history_window
@@ -121,7 +123,10 @@ darts_dialog = Dialog(
     get_darts_playoff_choose_first_player_window(),
     get_darts_playoff_choose_second_player_window(),
     get_darts_playoff_type_window(),
-    get_darts_playoff_confirm_start_match(),
+    get_darts_playoff_confirm_start_match_window(),
+    get_darts_playoff_process_match_window(),
+
+    get_darts_playoff_choose_match_window(),
 
     get_darts_history_window()
 )

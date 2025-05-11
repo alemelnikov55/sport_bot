@@ -11,7 +11,7 @@ class DartsPlayoffType(PyEnum):
     ONE_QUARTER = "1/4 финала"
     ONE_HALF = "1/2 финала"
     FINAL = "финал"
-    THIRD_PLACE = "матч за 3-е место"
+    THIRD_PLACE = "3-е место"
 
     @classmethod
     def get_data_for_chose_type(cls):
