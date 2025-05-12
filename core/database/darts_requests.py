@@ -110,6 +110,34 @@ async def get_top_darts_qualifiers(session: AsyncSession) -> list[dict]:
     ]
 
 
+
+async def get_darts_qualifiers_sorted(session: AsyncSession) -> list[dict]:
+    stmt = (
+        select(
+            Participant.short_name,
+            DartsQualifiers.score,
+            Team.name.label("team_name")
+        )
+        .join(Participant, DartsQualifiers.player_id == Participant.participant_id)
+        .join(Team, DartsQualifiers.team_id == Team.team_id)
+        .order_by(DartsQualifiers.score.asc())
+    )
+
+    result = await session.execute(stmt)
+    rows = result.fetchall()
+
+    all_result = [
+        {
+            "short_name": row.short_name,
+            "score": row.score,
+            "team_name": row.team_name
+        }
+        for row in rows
+    ]
+
+    return all_result
+
+
 async def create_darts_playoff_match(session: AsyncSession,
                                      player1_id: int,
                                      player2_id: int,
@@ -155,13 +183,15 @@ async def get_playoff_match_info(session: AsyncSession, playoff_id: int) -> dict
     players = {row.participant_id: row.short_name for row in result.fetchall()}
 
     return {
-        "player_1": {
-            "name": players.get(player1_id),
-            "scores": playoff.player1_wins
+        'player_1': {
+            'id': player1_id,
+            'name': players.get(player1_id),
+            'scores': playoff.player1_wins
         },
-        "player_2": {
-            "name": players.get(player2_id),
-            "scores": playoff.player2_wins
+        'player_2': {
+            'id': player2_id,
+            'name': players.get(player2_id),
+            'scores': playoff.player2_wins
         }
     }
 
@@ -272,3 +302,5 @@ async def get_all_playoffs_matches(session: AsyncSession) -> List[Dict]:
     ]
 
     return playoff_matches
+
+

@@ -4,14 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90527149-afce-4194-abb8-3d631265e7de" name="Changes" comment="add darts playoff logic:&#10;создается матч, но не реализован процесс судейства самого матча">
+    <list default="true" id="90527149-afce-4194-abb8-3d631265e7de" name="Changes" comment="add darts playoff logic:&#10;реализован процесс судейства матча.&#10;релизована возможность выбора из уже созданных матчей playoff">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/database/darts_requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/database/darts_requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/admin/start_game.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/admin/start_game.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/handlers/judge/darts_menu/darts_playoff_getters.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/darts_menu/darts_playoff_getters.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/handlers/judge/darts_menu/darts_playoff_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/darts_menu/darts_playoff_handlers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/handlers/judge/darts_menu/darts_playoff_windows.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/darts_menu/darts_playoff_windows.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/handlers/judge/dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/dialog.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/handlers/judge/state.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/state.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/darts_menu/darts_qualifiers_getters.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/darts_menu/darts_qualifiers_getters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/utils/google_supports/requests_to_google.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/utils/google_supports/requests_to_google.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -203,7 +204,7 @@
       <workItem from="1746455004564" duration="5200000" />
       <workItem from="1746514814676" duration="37130000" />
       <workItem from="1746627171338" duration="255000" />
-      <workItem from="1746953686725" duration="11933000" />
+      <workItem from="1746953686725" duration="16258000" />
     </task>
     <task id="LOCAL-00001" summary="first commit after copy">
       <option name="closed" value="true" />
@@ -253,7 +254,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746632979130</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="add darts playoff logic:&#10;реализован процесс судейства матча.&#10;релизована возможность выбора из уже созданных матчей playoff">
+      <option name="closed" value="true" />
+      <created>1746976606802</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1746976606802</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -269,10 +278,11 @@
     <MESSAGE value="add kettle update:&#10;добавлена обработка истории&#10;переработана логика нажатия на Назад - функции обработки кнопки заменены на 1" />
     <MESSAGE value="add darts qualifiers logic:&#10;добавлена логика отборочных по дартсу с историей" />
     <MESSAGE value="add darts playoff logic:&#10;создается матч, но не реализован процесс судейства самого матча" />
-    <option name="LAST_COMMIT_MESSAGE" value="add darts playoff logic:&#10;создается матч, но не реализован процесс судейства самого матча" />
+    <MESSAGE value="add darts playoff logic:&#10;реализован процесс судейства матча.&#10;релизована возможность выбора из уже созданных матчей playoff" />
+    <option name="LAST_COMMIT_MESSAGE" value="add darts playoff logic:&#10;реализован процесс судейства матча.&#10;релизована возможность выбора из уже созданных матчей playoff" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/sport_bot$main.coverage" NAME="main Coverage Results" MODIFIED="1746976444664" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/sport_bot$main.coverage" NAME="main Coverage Results" MODIFIED="1747070412336" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/sport_bot$test_main.coverage" NAME="test_main Coverage Results" MODIFIED="1746610840261" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/sport_bot$darts_models.coverage" NAME="darts_models Coverage Results" MODIFIED="1746623156073" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core/database/models" />
     <SUITE FILE_PATH="coverage/sport_bot$darts_playoff_getters.coverage" NAME="darts_playoff_getters Coverage Results" MODIFIED="1746626806911" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core/handlers/judge/darts_menu" />

@@ -13,11 +13,10 @@ logger.setLevel(logging.DEBUG)
 
 async def darts_team_choose_qualifiers_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     session = dialog_manager.middleware_data['session']
-
     sport = int(dialog_manager.start_data['sport_id'])
-    logger.debug(type(sport))
+
     teams = await get_teams_by_sport(sport, session)
-    logger.debug(teams)
+
     return {'darts_teams': [{'name': name, 'id': id_} for name, id_ in teams.items()]}
 
 

@@ -22,7 +22,11 @@ async def darts_playoff_choose_match_handler(callback: CallbackQuery,
                                              button: Button,
                                              dialog_manager: DialogManager,
                                              playoff_id: str):
-    logger.debug(playoff_id)
+    dialog_manager.dialog_data['darts_playoff_match_id'] = int(playoff_id)
+
+    await dialog_manager.switch_to(DartsStates.playoff_process_match)
+    await callback.answer('Матч выбран')
+
 
 async def darts_playoff_choose_first_player_handler(call: CallbackQuery,
                                                     button: Button,

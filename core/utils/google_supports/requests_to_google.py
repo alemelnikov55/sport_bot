@@ -304,6 +304,22 @@ def handle_kettle(data):
     return rows
 
 
+@register_sheet_handler('darts_qualifiers')
+def handle_darts_qualifiers(data):
+    headers = ('Команда', 'Игрок', 'Набрано очков')
+    rows = [headers]
+
+    for result in data:
+        row = (
+            result['team_name'],
+            result['short_name'],
+            result['score']
+        )
+        rows.append(row)
+
+    return rows
+
+
 def process_sheet(sheet_name: str, raw_data):
     try:
         handler = sheet_handlers.get(sheet_name)

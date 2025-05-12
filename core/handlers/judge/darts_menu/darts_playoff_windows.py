@@ -67,6 +67,7 @@ def get_darts_playoff_choose_match_window() -> Window:
             ),
             width=1
         ),
+        Button(Const('Назад'), id='back_darts_playoff_choose_match', on_click=back_to_choose_team_darts_handler),
         state=DartsStates.match_list,
         getter=darts_playoff_choose_match_getter
     )

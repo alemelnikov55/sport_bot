@@ -41,8 +41,6 @@ async def darts_playoff_choose_match_getter(dialog_manager: DialogManager, **kwa
 
     playoff_matches = await get_all_playoffs_matches(session)
 
-    logger.debug(playoff_matches)
-
     return {'playoff_matches': playoff_matches}
 
 
@@ -74,18 +72,18 @@ async def darts_playoff_confirm_start_match_getter(dialog_manager: DialogManager
 
 async def darts_playoff_process_match_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     session = dialog_manager.middleware_data['session']
-    first_player_id = str(dialog_manager.dialog_data['darts_playoff_first_player_id'])
-    second_player_id = str(dialog_manager.dialog_data['darts_playoff_second_player_id'])
+    # first_player_id = str(dialog_manager.dialog_data['darts_playoff_first_player_id'])
+    # second_player_id = str(dialog_manager.dialog_data['darts_playoff_second_player_id'])
+    #
+    # players_data = dialog_manager.dialog_data['darts_playoff_players']
+    #
+    # first_player_name = players_data.get(first_player_id).get('name')
+    # second_player_name = players_data.get(second_player_id).get('name')
 
-    players_data = dialog_manager.dialog_data['darts_playoff_players']
-
-    first_player_name = players_data.get(first_player_id).get('name')
-    second_player_name = players_data.get(second_player_id).get('name')
-
-    players = [
-        {'name': first_player_name, 'player_id': first_player_id},
-        {'name': second_player_name, 'player_id': second_player_id},
-    ]
+    # players = [
+    #     {'name': first_player_name, 'player_id': first_player_id},
+    #     {'name': second_player_name, 'player_id': second_player_id},
+    # ]
 
     playoff_id = dialog_manager.dialog_data['darts_playoff_match_id']
 
@@ -93,5 +91,14 @@ async def darts_playoff_process_match_getter(dialog_manager: DialogManager, **kw
     match_info = await get_playoff_match_info(session, playoff_id)
     match_info['leg'] = match_info['player_1']['scores'] + match_info['player_2']['scores'] + 1
 
+    first_player_name = match_info['player_1']['name']
+    second_player_name = match_info['player_2']['name']
+    first_player_id = match_info['player_1']['id']
+    second_player_id = match_info['player_2']['id']
+
+    players = [
+        {'name': first_player_name, 'player_id': first_player_id},
+        {'name': second_player_name, 'player_id': second_player_id},
+    ]
 
     return {'playoff_players': players, 'match_info': match_info}
