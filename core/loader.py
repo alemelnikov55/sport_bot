@@ -37,3 +37,9 @@ class WebhookSettings:
     WEBHOOK_PATH = os.getenv('WEBHOOK_PATH')
     APP_HOST = os.getenv('APP_HOST')
     APP_PORT = os.getenv('APP_PORT')
+
+groups_type = [{'name': '1/8', 'id': '1/8'},
+               {'name': '1/4', 'id': '1/4'},
+               {'name': '1/2', 'id': '1/2'},
+               {'name': 'Фин', 'id': 'Фин'},
+               {'name': 'За 3', 'id': 'За 3'}]

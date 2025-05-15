@@ -35,6 +35,7 @@ class VolleyballStates(StatesGroup):
     confirm_finish_match = State()
     manual_match_create_1 = State()
     manual_match_create_2 = State()
+    manual_set_group = State()
 
 
 class PongStates(StatesGroup):

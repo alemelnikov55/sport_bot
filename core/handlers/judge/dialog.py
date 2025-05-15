@@ -35,7 +35,7 @@ from handlers.judge.tug_menu.tug_windows import get_tug_choose_match_window, get
 from handlers.judge.volleyball_menu.volleyball_windows import get_volleyball_matches_window, \
     get_volleyball_start_match_window, get_volleyball_process_window, get_volleyball_finish_set_window, \
     get_volleyball_manual_add_match_window_2, get_volleyball_manual_add_match_window_1, \
-    get_volleyball_finish_match_window
+    get_volleyball_finish_match_window, get_volleyball_set_group_windows
 
 dialog_router = Router()
 
@@ -62,6 +62,7 @@ volleyball_dialog = Dialog(
     get_volleyball_process_window(),
     get_volleyball_manual_add_match_window_1(),
     get_volleyball_manual_add_match_window_2(),
+    get_volleyball_set_group_windows(),
 
     get_volleyball_finish_match_window(),
     get_volleyball_finish_set_window()

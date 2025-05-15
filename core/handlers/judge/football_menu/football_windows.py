@@ -164,6 +164,7 @@ def get_manual_set_group_window() -> Window:
             ),
             width=2,
         ),
+        Button(Const("Назад"), id="back_manual_set_group", on_click=back_manual_match_create_2_handler),
         state=FootballStates.manual_set_group,
         getter=manual_set_group_getter
     )

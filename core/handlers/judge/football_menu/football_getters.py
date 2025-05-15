@@ -3,15 +3,10 @@ from typing import Dict, Any
 from aiogram_dialog import DialogManager
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from loader import groups_type
 from database.football_requests import get_active_matches, get_match_info_by_id, get_match_teams_info, \
     get_match_teams_optimized
 from database.service_requests import get_all_sports, get_teams_by_sport, get_team_participants_by_team_and_sport
-
-groups_type = [{'name': '1/8', 'id': '1/8'},
-               {'name': '1/4', 'id': '1/4'},
-               {'name': '1/2', 'id': '1/2'},
-               {'name': 'Фин', 'id': 'Фин'},
-               {'name': 'За 3', 'id': 'За 3'}]
 
 
 async def active_matches_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:

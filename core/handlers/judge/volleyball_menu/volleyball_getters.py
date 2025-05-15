@@ -2,6 +2,7 @@ from typing import Any, Dict
 
 from aiogram_dialog import DialogManager
 
+from loader import groups_type
 from database.service_requests import get_teams_by_sport
 from database.volleyball_requests import get_volleyball_matches, get_volleyball_match_info_by_id, \
     get_current_volleyball_match_info, get_volleyball_match_full_info
@@ -68,7 +69,6 @@ async def finish_volleyball_set_getter(dialog_manager: DialogManager, **kwargs) 
     session = dialog_manager.middleware_data['session']
     match_id = int(dialog_manager.dialog_data['volleyball_match'])
     set_number = int(dialog_manager.dialog_data['set_number'])
-    # set_id = int(dialog_manager.dialog_data['volleyball_set_id'])
 
     full_match_data = await get_current_volleyball_match_info(session, match_id, set_number)
 
@@ -98,3 +98,6 @@ async def volleyball_match_result_getter(dialog_manager: DialogManager, **kwargs
     formated_text = format_volleyball_match_info(match_full_data)
 
     return {'match_result': formated_text}
+
+async def volleyball_set_group_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
+    return {'groups': groups_type}

@@ -251,6 +251,7 @@ async def get_volleyball_matches(session: AsyncSession) -> List[Dict[str, Any]]:
 
     for match in matches:
         match_data = {
+            'group': match.group_name or 'NoGroup',
             "match_id": match.match_id,
             "team1": match.team1.name,
             "team2": match.team2.name,

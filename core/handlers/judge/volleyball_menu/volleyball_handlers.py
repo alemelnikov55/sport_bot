@@ -98,10 +98,17 @@ async def first_volleyball_team_select_handler(call: CallbackQuery, button: Butt
 
 
 async def second_volleyball_team_select_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, team_id: str):
+    dialog_manager.dialog_data['volleyball_manual_team2'] = int(team_id)
+
+    await dialog_manager.switch_to(VolleyballStates.manual_set_group)
+    await call.answer('Выберите группу')
+
+
+async def volleyball_set_group_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, group_type: str):
     session = dialog_manager.middleware_data['session']
-    team2_id = int(team_id)
+    team2_id = int(dialog_manager.dialog_data['volleyball_manual_team2'])
     team1_id = int(dialog_manager.dialog_data['volleyball_manual_team1'])
-    data_to_create = {'': [(team1_id, team2_id)]}
+    data_to_create = {group_type: [(team1_id, team2_id)]}
 
     await create_volleyball_matches(session, data_to_create)
 
@@ -138,10 +145,6 @@ async def back_volleyball_finish_match_handler(call: CallbackQuery, button: Butt
 
 
 async def back_volleyball_manual_add_match(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    try:
-        del dialog_manager.dialog_data['volleyball_manual_team1']
-    except KeyError:
-        pass
     await dialog_manager.switch_to(VolleyballStates.match)
 
 

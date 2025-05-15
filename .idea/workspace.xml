@@ -4,17 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90527149-afce-4194-abb8-3d631265e7de" name="Changes" comment="add darts playoff logic:&#10;полность реализована логика игра плейофф&#10;Необходимо реализовать логику выгрузки квалифиувйи дартса в гугл-таблицы">
+    <list default="true" id="90527149-afce-4194-abb8-3d631265e7de" name="Changes" comment="add darts playoff logic:&#10;логика плей-офф полностью реализована&#10;ДОбавлена возможность выбрать группу при создании нового матча в футболе">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/database/darts_requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/database/darts_requests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/database/football_requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/database/football_requests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/handlers/admin/start_game.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/admin/start_game.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/database/volleyball_requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/database/volleyball_requests.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/handlers/judge/dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/dialog.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/handlers/judge/football_menu/football_getters.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/football_menu/football_getters.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/handlers/judge/football_menu/football_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/football_menu/football_handlers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/handlers/judge/football_menu/football_windows.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/football_menu/football_windows.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/handlers/judge/state.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/state.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/utils/google_supports/requests_to_google.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/utils/google_supports/requests_to_google.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/volleyball_menu/volleyball_getters.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/volleyball_menu/volleyball_getters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/volleyball_menu/volleyball_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/volleyball_menu/volleyball_handlers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/volleyball_menu/volleyball_windows.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/volleyball_menu/volleyball_windows.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/loader.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -207,7 +206,7 @@
       <workItem from="1746514814676" duration="37130000" />
       <workItem from="1746627171338" duration="255000" />
       <workItem from="1746953686725" duration="17014000" />
-      <workItem from="1747229663611" duration="7788000" />
+      <workItem from="1747229663611" duration="9418000" />
     </task>
     <task id="LOCAL-00001" summary="first commit after copy">
       <option name="closed" value="true" />
@@ -273,7 +272,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747072516542</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="add darts playoff logic:&#10;логика плей-офф полностью реализована&#10;ДОбавлена возможность выбрать группу при создании нового матча в футболе">
+      <option name="closed" value="true" />
+      <created>1747329033032</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1747329033032</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -291,10 +298,11 @@
     <MESSAGE value="add darts playoff logic:&#10;создается матч, но не реализован процесс судейства самого матча" />
     <MESSAGE value="add darts playoff logic:&#10;реализован процесс судейства матча.&#10;релизована возможность выбора из уже созданных матчей playoff" />
     <MESSAGE value="add darts playoff logic:&#10;полность реализована логика игра плейофф&#10;Необходимо реализовать логику выгрузки квалифиувйи дартса в гугл-таблицы" />
-    <option name="LAST_COMMIT_MESSAGE" value="add darts playoff logic:&#10;полность реализована логика игра плейофф&#10;Необходимо реализовать логику выгрузки квалифиувйи дартса в гугл-таблицы" />
+    <MESSAGE value="add darts playoff logic:&#10;логика плей-офф полностью реализована&#10;ДОбавлена возможность выбрать группу при создании нового матча в футболе" />
+    <option name="LAST_COMMIT_MESSAGE" value="add darts playoff logic:&#10;логика плей-офф полностью реализована&#10;ДОбавлена возможность выбрать группу при создании нового матча в футболе" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/sport_bot$main.coverage" NAME="main Coverage Results" MODIFIED="1747328688023" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/sport_bot$main.coverage" NAME="main Coverage Results" MODIFIED="1747330320870" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/sport_bot$test_main.coverage" NAME="test_main Coverage Results" MODIFIED="1746610840261" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/sport_bot$darts_models.coverage" NAME="darts_models Coverage Results" MODIFIED="1746623156073" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core/database/models" />
     <SUITE FILE_PATH="coverage/sport_bot$darts_playoff_getters.coverage" NAME="darts_playoff_getters Coverage Results" MODIFIED="1746626806911" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core/handlers/judge/darts_menu" />

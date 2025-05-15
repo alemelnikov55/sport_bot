@@ -6,14 +6,14 @@ from magic_filter import F
 from handlers.judge.state import VolleyballStates
 from handlers.judge.volleyball_menu.volleyball_getters import start_volleyball_match_getter, \
     volleyball_set_info_getter, finish_volleyball_set_getter, volleyball_teams_getter, volleyball_match_result_getter, \
-    volleyball_matches_getter
+    volleyball_matches_getter, volleyball_set_group_getter
 from handlers.judge.volleyball_menu.volleyball_handlers import choose_volleyball_match_handler, \
     manual_volleyball_match_add_handler, start_volleyball_match_handler, add_volleyball_goal_handler, \
     finish_volleyball_set_handler, confirm_finish_volleyball_set_handler, back_volleyball_process_handler, \
     back_choose_match_handler, first_volleyball_team_select_handler, second_volleyball_team_select_handler, \
     finish_volleyball_match_handler, confirm_finish_volleyball_match_handler, back_volleyball_finish_set_handler, \
     back_volleyball_finish_match_handler, continue_volleyball_match_handler, back_volleyball_manual_add_match, \
-    back_volleyball_start_match_handler
+    back_volleyball_start_match_handler, volleyball_set_group_handler
 
 
 def get_volleyball_matches_window() -> Window:
@@ -22,7 +22,7 @@ def get_volleyball_matches_window() -> Window:
         Const('Выберите матч:'),
         Group(
             Select(
-                Format("{item[team1]} - {item[team2]} {item[status]}"),
+                Format("{item[group]}: {item[team1]} - {item[team2]} {item[status]}"),
                 id="volleyball_matches_select",
                 item_id_getter=lambda item: item["match_id"],
                 items="volleyball_matches",
@@ -148,4 +148,23 @@ def get_volleyball_manual_add_match_window_2() -> Window:
         Button(Const("Назад"), id="back_manual_match_create", on_click=back_volleyball_manual_add_match),
         state=VolleyballStates.manual_match_create_2,
         getter=volleyball_teams_getter,
+    )
+
+
+def get_volleyball_set_group_windows() -> Window:
+    return Window(
+        Const('Выберите тип матча:'),
+        Group(
+            Select(
+                Format("{item[name]}"),
+                id="volleyball_set_group",
+                item_id_getter=lambda item: item["id"],
+                items='groups',
+                on_click=volleyball_set_group_handler
+            ),
+            width=2,
+        ),
+        Button(Const("Назад"), id="back_volleyball_set_group", on_click=back_volleyball_manual_add_match),
+        state=VolleyballStates.manual_set_group,
+        getter=volleyball_set_group_getter
     )
