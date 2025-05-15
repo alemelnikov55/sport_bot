@@ -291,7 +291,6 @@ async def get_active_matches() -> List[Dict[str, Any]]:
                 joinedload(FootballMatch.team1),
                 joinedload(FootballMatch.team2)
             )
-            .where(FootballMatch.status != MatchStatus.FINISHED)
             .order_by(FootballMatch.group_name)
         )
 
@@ -299,9 +298,11 @@ async def get_active_matches() -> List[Dict[str, Any]]:
 
         for match in matches:
             match_data = {
+                'group': match.group_name or "NoGroup",
                 "match_id": match.match_id,
                 "team1": match.team1.name,
-                "team2": match.team2.name
+                "team2": match.team2.name,
+                'status': match.status
             }
             result.append(match_data)
 

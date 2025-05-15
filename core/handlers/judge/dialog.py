@@ -21,7 +21,7 @@ from handlers.judge.football_menu.football_windows import get_matches_window, ge
     get_process_window, \
     get_choose_scorer_window, get_finish_match_window, get_manual_match_create_window_1, \
     get_manual_match_create_window_2, get_red_card_choose_team_window, get_red_card_choose_player_window, \
-    get_scorer_id_window
+    get_scorer_id_window, get_manual_set_group_window
 from handlers.judge.pong_menu.pong_windows import get_pong_matches_window, get_pong_start_match_window, \
     get_pong_progress_window, get_pong_finish_set_window, get_pong_finish_match_window, \
     get_pong_manual_add_match_team_window_1, get_pong_manual_add_match_player_window_1
@@ -51,6 +51,7 @@ football_dialog = Dialog(
 
     get_manual_match_create_window_1(),
     get_manual_match_create_window_2(),
+    get_manual_set_group_window(),
 
     get_scorer_id_window()
 )

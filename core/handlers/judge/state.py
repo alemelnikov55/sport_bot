@@ -18,6 +18,7 @@ class FootballStates(StatesGroup):
 
     manual_match_create_1 = State()
     manual_match_create_2 = State()
+    manual_set_group = State()
 
     manual_scorer_add = State()
 

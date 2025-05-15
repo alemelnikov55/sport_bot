@@ -317,6 +317,24 @@ def handle_darts_qualifiers(data):
         )
         rows.append(row)
 
+    return (rows)
+
+
+@register_sheet_handler('darts_playoff')
+def handle_darts_playoff(data):
+    headers = ('Круг', 'Игрок 1', 'Очки 1', 'Очки 2', 'Игрок 2')
+    rows = [headers]
+
+    for result in data:
+        row = (
+            result['playoff_type'],
+            result['player1_name'],
+            result['player1_wins'],
+            result['player2_wins'],
+            result['player2_name'],
+        )
+        rows.append(row)
+
     return rows
 
 

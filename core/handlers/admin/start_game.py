@@ -50,7 +50,6 @@ async def update_google_sheets():
     total_spartakiada_data['darts_qualifiers'] = darts_qualifiers_info
     total_spartakiada_data['darts_playoff'] = darts_playoff_info
 
-
     update_multiple_sheets(total_spartakiada_data)
 
     logger.info(f'Обновлены данные в таблице {datetime.now()}')

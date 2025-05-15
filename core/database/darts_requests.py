@@ -98,7 +98,7 @@ async def get_top_darts_qualifiers(session: AsyncSession) -> list[dict]:
     result = await session.execute(stmt)
     rows = result.fetchall()
 
-    return [
+    top_qualifiers = [
         {
             "player_id": row.participant_id,
             "name": row.short_name,
@@ -109,6 +109,7 @@ async def get_top_darts_qualifiers(session: AsyncSession) -> list[dict]:
         for row in rows
     ]
 
+    return top_qualifiers
 
 
 async def get_darts_qualifiers_sorted(session: AsyncSession) -> list[dict]:

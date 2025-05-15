@@ -65,14 +65,21 @@ async def first_team_select_handler(call: CallbackQuery, button: Button, dialog_
 
 
 async def second_team_select_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, team_id: str):
-    session = dialog_manager.middleware_data['session']
-    second_team = int(team_id)
-    first_team = int(dialog_manager.dialog_data['manual_team1'])
+    dialog_manager.dialog_data['manual_team2'] = int(team_id)
 
-    await create_match(session, first_team, second_team)
+    await dialog_manager.switch_to(FootballStates.manual_set_group)
+    await call.answer(f'Выбрана команда {team_id}')
+
+
+async def manual_set_group_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, group_type: str):
+    session = dialog_manager.middleware_data['session']
+    first_team = int(dialog_manager.dialog_data['manual_team1'])
+    second_team = int(dialog_manager.dialog_data['manual_team2'])
+
+    await create_match(session, first_team, second_team, group_type)
 
     await dialog_manager.switch_to(FootballStates.match)
-    await call.answer(f'Выбрана команда {team_id}')
+    await call.answer('Поехали!')
 
 
 async def back_start_football_match_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):

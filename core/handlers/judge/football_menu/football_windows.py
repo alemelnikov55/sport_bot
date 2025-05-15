@@ -4,7 +4,7 @@ from aiogram_dialog.widgets.text import Const, Format
 from aiogram_dialog.widgets.input import MessageInput
 
 from handlers.judge.football_menu.football_getters import active_matches_getter, start_match_getter, match_info_getter, \
-    choose_scorer_getter, football_teams_getter, teams_info_getter, choose_faller_getter
+    choose_scorer_getter, football_teams_getter, teams_info_getter, choose_faller_getter, manual_set_group_getter
 from handlers.judge.state import FootballStates
 from handlers.judge.football_menu.football_handlers import choose_match_handler, start_match_handler, add_goal_handler, \
     finish_match_handler, choose_scorer_handler, choose_match_back_handler, confirm_finish_match_handler, \
@@ -12,7 +12,7 @@ from handlers.judge.football_menu.football_handlers import choose_match_handler,
     back_start_football_match_handler, back_process_match_handler, back_choose_scorer_handler, \
     back_finish_match_handler, back_manual_match_create_2_handler, back_manual_match_create_1_handler, red_card_handler, \
     red_card_team_select_handler, red_card_player_select_handler, add_manual_scorer_handler, \
-    manual_scorer_inpout_handler
+    manual_scorer_inpout_handler, manual_set_group_handler
 
 
 def get_matches_window() -> Window:
@@ -21,7 +21,7 @@ def get_matches_window() -> Window:
         Const('Выберите матч:'),
         Group(
             Select(
-                Format("{item[team1]} - {item[team2]}"),
+                Format("{item[group]}: {item[team1]} - {item[team2]}"),
                 id="matches_select",
                 item_id_getter=lambda item: item["match_id"],
                 items="matches",
@@ -148,6 +148,24 @@ def get_manual_match_create_window_2() -> Window:
         Button(Const("Назад"), id="back_choose_team_2", on_click=back_manual_match_create_2_handler),
         state=FootballStates.manual_match_create_2,
         getter=football_teams_getter
+    )
+
+
+def get_manual_set_group_window() -> Window:
+    return Window(
+        Const('Выберите тип матча:'),
+        Group(
+            Select(
+                Format("{item[name]}"),
+                id="manual_set_group",
+                item_id_getter=lambda item: item["id"],
+                items='groups',
+                on_click=manual_set_group_handler
+            ),
+            width=2,
+        ),
+        state=FootballStates.manual_set_group,
+        getter=manual_set_group_getter
     )
 
 
