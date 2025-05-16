@@ -69,6 +69,7 @@ async def get_tug_matches(session: AsyncSession) -> List[Dict[str, Any]]:
     # Формируем список с основной информацией
     result = [
         {
+            'group': match.group_name,
             'pull_id': match.pull_id,
             'team1_name': match.team1.name,
             'team2_name': match.team2.name,

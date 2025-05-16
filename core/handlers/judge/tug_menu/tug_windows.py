@@ -6,12 +6,12 @@ from magic_filter import F
 
 from handlers.judge.state import TugStates
 from handlers.judge.tug_menu.tug_getters import tug_matches_getter, start_tug_match_getter, tug_match_info_getter, \
-    tug_finish_match_getter, tug_teams_getter
+    tug_finish_match_getter, tug_teams_getter, tug_set_group_getter
 from handlers.judge.tug_menu.tug_handlers import choose_tug_match_handler, start_tug_match_handler, \
     continue_tug_match_handler, add_tug_goal_handler, finish_tug_match_handler, confirm_finish_tug_match_handler, \
     back_finish_tug_match_handler, back_tug_start_match_handler, back_tug_process_handler, back_tug_choose_match, \
     manual_tug_match_add_handler, first_tug_team_select_handler, second_tug_team_select_handler, \
-    back_tug_choose_team_handler
+    back_tug_choose_team_handler, tug_set_group_handler
 
 
 def get_tug_choose_match_window() -> Window:
@@ -19,7 +19,7 @@ def get_tug_choose_match_window() -> Window:
         Const('Выберите матч по перетягиванию каната:'),
         ScrollingGroup(
             Select(
-                Format('{item[team1_name]} - {item[team2_name]} {item[status]}'),
+                Format('{item[group]}: {item[team1_name]} - {item[team2_name]} {item[status]}'),
                 id="tug_matches_select",
                 item_id_getter=lambda item: item["pull_id"],
                 items="tug_matches",
@@ -119,4 +119,23 @@ def get_tug_manual_add_match_window_2() -> Window:
         Button(Const('Назад'), id='back_tug_manual', on_click=back_tug_choose_team_handler),
         state=TugStates.manual_match_create_2,
         getter=tug_teams_getter
+    )
+
+
+def get_tug_set_group_window() -> Window:
+    return Window(
+        Const('Выберите тип матча:'),
+        Group(
+            Select(
+                Format("{item[name]}"),
+                id="tug_set_group",
+                item_id_getter=lambda item: item["id"],
+                items='groups',
+                on_click=tug_set_group_handler
+            ),
+            width=2,
+        ),
+        Button(Const("Назад"), id="back_tug_set_group", on_click=back_tug_start_match_handler),
+        state=TugStates.set_group,
+        getter=tug_set_group_getter
     )

@@ -82,6 +82,7 @@ class TugStates(StatesGroup):
 
     manual_match_create_1 = State()
     manual_match_create_2 = State()
+    set_group = State()
 
 
 class KettleStates(StatesGroup):

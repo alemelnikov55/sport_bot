@@ -31,7 +31,7 @@ from handlers.judge.run_menu.run_windows import get_run_result_register_window, 
     get_run_confirm_result_window, get_run_history_window
 from handlers.judge.tug_menu.tug_windows import get_tug_choose_match_window, get_tug_start_match_window, \
     get_tug_process_window, get_tug_finish_match_window, get_tug_manual_add_match_window_1, \
-    get_tug_manual_add_match_window_2
+    get_tug_manual_add_match_window_2, get_tug_set_group_window
 from handlers.judge.volleyball_menu.volleyball_windows import get_volleyball_matches_window, \
     get_volleyball_start_match_window, get_volleyball_process_window, get_volleyball_finish_set_window, \
     get_volleyball_manual_add_match_window_2, get_volleyball_manual_add_match_window_1, \
@@ -104,7 +104,7 @@ tug_dialog = Dialog(
 
     get_tug_manual_add_match_window_1(),
     get_tug_manual_add_match_window_2(),
-
+    get_tug_set_group_window()
 )
 
 kettle_dialog = Dialog(

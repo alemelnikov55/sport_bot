@@ -6,6 +6,7 @@ from aiogram_dialog import DialogManager
 from database.service_requests import get_teams_by_sport
 from database.tug_of_war_requests import get_tug_matches, get_tug_match_info_by_id, \
     get_tug_match_info_for_process_by_id
+from loader import groups_type
 
 logger = logging.getLogger(__name__)
 
@@ -58,3 +59,6 @@ async def tug_teams_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str,
 
     return {'tug_teams': formatted_teams}
 
+
+async def tug_set_group_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
+    return {'groups': groups_type}

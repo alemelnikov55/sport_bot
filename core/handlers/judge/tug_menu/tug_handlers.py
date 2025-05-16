@@ -74,10 +74,22 @@ async def first_tug_team_select_handler(call: CallbackQuery, button: Button, dia
 
 
 async def second_tug_team_select_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, team_id: str):
+    # session = dialog_manager.middleware_data['session']
+    # team1_id = dialog_manager.dialog_data['tug_manual_team1']
+    dialog_manager.dialog_data['tug_manual_team2'] = int(team_id)
+    # data_to_create = {'': [(team1_id, team2_id)]}
+
+    # await create_tug_matches(session, data_to_create)
+
+    await dialog_manager.switch_to(TugStates.set_group)
+    await call.answer('Выберите группу')
+
+
+async def tug_set_group_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, group_type: str):
     session = dialog_manager.middleware_data['session']
     team1_id = dialog_manager.dialog_data['tug_manual_team1']
-    team2_id = int(team_id)
-    data_to_create = {'': [(team1_id, team2_id)]}
+    team2_id = dialog_manager.dialog_data['tug_manual_team2']
+    data_to_create = {group_type: [(team1_id, team2_id)]}
 
     await create_tug_matches(session, data_to_create)
 
