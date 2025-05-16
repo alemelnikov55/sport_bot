@@ -52,6 +52,7 @@ class PongStates(StatesGroup):
     manual_match_create_team_1 = State()
     manual_match_create_player_1 = State()
     manual_match_create_2 = State()
+    pong_set_group = State()
 
 
 class RunStates(StatesGroup):

@@ -6,6 +6,7 @@ from aiogram_dialog import DialogManager
 from database.pong_requests import get_pong_matches, get_pong_match_info_by_id, get_current_table_tennis_match_info, \
     get_pong_match_full_info
 from database.service_requests import get_teams_by_sport, get_team_participants_by_team_and_sport
+from loader import groups_type
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +98,6 @@ async def pong_teams_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str
     session = dialog_manager.middleware_data['session']
 
     pong_teams = await get_teams_by_sport('pong', session)
-    logger.warning(f'volleyball_teams {pong_teams}')
 
     return {'teams': [{'name': name, 'id': id_} for name, id_ in pong_teams.items()]}
 
@@ -110,3 +110,6 @@ async def pong_players_getter(dialog_manager: DialogManager, **kwargs) -> Dict[s
 
     return {'players': [{'name': f'{name.split(' ')[0]} {id_}', 'id': id_} for name, id_ in players.items()]}
 
+
+async def pong_set_group_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
+    return {'groups': groups_type}

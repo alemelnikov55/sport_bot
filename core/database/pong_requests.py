@@ -253,6 +253,7 @@ async def get_pong_matches(session: AsyncSession) -> List[Dict[str, Any]]:
     matches_data = []
     for match in matches:
         match_info = {
+            'group': match.group_name,
             "match_id": match.match_id,
             "player1": f'{match.player1.short_name} {match.player1_id}',
             "player2": f'{match.player2.short_name} {match.player2_id}',

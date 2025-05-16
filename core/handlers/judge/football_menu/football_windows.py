@@ -151,7 +151,7 @@ def get_manual_match_create_window_2() -> Window:
     )
 
 
-def get_manual_set_group_window() -> Window:
+def get_football_manual_set_group_window() -> Window:
     return Window(
         Const('Выберите тип матча:'),
         Group(

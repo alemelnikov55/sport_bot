@@ -4,13 +4,13 @@ from aiogram_dialog.widgets.text import Const, Format
 from magic_filter import F
 
 from handlers.judge.pong_menu.pong_getters import pong_matches_getter, pong_start_match_getter, pong_set_info_getter, \
-    finish_pong_set_getter, pong_match_result_getter, pong_teams_getter, pong_players_getter
+    finish_pong_set_getter, pong_match_result_getter, pong_teams_getter, pong_players_getter, pong_set_group_getter
 from handlers.judge.pong_menu.pong_handlers import select_pong_match, back_pong_matches_handler, \
     start_pong_matches_handler, continue_pong_matches_handler, back_pong_start_match_handler, \
     back_pong_progress_handler, add_pong_goal_handler, finish_pong_set_handler, back_pong_finish_set_handler, \
     confirm_pong_finish_set_handler, finish_pong_match_handler, confirm_finish_pong_match_handler, \
     back_pong_finish_match_handler, first_pong_team_select_handler, back_pong_manual_add_match, \
-    pong_manual_match_add_handler, pong_player_select_handler
+    pong_manual_match_add_handler, pong_player_select_handler, pong_set_group_handler
 from handlers.judge.state import PongStates
 
 
@@ -19,7 +19,7 @@ def get_pong_matches_window() -> Window:
         Const('Выберите матч по настольному теннису'),
         ScrollingGroup(
             Select(
-                Format('{item[player1]} - {item[player2]} {item[status]}'),
+                Format('{item[group]}: {item[player1]} - {item[player2]} {item[status]}'),
                 id='select_pong_matches',
                 item_id_getter=lambda item: item['match_id'],
                 items='pong_matches',
@@ -129,7 +129,7 @@ def get_pong_manual_add_match_team_window_1() -> Window:
 def get_pong_manual_add_match_player_window_1() -> Window:
     """Окно ручного ввода матча по понгу"""
     return Window(
-        Const('Выберите первого игрока'),
+        Const('Выберите игрока'),
         Group(
             Select(
                 Format("{item[name]}"),
@@ -146,3 +146,20 @@ def get_pong_manual_add_match_player_window_1() -> Window:
     )
 
 
+def get_pong_manual_set_group_window() -> Window:
+    return Window(
+        Const('Выберите тип матча:'),
+        Group(
+            Select(
+                Format("{item[name]}"),
+                id="pong_set_group",
+                item_id_getter=lambda item: item["id"],
+                items='groups',
+                on_click=pong_set_group_handler
+            ),
+            width=2,
+        ),
+        Button(Const("Назад"), id="back_pong_set_group", on_click=back_pong_manual_add_match),
+        state=PongStates.pong_set_group,
+        getter=pong_set_group_getter
+    )

@@ -10,6 +10,7 @@ from database.pong_requests import get_pong_next_available_set, update_pong_matc
 from handlers.judge.state import PongStates, MainJudgeStates
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 async def select_pong_match(call: CallbackQuery, button: Button, dialog_manager: DialogManager, match_id: str):
@@ -115,20 +116,30 @@ async def first_pong_team_select_handler(call: CallbackQuery, button: Button, di
 
 
 async def pong_player_select_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, player_id: str):
+    logger.debug(dialog_manager.dialog_data)
     if dialog_manager.dialog_data.get('pong_manual_player1_id'):
-        player1_id = int(dialog_manager.dialog_data['pong_manual_player1_id'])
-        player2_id = int(player_id)
-        session = dialog_manager.middleware_data['session']
-        match_info = {'': [(player1_id, player2_id)]}
-        await create_pong_matches(session, match_info)
-        await dialog_manager.switch_to(PongStates.match)
-        await call.answer('Матч создан!')
+        dialog_manager.dialog_data['pong_manual_player2_id'] = int(player_id)
+        await dialog_manager.switch_to(PongStates.pong_set_group)
+        await call.answer('Выберите группу')
         return
 
-    dialog_manager.dialog_data['pong_manual_player1_id'] = player_id
-    del dialog_manager.dialog_data['pong_manual_team1_id']
+    dialog_manager.dialog_data['pong_manual_player1_id'] = int(player_id)
 
     await dialog_manager.switch_to(PongStates.manual_match_create_team_1)
+
+
+async def pong_set_group_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager, group_type: str):
+    session = dialog_manager.middleware_data['session']
+    player1_id = dialog_manager.dialog_data['pong_manual_player1_id']
+    player2_id = dialog_manager.dialog_data['pong_manual_player2_id']
+
+    match_info = {group_type: [(player1_id, player2_id)]}
+
+    await create_pong_matches(session, match_info)
+
+    dialog_manager.dialog_data.clear()
+    await dialog_manager.switch_to(PongStates.match)
+    await call.answer('Поехали!')
 
 
 async def back_pong_matches_handler(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
