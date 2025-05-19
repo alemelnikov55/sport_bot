@@ -9,7 +9,11 @@ from .kettle_models import KettleResult
 from .darts_models import DartsPlayOff, DartsQualifiers, DartsPlayoffType
 from .support_models import Admins, Judges
 
+from .mapping_models import ExternalSportMapping, ExternalTeamMapping
+
 __all__ = [
+    'ExternalSportMapping',
+    'ExternalTeamMapping',
     'DartsPlayOff',
     'DartsQualifiers',
     'DartsPlayoffType',

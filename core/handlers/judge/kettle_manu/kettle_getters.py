@@ -18,9 +18,9 @@ CATEGORY = {
 
 async def kettle_team_choose_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     session = dialog_manager.middleware_data['session']
-    sport = dialog_manager.start_data['sport_name']
+    sport_id = dialog_manager.start_data['sport_id']
 
-    teams = await get_teams_by_sport(sport, session)
+    teams = await get_teams_by_sport(sport_id, session)
 
     return {'kettle_teams': [{'name': name, 'id': id_} for name, id_ in teams.items()]}
 
@@ -28,8 +28,9 @@ async def kettle_team_choose_getter(dialog_manager: DialogManager, **kwargs) -> 
 async def kettle_choose_lifter_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     session = dialog_manager.middleware_data['session']
     team_id = dialog_manager.dialog_data['kettle_team_id']
+    sport_id = dialog_manager.start_data['sport_id']
 
-    players = await get_team_participants_by_team_and_sport(team_id, 'pong', session)
+    players = await get_team_participants_by_team_and_sport(team_id, sport_id, session)
 
     return {'players': [{'name': f'{name.split(' ')[0]} {id_}', 'id': id_} for name, id_ in players.items()]}
 

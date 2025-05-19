@@ -4,14 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90527149-afce-4194-abb8-3d631265e7de" name="Changes" comment="add groups choss:&#10;добавлена логика выбора группы для настольного тенниса">
+    <list default="true" id="90527149-afce-4194-abb8-3d631265e7de" name="Changes" comment="add groups choss:&#10;добавлена логика выбора группы для перетягивания каната">
+      <change afterPath="$PROJECT_DIR$/core/api_requests/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/api_requests/athlet_data" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/api_requests/disciplin_team_data" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/api_requests/get_stages_requests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/api_requests/inpout_requests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/api_requests/main_api.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/api_requests/main_load_requests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/api_requests/sending_tournament_stages.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/database/models/mapping_models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/database/tug_of_war_requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/database/tug_of_war_requests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/handlers/judge/dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/dialog.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/handlers/judge/state.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/state.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/handlers/judge/tug_menu/tug_getters.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/tug_menu/tug_getters.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/handlers/judge/tug_menu/tug_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/tug_menu/tug_handlers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/handlers/judge/tug_menu/tug_windows.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/tug_menu/tug_windows.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/database/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/database/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/database/models/main_models.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/database/models/main_models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/admin/admin_getters.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/admin/admin_getters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/admin/admin_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/admin/admin_handlers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/admin/admin_windows.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/admin/admin_windows.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/football_menu/football_getters.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/football_menu/football_getters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/kettle_manu/kettle_getters.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/kettle_manu/kettle_getters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/kettle_manu/kettle_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/kettle_manu/kettle_handlers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/main_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/main_handlers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/run_menu/run_getters.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/run_menu/run_getters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/run_menu/run_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/run_menu/run_handlers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/handlers/judge/volleyball_menu/volleyball_getters.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/handlers/judge/volleyball_menu/volleyball_getters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/requirments.txt" beforeDir="false" afterPath="$PROJECT_DIR$/core/requirments.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,37 +67,50 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.darts_models.executor&quot;: &quot;Run&quot;,
-    &quot;Python.darts_playoff_getters.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/alexey/PycharmProjects/sport_bot/core&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "OpenAPI/Swagger Code Generator.patched_openapi.yaml.executor": "Run",
+    "OpenAPI/Swagger Code Generator.referee-bot-integration-openapi_last.yaml.executor": "Run",
+    "Python.darts_models.executor": "Run",
+    "Python.darts_playoff_getters.executor": "Run",
+    "Python.demo_req.executor": "Run",
+    "Python.first_requests (1).executor": "Run",
+    "Python.first_requests.executor": "Run",
+    "Python.get_stages_requests.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.main_api.executor": "Run",
+    "Python.main_load_requests.executor": "Run",
+    "Python.outer_requests.executor": "Run",
+    "Python.test_main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "/home/alexey/PycharmProjects/sport_bot/api_requests",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/core" />
       <recent name="$PROJECT_DIR$/core/utils/google_supports" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/core/api_requests" />
+      <recent name="$PROJECT_DIR$/core/api_requests/api_requests_" />
+      <recent name="$PROJECT_DIR$/core/gen/openapi_client" />
+      <recent name="$PROJECT_DIR$/core" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
-    <configuration name="darts_models" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.get_stages_requests">
+    <configuration name="get_stages_requests" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="sport_bot" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -90,35 +119,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/core/database/models" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/core/database" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/core/database/models/darts_models.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="darts_playoff_getters" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="sport_bot" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/core/handlers/judge/darts_menu" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/core/handlers/judge/darts_menu/darts_playoff_getters.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/core/api_requests/get_stages_requests.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -142,6 +148,52 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/core/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main_api" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="sport_bot" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/core/api_requests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/core/api_requests/main_api.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main_load_requests" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="sport_bot" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/core/api_requests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/core/api_requests/main_load_requests.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -175,10 +227,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main" />
-        <item itemvalue="Python.darts_playoff_getters" />
-        <item itemvalue="Python.darts_models" />
+        <item itemvalue="Python.get_stages_requests" />
         <item itemvalue="Python.test_main" />
+        <item itemvalue="Python.main_load_requests" />
+        <item itemvalue="Python.main_api" />
+        <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
@@ -204,7 +257,9 @@
       <workItem from="1746514814676" duration="37130000" />
       <workItem from="1746627171338" duration="255000" />
       <workItem from="1746953686725" duration="17014000" />
-      <workItem from="1747229663611" duration="14054000" />
+      <workItem from="1747229663611" duration="25954000" />
+      <workItem from="1747558014897" duration="13421000" />
+      <workItem from="1747640794533" duration="14643000" />
     </task>
     <task id="LOCAL-00001" summary="first commit after copy">
       <option name="closed" value="true" />
@@ -294,7 +349,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747417978821</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="add groups choss:&#10;добавлена логика выбора группы для перетягивания каната">
+      <option name="closed" value="true" />
+      <created>1747419068871</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1747419068871</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -315,12 +378,19 @@
     <MESSAGE value="add darts playoff logic:&#10;логика плей-офф полностью реализована&#10;ДОбавлена возможность выбрать группу при создании нового матча в футболе" />
     <MESSAGE value="add groups choss:&#10;добавлена логика выбора группы для волейбола" />
     <MESSAGE value="add groups choss:&#10;добавлена логика выбора группы для настольного тенниса" />
-    <option name="LAST_COMMIT_MESSAGE" value="add groups choss:&#10;добавлена логика выбора группы для настольного тенниса" />
+    <MESSAGE value="add groups choss:&#10;добавлена логика выбора группы для перетягивания каната" />
+    <option name="LAST_COMMIT_MESSAGE" value="add groups choss:&#10;добавлена логика выбора группы для перетягивания каната" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/sport_bot$main.coverage" NAME="main Coverage Results" MODIFIED="1747418961057" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
-    <SUITE FILE_PATH="coverage/sport_bot$test_main.coverage" NAME="test_main Coverage Results" MODIFIED="1746610840261" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/sport_bot$main.coverage" NAME="main Coverage Results" MODIFIED="1747644712575" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/sport_bot$main_api.coverage" NAME="main_api Coverage Results" MODIFIED="1747645309366" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core/api_requests" />
+    <SUITE FILE_PATH="coverage/sport_bot$outer_requests.coverage" NAME="get_stages_requests Coverage Results" MODIFIED="1747656363490" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core/database" />
+    <SUITE FILE_PATH="coverage/sport_bot$test_main.coverage" NAME="test_main Coverage Results" MODIFIED="1747650159674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/sport_bot$main_load_requests.coverage" NAME="main_load_requests Coverage Results" MODIFIED="1747650145972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core/api_requests" />
     <SUITE FILE_PATH="coverage/sport_bot$darts_models.coverage" NAME="darts_models Coverage Results" MODIFIED="1746623156073" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core/database/models" />
+    <SUITE FILE_PATH="coverage/sport_bot$first_requests.coverage" NAME="first_requests Coverage Results" MODIFIED="1747557278516" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gen" />
+    <SUITE FILE_PATH="coverage/sport_bot$demo_req.coverage" NAME="demo_req Coverage Results" MODIFIED="1747562856210" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core/api_requests/api_requests_/openapi_client" />
     <SUITE FILE_PATH="coverage/sport_bot$darts_playoff_getters.coverage" NAME="darts_playoff_getters Coverage Results" MODIFIED="1746626806911" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core/handlers/judge/darts_menu" />
+    <SUITE FILE_PATH="coverage/sport_bot$first_requests__1_.coverage" NAME="first_requests (1) Coverage Results" MODIFIED="1747559672252" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core/gen/openapi_client" />
   </component>
 </project>

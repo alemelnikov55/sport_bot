@@ -104,7 +104,8 @@ async def run_confirm_result_handler(call: CallbackQuery, button: Button, dialog
     session = dialog_manager.middleware_data['session']
     runner_id = int(dialog_manager.dialog_data['runner_id'])
     sport_name = dialog_manager.start_data['sport_name']
-    distance = int(sport_name.split('_')[-1][:-1])
+    print(sport_name.split(' ')[:-2])
+    distance = int(sport_name.split(' ')[-2])
     time = dialog_manager.dialog_data['runner_time']
     judge_id = call.message.chat.id
 

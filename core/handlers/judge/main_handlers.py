@@ -16,41 +16,42 @@ async def choose_sport_handler(call: CallbackQuery, button: Button, dialog_manag
     sports_arr = dialog_manager.dialog_data['sports']
     revert_sports = {str(item['id']): item['name'] for item in sports_arr}
     sport_name = revert_sports[sport_id]
-    if sport_name == 'football':
-        await dialog_manager.start(FootballStates.match)
-    elif sport_name == 'volleyball':
-        await dialog_manager.start(VolleyballStates.match)
-    elif sport_name == 'pong':
-        await dialog_manager.start(PongStates.match)
-    elif sport_name in ('run_100m', 'run_2000m', 'run_3000m'):
-        await dialog_manager.start(RunStates.get_runner_number,
-                                   data={'sport_name': sport_name,
-                                         'sport_id': sport_id,
-                                         'judge_telegram_id': call.message.chat.id})
-    elif sport_name == 'tug_of_war':
-        await dialog_manager.start(TugStates.match,
-                                   data={'sport_name': sport_name,
-                                         'sport_id': sport_id,
-                                         'judge_telegram_id': call.message.chat.id}
-                                   )
 
-    elif sport_name == 'relay_race_4x100':
+    start_data = {'sport_name': sport_name,
+                  'sport_id': int(sport_id),
+                  'judge_telegram_id': call.message.chat.id}
+
+    if sport_name == 'Мини-Футбол':
+        await dialog_manager.start(FootballStates.match,
+                                   data=start_data)
+
+    elif sport_name == 'Волейбол':
+        await dialog_manager.start(VolleyballStates.match,
+                                   data=start_data)
+
+    # elif sport_name == 'Перетягивание каната':
+    #     await dialog_manager.start(PongStates.match,
+    #                                data=start_data)
+
+    elif sport_name in ('Бег 100 м', 'Бег 2000 м', 'Бег 3000 м'):
+        await dialog_manager.start(RunStates.get_runner_number,
+                                   data=start_data)
+
+    elif sport_name == 'Перетягивание каната':
+        await dialog_manager.start(TugStates.match,
+                                   data=start_data)
+
+    elif sport_name == 'Эстафета 4 х 100 м':
         await dialog_manager.start(RelayStates.choose_team,
-                                   data={'sport_name': sport_name,
-                                         'sport_id': sport_id,
-                                         'judge_telegram_id': call.message.chat.id}
-                                   )
-    elif sport_name == 'kettle':
+                                   data=start_data)
+
+    elif sport_name == 'Гиревой спорт':
         await dialog_manager.start(KettleStates.choose_team,
-                                   data={'sport_name': sport_name,
-                                         'sport_id': sport_id,
-                                         'judge_telegram_id': call.message.chat.id}
-                                   )
-    elif sport_name == 'darts':
+                                   data=start_data)
+
+    elif sport_name == 'Дартс':
         await dialog_manager.start(DartsStates.choose_team,
-                                   data={'sport_name': sport_name,
-                                         'sport_id': sport_id,
-                                         'judge_telegram_id': call.message.chat.id}
-                                   )
+                                   data=start_data)
+
     else:
         logger.error(f'Неизвестный вид спорта: {sport_name}')

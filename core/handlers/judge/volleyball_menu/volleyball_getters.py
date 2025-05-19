@@ -83,8 +83,9 @@ async def finish_volleyball_set_getter(dialog_manager: DialogManager, **kwargs) 
 
 async def volleyball_teams_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     session = dialog_manager.middleware_data['session']
+    sport_id = dialog_manager.start_data['sport_id']
 
-    volleyball_teams = await get_teams_by_sport('volleyball', session)
+    volleyball_teams = await get_teams_by_sport(sport_id, session)
 
     return {'teams': [{'name': name, 'id': id_} for name, id_ in volleyball_teams.items()]}
 

@@ -28,21 +28,25 @@ async def create_groups_handler(call: CallbackQuery, button: Button, dialog_mana
 
 
 async def create_football_tournament_groups(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    dialog_manager.dialog_data['sport_name'] = 'Мини-Футбол' # TODO ручной ввод!
     await dialog_manager.switch_to(AdminStates.create_football_tournament_groups)
     await call.answer('Создание групп для футбола')
 
 
 async def create_volleyball_tournament_groups(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    dialog_manager.dialog_data['sport_name'] = 'Волейбол' # TODO ручной ввод!
     await dialog_manager.switch_to(AdminStates.create_volleyball_tournament_groups)
     await call.answer('Создание групп для волейбола')
 
 
 async def create_pong_tournament_groups(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    dialog_manager.dialog_data['sport_name'] = 'Настольный теннис' # TODO ручной ввод!
     await dialog_manager.switch_to(AdminStates.create_pong_tournament_groups)
     await call.answer('Создание групп для пинг-понга')
 
 
 async def create_tug_tournament_groups(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    dialog_manager.dialog_data['sport_name'] = 'Перетягивание каната' # TODO ручной ввод!
     await dialog_manager.switch_to(AdminStates.create_tug_tournament_groups)
     await call.answer('Создание групп для перетягивания каната')
 

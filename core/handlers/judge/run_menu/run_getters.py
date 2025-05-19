@@ -31,7 +31,8 @@ async def run_history_getter(dialog_manager: DialogManager, **kwargs) -> Dict[st
     sport_name = dialog_manager.start_data['sport_name']
     telegram_id = dialog_manager.start_data['judge_telegram_id']
 
-    distance = int(sport_name.split('_')[-1][:-1])
+    # distance = int(sport_name.split('_')[-1][:-1])
+    distance = int(sport_name.split(' ')[-2])
 
     data = await get_last_judge_run_results(session, telegram_id, distance)
     printable_data = [f'{result[0]}_{result[1]}  -  {format_seconds_to_time_string(result[2])}' for result in data]

@@ -121,5 +121,5 @@ async def back_kettle_team_choose_handler(call: CallbackQuery, button: Button, d
 
 
 async def back_to_choose_team(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    await dialog_manager.start(KettleStates.choose_team)
+    await dialog_manager.switch_to(KettleStates.choose_team)
     await call.answer('Назад!')

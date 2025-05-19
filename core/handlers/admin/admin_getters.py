@@ -49,8 +49,10 @@ async def admin_fix_goal_approve_getter(dialog_manager: DialogManager, **kwargs)
 
 async def create_groups_tournament_football_getter(dialog_manager: DialogManager, **kwargs):
     session = dialog_manager.middleware_data['session']
+    sport_name = dialog_manager.dialog_data['sport_name']
 
-    teams = await get_teams_by_sport('football', session)
+    teams = await get_teams_by_sport(sport_name, session)
+
     teams_amount = len(teams)
     dialog_manager.dialog_data['teams_count'] = teams_amount
     dialog_manager.dialog_data['teams_for_groups'] = teams
@@ -60,7 +62,10 @@ async def create_groups_tournament_football_getter(dialog_manager: DialogManager
 
 async def create_groups_tournament_volleyball_getter(dialog_manager: DialogManager, **kwargs):
     session = dialog_manager.middleware_data['session']
-    teams = await get_teams_by_sport('volleyball', session)
+    sport_name = dialog_manager.dialog_data['sport_name']
+
+    teams = await get_teams_by_sport(sport_name, session)
+
     teams_amount = len(teams)
     dialog_manager.dialog_data['teams_count'] = teams_amount
     dialog_manager.dialog_data['teams_for_groups'] = teams
@@ -83,10 +88,15 @@ async def create_groups_tournament_pong_getter(dialog_manager: DialogManager, **
 async def create_groups_tournament_tug_getter(dialog_manager: DialogManager, **kwargs):
     session = dialog_manager.middleware_data['session']
 
-    players_id = await get_teams_by_sport('tug_of_war', session)
+    # players_id = await get_teams_by_sport('tug_of_war', session)
+    sport_name = dialog_manager.dialog_data['sport_name']
 
-    teams_amount = len(players_id)
+    teams = await get_teams_by_sport(sport_name, session)
+
+    # teams_amount = len(players_id)
+    teams_amount = len(teams)
     dialog_manager.dialog_data['tug_teams_count'] = teams_amount
-    dialog_manager.dialog_data['tug_teams_for_groups'] = players_id
+    # dialog_manager.dialog_data['tug_teams_for_groups'] = players_id
+    dialog_manager.dialog_data['tug_teams_for_groups'] = teams
 
     return {'tug_team_count': teams_amount}
