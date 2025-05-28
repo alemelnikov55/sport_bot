@@ -1,0 +1,556 @@
+openapi: 3.0.0
+
+info:
+  title: API для интеграции с ботом судей
+  version: 3.0.0
+  description: |
+
+    ## Принципы работы
+
+    1) API `divisions` отдает филиалы
+    2) API `disicplines` отдает спортивные дисциплины
+    3) API `athletes` отдает список спортсменов с их дисциплинами и командами
+    4) API `tournaments` принимает состояние турнирной сетки для дисциплин с isTournament=true
+    5) API `results` принимает результаты конкретного соревнования
+    6) для гиревого спорта принимаются так же правки категории/веса
+
+    Дисциплины:
+    * Легкая атлетика (100м, 2000м, 3000м) - id атлета, в конце результат время
+    * Эстафета - id команды, в конце результат время
+    * Гиревой спорт - id атлета, в конце результат очки (1 поднятие - 1 очко) + возможно вес
+    * Футбол - id команды, во время игры результат очки (1 гол - 1 очко) + сетка после жеребьевки и после закрытия этапа
+    * Волейбол - сетка, id команды, во время игры результат очки (1 сет - 1 очко) + сетка после жеребьевки и после закрытия этапа
+    * Перетягивание канатов - id команды, в конце результат место
+    * Дартс - id атлета, в конце результат место
+    * Настольный теннис - id атлета, в конце результат место
+
+    ## Changelog
+
+    ### 3.0.0
+
+    * <font color="red">**Breaking!**</font> [GET /referee-integration/api/v1/disciplines](#operations-disciplines-getDisciplines) - удалены поля `isTournament`, `isTeam`, `resultType`
+    * <font color="red">**Breaking!**</font> [GET /referee-integration/api/v1/results](#operations-results-createResult) - поле `result` для типа результатов `place` теперь строка
+    * <font color="red">**Breaking!**</font> [GET /referee-integration/api/v1/athletes](#operations-athletes-getAthletes) - поле `birthDate` заменено на `age`, теперь будет приходить возраст спортсмена на момент проведения мероприятия
+
+    <details>
+
+    <summary>Предыдущие версии</summary>
+
+    ### 2.0.0
+
+    * <font color="red">**Breaking!**</font> Ресурс `accounts` переименован в `athletes` - [GET /referee-integration/api/v1/athletes](#operations-athletes-getAthletes)
+    * <font color="red">**Breaking!**</font> [GET /referee-integration/api/v1/disciplines](#operations-disciplines-getDisciplines) - удалил поля limit, categories, tournament, competition
+    * [GET /referee-integration/api/v1/disciplines](#operations-disciplines-getDisciplines) - добавился тип результатов "Место"
+    * <font color="red">**Breaking!**</font> [POST /referee-integration/api/v1/results](#operations-results-createResult) - добавил обязательный disciplineId, competitionId - теперь внешний идентификатор из сетки
+    * [POST /referee-integration/api/v1/results](#operations-results-createResult) - добавился тип результатов "Место"
+    * [POST /referee-integration/api/v1/tournaments](#operations-tournaments-updateTournamentStages) - добавилось API для загрузки турнирной сетки
+
+    ### 1.0.0
+
+    * Добавлен ресурс API divisions
+    * Добавлен ресурс API disciplines
+    * Добавлен ресурс API accounts
+    * Добавлен ресурс API results
+
+    </details>
+
+security:
+  - basic: []
+
+paths:
+
+  /referee-integration/api/v1/divisions:
+    get:
+      summary: Получение списка филиалов
+      tags:
+        - divisions
+      operationId: getDivisions
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: ObjectId филиала
+                        name:
+                          type: string
+                          description: Название филиала
+                      required:
+                        - id
+                        - name
+                required:
+                  - items
+              example:
+                items:
+                  - id: "507f1f77bcf86cd799439011"
+                    name: "Центральный филиал"
+                  - id: "507f1f77bcf86cd799439012"
+                    name: "Восточный филиал"
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+
+  /referee-integration/api/v1/disciplines:
+    get:
+      summary: Получение списка спортивных дисциплин
+      tags:
+        - disciplines
+      operationId: getDisciplines
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Discipline'
+                required:
+                  - items
+              example:
+                items:
+                  - id: "507f1f77bcf86cd799439011"
+                    name: "Мини-Футбол"
+                  - id: "507f1f77bcf86cd799439012"
+                    name: "Дартс"
+                  - id: "507f1f77bcf86cd799439013"
+                    name: "Бег 100м"
+                  - id: "507f1f77bcf86cd799439014"
+                    name: "Бег 1000м"
+                  - id: "507f1f77bcf86cd799439015"
+                    name: "Эстафета"
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+
+  /referee-integration/api/v1/athletes:
+    get:
+      tags:
+        - athletes
+      operationId: getAthletes
+      summary: Получение данных спортсменов
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - id
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        firstName:
+                          type: string
+                          maxLength: 50
+                        lastName:
+                          type: string
+                          maxLength: 50
+                        middleName:
+                          type: string
+                          maxLength: 50
+                        age:
+                          description: Количество полных лет на момент даты проведения мероприятия
+                          type: number
+                          minimum: 0
+                        weight:
+                          description: Вес в кг. Обязательно для спортсмена. Используется для вычисления весовой категории
+                          type: number
+                        gender:
+                          description: Пол. Обязательно для спортсмена
+                          type: string
+                          enum:
+                            - male
+                            - female
+                        divisionId:
+                          type: string
+                          format: objectId
+                        disciplines:
+                          type: array
+                          items:
+                            description: Идентификатор дисциплины
+                            type: string
+                            format: objectId
+              examples:
+                athlete:
+                  description: Зарегистрированный спортсмен
+                  value:
+                    items:
+                      - id: 3
+                        firstName: Иван
+                        lastName: Иванов
+                        middleName: Иванович
+                        age: 31
+                        gender: male
+                        weight: 84
+                        divisionId: '507f1f77bcf86cd799439012'
+                        disciplines:
+                          - '507f1f77bcf86cd799439013'
+                          - '507f1f77bcf86cd799439014'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+
+  /referee-integration/api/v1/tournaments:
+    post:
+      tags:
+        - tournaments
+      operationId: updateTournamentStages
+      summary: Отправка турнирной сетки
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                disciplineId:
+                  type: string
+                  description: Идентификатор дисциплины
+                tournament:
+                  $ref: '#/components/schemas/TournamentStages'
+              additionalProperties: false
+            example:
+              disciplineId: "507f1f77bcf86cd799439011"
+              tournament:
+                - stage: 1/4
+                  competitions:
+                    - id: 68000ff8fa9fb49584df8000
+                      status: ended
+                      participants:
+                        - divisionId: 507f1f77bcf86cd799439015
+                        - divisionId: 507f1f77bcf86cd799439018
+                - stage: 1/2
+                  competitions:
+                    - id: 68000ff8fa9fb49584df8001
+                      status: ongoing
+                      participants:
+                        - divisionId: 507f1f77bcf86cd799439015
+                        - divisionId: 507f1f77bcf86cd799439018
+                    - id: 68000ff8fa9fb49584df8002
+                      status: planned
+                      participants:
+                        - divisionId: 507f1f77bcf86cd799439015
+                        - divisionId: 507f1f77bcf86cd799439018
+                - stage: Финал
+                  competitions:
+                    - id: 68000ff8fa9fb49584df8003
+                      status: upcoming
+                      participants:
+                        - divisionId: 507f1f77bcf86cd799439015
+                        - {}
+      responses:
+        '204':
+          description: Успешный ответ
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+
+  /referee-integration/api/v1/results:
+    post:
+      tags:
+        - results
+      operationId: createResult
+      summary: Отправка результатов спортивного события
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - correlationId
+                - disciplineId
+                - results
+              properties:
+                correlationId:
+                  type: string
+                  description: Идентификатор пакета результатов. Можно любой рандомный уникальный, например GUID. Будет использоваться для предотвращения повторной обработки одного и того же запроса
+                disciplineId:
+                  type: string
+                  description: Идентификатор дисциплины
+                competitionId:
+                  type: string
+                  description: Идентификатор игры из турнирной сетки, если дисциплина isTournament=true
+                results:
+                  type: array
+                  description: Если есть competitionId, то в результатах должно быть только две команды
+                  minItems: 1
+                  items:
+                    type: object
+                    oneOf:
+                      - required:
+                          - athleteId
+                          - result
+                        properties:
+                          athleteId:
+                            type: number
+                            description: Идентификатор спортсмена
+                          result:
+                            $ref: '#/components/schemas/Result'
+                          weight:
+                            type: number
+                            description: Вес атлета для уточнения категории
+                      - required:
+                          - divisionId
+                          - result
+                        properties:
+                          divisionId:
+                            type: string
+                            description: Идентификатор филиала команды
+                          result:
+                            $ref: '#/components/schemas/Result'
+              additionalProperties: false
+            examples:
+              athletesNotTournament:
+                description: Результаты спортсменов, если у дисциплины isTournament=false
+                value:
+                  correlationId: "3d7bc6c4-72d2-4d01-9db6-d2d4910b2fb7"
+                  disciplineId: "507f1f77bcf86cd799439014"
+                  results:
+                    - athleteId: 1
+                      result: 10000
+              athletesWithWeightNotTournament:
+                description: Результаты спортсменов, если у дисциплины isTournament=false
+                value:
+                  correlationId: "3d7bc6c4-72d2-4d01-9db6-d2d4910b2fb7"
+                  disciplineId: "507f1f77bcf86cd799439014"
+                  results:
+                    - athleteId: 1
+                      result: 10000
+                      weight: 74
+              teamsNotTournament:
+                description: Результаты команд, если у дисциплины isTournament=false
+                value:
+                  correlationId: "3d7bc6c4-72d2-4d01-9db6-d2d4910b2fb7"
+                  disciplineId: "507f1f77bcf86cd799439014"
+                  results:
+                    - divisionId: f77bcf86cd799439014507f1
+                      result: 10000
+                    - divisionId: bcf86cd799439014507f1f77
+                      result: 12000
+                    - divisionId: 6cd799439014507f1f77bcf8
+                      result: 13000
+              teamsTournament:
+                description: Результаты команд, если у дисциплины isTournament=true
+                value:
+                  correlationId: "3d7bc6c4-72d2-4d01-9db6-d2d4910b2fb7"
+                  disciplineId: "507f1f77bcf86cd799439014"
+                  competitionId: "6cd799439014507f1f77bcf8"
+                  results:
+                    - divisionId: f77bcf86cd799439014507f1
+                      result: '1'
+                    - divisionId: bcf86cd799439014507f1f77
+                      result: '2'
+                    - divisionId: 9439014507f1f77bcf86cd79
+                      result: '3'
+                    - divisionId: bcf86c9014507f1f77d79943
+                      result: '4'
+                    - divisionId: 014507f1f77bcf86cd799439
+                      result: '5-8'
+                    - divisionId: 014507f1f77bcf86cd799439
+                      result: '5-8'
+                    - divisionId: 7f1f7701450bcf86cd799439
+                      result: '5-8'
+                    - divisionId: f1f77bcf86cd799439014507
+                      result: '5-8'
+      responses:
+        '204':
+          description: Успешный ответ
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+
+components:
+  responses:
+    BadRequestError:
+      description: Ошибка валидации
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errorName: BadRequestError
+            error: Invalid input data
+            userMessage: Некорректные данные
+    AuthenticationError:
+      description: Ошибка авторизации
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errorName: AuthenticationError
+            error: Unauthorized
+            userMessage: Ошибка авторизации
+  schemas:
+    Error:
+      type: object
+      properties:
+        errorName:
+          type: string
+        error:
+          type: string
+        userMessage:
+          type: string
+
+    Discipline:
+      type: object
+      description: Спортивная дисциплина
+      required:
+        - id
+        - name
+        - isTournament
+        - isTeam
+        - resultType
+      properties:
+        id:
+          type: string
+          description: Идентификатор
+          format: ObjectId
+        name:
+          type: string
+          description: Название дисциплины
+        isTournament:
+          type: boolean
+          description: Турнирная дисциплина
+        isTeam:
+          type: boolean
+          description: Командная или индивидиуальная дисциплина
+        resultType:
+          type: string
+          description: Тип результатов соревнований по дисциплине
+          enum:
+            - points
+            - time
+            - win-lose
+            - place
+
+    Athlete:
+      type: object
+      required:
+        - id
+        - firstName
+        - lastName
+        - middleName
+        - divisionId
+      properties:
+        id:
+          type: integer
+          description: Идентификатор аккаунта
+          minimum: 1
+        firstName:
+          type: string
+          description: Имя
+          maxLength: 50
+        lastName:
+          type: string
+          description: Фамилия
+          maxLength: 50
+        middleName:
+          type: string
+          description: Отчество
+          maxLength: 50
+        divisionId:
+          type: string
+          description: Идентификатор филиала
+          format: ObjectId
+
+    PointsResult:
+      description: Результат соревнования в очках
+      type: number
+      minimum: 0
+      nullable: true
+    TimeResult:
+      description: Результат соревнования по времени. Значение в мс
+      type: number
+      minimum: 0
+      nullable: true
+    WinLoseResult:
+      description: Результат соревнования на победу
+      type: string
+      enum:
+        - win
+        - lose
+      nullable: true
+    PlaceResult:
+      description: Результат в соревнованиях по рейтингу
+      type: string
+      minimum: 0
+      nullable: true
+    Result:
+      oneOf:
+        - $ref: '#/components/schemas/PointsResult'
+        - $ref: '#/components/schemas/TimeResult'
+        - $ref: '#/components/schemas/WinLoseResult'
+        - $ref: '#/components/schemas/PlaceResult'
+
+    Competition:
+      description: Соревнование в рамках дисциплины или турнира по дисциплине
+      type: object
+      required:
+        - id
+        - status
+        - participants
+      properties:
+        id:
+          type: string
+          description: Идентификатор соревнования
+          format: ObjectId
+        status:
+          type: string
+          description: |
+            Статус результатов по соревнованию:
+            - planned - запланировано, но состав ещё не определён
+            - upcoming - соревнование ожидает начала
+            - ongoing - соревнование идёт
+            - ended - соревнование завершено
+        participants:
+          type: array
+          minItems: 2
+          maxItems: 2
+          items:
+            type: object
+            properties:
+              divisionId:
+                type: string
+                description: Идентификатор филиала
+
+    TournamentStages:
+      description: Турнирная сетка
+      type: array
+      minItems: 0
+      items:
+        type: object
+        required:
+          - stage
+          - competitions
+        properties:
+          stage:
+            description: Название этапа турнира - 1/8, 1/4 и т.д.
+            type: string
+          competitions:
+            type: array
+            minItems: 0
+            items:
+              $ref: '#/components/schemas/Competition'

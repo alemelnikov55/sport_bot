@@ -1,0 +1,5 @@
+docker run --name auto_quiz --restart always -e POSTGRES_PASSWORD=kinlem -e POSTGRES_USER=melnik -e POSTGRES_DB=auto_quiz -d -p 5435:5435 -v /home/alex/volumes_alex/auto_quiz postgres
+
+docker exec -it auto_quiz psql -U melnik -d auto_quiz
+
+insert into judges values (1, 28191584);
