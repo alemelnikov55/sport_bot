@@ -36,7 +36,6 @@ from utils.middleware import DatabaseMiddleware, ApschedulerMiddleware
 
 from database.models import async_session
 
-"""add smth"""
 r = redis.Redis(host=RedisSettings.REDIS_HOST, port=RedisSettings.REDIS_PORT, db=0, decode_responses=True)
 
 jobstores = {
@@ -48,7 +47,7 @@ jobstores = {
         port=6379,
     )
 }
-"""init commit #3"""
+
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
 
@@ -76,7 +75,6 @@ async def start_bot():
     dp.startup.register(start_bot_sup_handler)
     dp.shutdown.register(stop_bot_sup_handler)
 
-    # dp.message.register(update, Command('update'))
     dp.message.register(cancel_handler, Command('cancel'))
     dp.message.register(start_handler, Command('start'))
 
@@ -86,7 +84,6 @@ async def start_bot():
     # Регистрируем хэндлеры админов
     dp.message.register(start_game, Command('start_game'), IsAdmin())
     dp.message.register(start_admin_panel, Command('panel'), IsAdmin())
-    # dp.message.register(text_handler, F.text)
 
     setup_dialogs(dp)
 
