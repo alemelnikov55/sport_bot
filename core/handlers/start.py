@@ -2,7 +2,7 @@ from aiogram.types import Message, BotCommandScopeChat
 from aiogram import Bot
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.service_requests import get_all_judges
+from database.service_requests import get_all_judges, get_all_admins
 from utils.set_comands import ADMIN_COMMANDS, JUDGE_COMMANDS, SUPERUSER_COMMANDS
 from loader import MainSettings
 
@@ -22,7 +22,7 @@ async def start_handler(message: Message, bot: Bot, session: AsyncSession):
 
     judges = await get_all_judges(session)
     superuser_id = MainSettings.SUPERUSER
-    admin_ids = MainSettings.ADMIN_LIST
+    admin_ids = await get_all_admins(session)
 
     if user_id == superuser_id:
         role = 'superuser'

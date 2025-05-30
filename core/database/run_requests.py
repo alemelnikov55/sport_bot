@@ -48,7 +48,7 @@ async def save_running_result(session: AsyncSession,
     await session.commit()
 
 
-async def get_last_judge_run_results(session: AsyncSession, telegram_id: int, distance_m: int) -> List[Tuple[str, int, float]]:
+async def get_last_judge_run_results(session: AsyncSession, telegram_id: int, distance_m: int) -> Sequence[Tuple[str, int, float]]:
     """
     Возвращает последние 10 результатов, зарегистрированных судьей по telegram_id
     и указанной дистанции, в виде кортежей:

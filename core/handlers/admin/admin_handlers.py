@@ -1,19 +1,15 @@
-from calendar import different_locale
-
 from aiogram import Bot
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager
-from aiogram_dialog.api.protocols import MessageNotModified
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button, Select
 
 from api_requests.data_preparation_fonc import build_football_tournament_data, build_volleyball_tournament_data, \
     RunningResultBuilder, RelayResultBuilder, KettlebellResultBuilder, TugResultBuilder, DartsResultBuilder, \
     TableTennisResultBuilder
-from api_requests.final_table_getters import prepare_kettlebell_men_api_payload, prepare_kettlebell_women_api_payload, \
-    calculate_tug_of_war_places
 from api_requests.api_base_config import api
+
 from database.football_requests import delete_goal, create_match
 from database.pong_requests import create_pong_matches
 from database.service_requests import add_judge
@@ -36,25 +32,25 @@ async def create_groups_handler(call: CallbackQuery, button: Button, dialog_mana
 
 
 async def create_football_tournament_groups(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    dialog_manager.dialog_data['sport_name'] = 'Мини-Футбол'  # TODO ручной ввод!
+    dialog_manager.dialog_data['sport_name'] = 'Мини-футбол'
     await dialog_manager.switch_to(AdminStates.create_football_tournament_groups)
     await call.answer('Создание групп для футбола')
 
 
 async def create_volleyball_tournament_groups(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    dialog_manager.dialog_data['sport_name'] = 'Волейбол'  # TODO ручной ввод!
+    dialog_manager.dialog_data['sport_name'] = 'Волейбол'
     await dialog_manager.switch_to(AdminStates.create_volleyball_tournament_groups)
     await call.answer('Создание групп для волейбола')
 
 
 async def create_pong_tournament_groups(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    dialog_manager.dialog_data['sport_name'] = 'Настольный теннис'  # TODO ручной ввод!
+    dialog_manager.dialog_data['sport_name'] = 'Настольный теннис'
     await dialog_manager.switch_to(AdminStates.choose_gender_pong)
     await call.answer('Создание групп для пинг-понга')
 
 
 async def create_tug_tournament_groups(call: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    dialog_manager.dialog_data['sport_name'] = 'Перетягивание каната'  # TODO ручной ввод!
+    dialog_manager.dialog_data['sport_name'] = 'Перетягивание каната'
     await dialog_manager.switch_to(AdminStates.create_tug_tournament_groups)
     await call.answer('Создание групп для перетягивания каната')
 

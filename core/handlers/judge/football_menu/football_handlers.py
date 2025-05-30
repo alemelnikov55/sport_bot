@@ -133,6 +133,7 @@ async def add_manual_scorer_handler(call: CallbackQuery, button: Button, dialog_
 
 async def manual_scorer_inpout_handler(message: Message, message_input: MessageInput, dialog_manager: DialogManager,):
     text = message.text
+    session = dialog_manager.middleware_data['session']
 
     if not text.isdigit():
         await message.reply('Номер игрока должен быть числом')
@@ -142,4 +143,9 @@ async def manual_scorer_inpout_handler(message: Message, message_input: MessageI
     match_id = int(dialog_manager.dialog_data['match'])
 
     await add_goal(match_id, scorer_id)
+
+    builder = FootballResultBuilder(session)
+    goal_data = await builder.build_for_match(match_id)
+    api.send_results(goal_data)
+
     await dialog_manager.switch_to(FootballStates.process_match)

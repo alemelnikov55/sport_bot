@@ -4,22 +4,23 @@ from aiogram_dialog import DialogManager
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from loader import groups_type
-from database.football_requests import get_active_matches, get_match_info_by_id, get_match_teams_info, \
-    get_match_teams_optimized
-from database.service_requests import get_all_sports, get_teams_by_sport, get_team_participants_by_team_and_sport
+from database.football_requests import get_active_matches, get_match_info_by_id, get_match_teams_optimized
+from database.service_requests import get_teams_by_sport, get_team_participants_by_team_and_sport
 
 
 async def active_matches_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     """Получение списка активных матчей"""
-    matches = await get_active_matches()
+    session = dialog_manager.middleware_data['session']
+    matches = await get_active_matches(session)
 
     return {'matches': matches}
 
 
 async def start_match_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
+    session = dialog_manager.middleware_data['session']
     match_id = int(dialog_manager.dialog_data['match'])
 
-    match_data = await get_match_info_by_id(match_id)
+    match_data = await get_match_info_by_id(session, match_id)
 
     return {'match': match_data}
 
@@ -29,7 +30,7 @@ async def match_info_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str
     match_id = int(dialog_manager.dialog_data['match'])
 
     match_team_data = await get_match_teams_optimized(session, match_id)
-    match_data = await get_match_info_by_id(match_id)
+    match_data = await get_match_info_by_id(session, match_id)
 
     return {'teams': match_team_data, 'match': match_data}
 

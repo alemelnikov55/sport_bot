@@ -1,14 +1,11 @@
 """
 Модуль запросов для работы с волейбольными матчами
 """
-from sqlalchemy import update, select, case, or_
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
-from typing import Dict, List, Tuple, Optional, Any, Union
-import datetime
-from enum import Enum
+from typing import Dict, List, Tuple, Optional, Any
 
+from sqlalchemy import update, select, case, or_
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, selectinload
-from sqlalchemy.testing.config import options
 
 from database.models import Team
 from database.models.volleybal_models import VolleyballSet, VolleyballMatch, VolleyballMatchStatus
@@ -122,7 +119,7 @@ async def update_volleyball_set_status(
         match_id: int,
         set_number: int,
         new_status: VolleyballMatchStatus
-) -> VolleyballSet:
+) -> VolleyballSet | None:
     """
     Обновляет статус сета в волейбольном матче с проверкой соответствия set_id и match_id
 
@@ -141,13 +138,13 @@ async def update_volleyball_set_status(
         )
     )
     volleyball_set = result.scalar_one_or_none()
-    if volleyball_set is None:
-        raise ValueError(f"Сет {set_number} не найден в матче {match_id}")
+    # if volleyball_set is None:
+    #     raise ValueError(f"Сет {set_number} не найден в матче {match_id}")
 
     if new_status == VolleyballMatchStatus.FINISHED:
         if volleyball_set.status == VolleyballMatchStatus.FINISHED:
             print("Сет уже завершен, пропускаем обновление")
-            return
+            return None
         # Проверяем, что счет валидный
         if volleyball_set.team1_score == volleyball_set.team2_score:
             if volleyball_set.team1_score == 0:

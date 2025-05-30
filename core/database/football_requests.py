@@ -1,10 +1,10 @@
 from typing import Dict, List, Optional, Any
 
-from sqlalchemy import select, exists, update, delete, insert, or_
+from sqlalchemy import select, update, delete, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, aliased, selectinload
 
-from database.models import FootballGoal, FootballMatch, Participant, async_session, ParticipantSport, Sport, Team, \
+from database.models import FootballGoal, FootballMatch, Participant, async_session, Sport, Team, \
     FootballFallers
 from database.models import MatchStatus
 
@@ -55,7 +55,7 @@ async def add_goal(match_id: int, participant_id: int, half: int = 1) -> Footbal
 
 
 # под удаление
-async def get_football_matches_with_goals() -> dict:
+async def get_football_matches_with_goals() -> Dict[str, Any]:
     """
     Возвращает статистику футбольных матчей с голами, сгруппированную по группам.
     Учитывает связи через таблицы ParticipantSport и FootballGoal.
@@ -98,16 +98,6 @@ async def get_football_matches_with_goals() -> dict:
             team2_players = []
 
             for player in goal_scorers:
-                # Проверяем, что игрок действительно играет в футбол
-                # plays_football = await session.execute(
-                #     select(exists().where(
-                #         ParticipantSport.participant_id == player.participant_id,
-                #         ParticipantSport.sport_id == football_sport_id
-                #     ))
-                # )
-                #
-                # if not plays_football.scalar():
-                #     continue
 
                 if player.team_id == match.team1_id:
                     team1_players.append((player.short_name, player.participant_id))
@@ -226,7 +216,7 @@ async def get_football_matches_with_goals_and_fallers(session: AsyncSession) -> 
     return result
 
 
-async def get_active_matches() -> List[Dict[str, Any]]:
+async def get_active_matches(session: AsyncSession) -> List[Dict[str, Any]]:
     """
     Возвращает все матчи не в статусе FINISHED, сгруппированные по группам.
 
@@ -247,28 +237,27 @@ async def get_active_matches() -> List[Dict[str, Any]]:
     """
     result = list()
 
-    async with async_session() as session:
-        # Запрос с предзагрузкой данных команд
-        stmt = (
-            select(FootballMatch)
-            .options(
-                joinedload(FootballMatch.team1),
-                joinedload(FootballMatch.team2)
-            )
-            .order_by(FootballMatch.group_name)
+    # Запрос с предзагрузкой данных команд
+    stmt = (
+        select(FootballMatch)
+        .options(
+            joinedload(FootballMatch.team1),
+            joinedload(FootballMatch.team2)
         )
+        .order_by(FootballMatch.group_name)
+    )
 
-        matches = (await session.execute(stmt)).scalars().all()
+    matches = (await session.execute(stmt)).scalars().all()
 
-        for match in matches:
-            match_data = {
-                'group': match.group_name or "NoGroup",
-                "match_id": match.match_id,
-                "team1": match.team1.name,
-                "team2": match.team2.name,
-                'status': match.status
-            }
-            result.append(match_data)
+    for match in matches:
+        match_data = {
+            'group': match.group_name or "NoGroup",
+            "match_id": match.match_id,
+            "team1": match.team1.name,
+            "team2": match.team2.name,
+            'status': match.status
+        }
+        result.append(match_data)
 
     return result
 
@@ -388,7 +377,7 @@ async def change_match_status(
     }
 
 
-async def get_match_info_by_id(match_id: int) -> Dict[str, Any]:
+async def get_match_info_by_id(session: AsyncSession, match_id: int) -> Dict[str, Any]:
     """
     Возвращает базовую информацию о матче: ID, названия команд и счет
 
@@ -407,28 +396,27 @@ async def get_match_info_by_id(match_id: int) -> Dict[str, Any]:
         }
         или None, если матч не найден
     """
-    async with async_session() as session:
-        stmt = select(FootballMatch).where(FootballMatch.match_id == match_id).options(
-            selectinload(FootballMatch.team1),
-            selectinload(FootballMatch.team2)
-        )
+    stmt = select(FootballMatch).where(FootballMatch.match_id == match_id).options(
+        selectinload(FootballMatch.team1),
+        selectinload(FootballMatch.team2)
+    )
 
-        result = await session.execute(stmt)
-        match = result.scalars().first()
+    result = await session.execute(stmt)
+    match = result.scalars().first()
+    #
+    # if not match:
+    #     return None
 
-        if not match:
-            return None
-
-        return {
-            'match_id': match.match_id,
-            'team1_name': match.team1.name,
-            'team2_name': match.team2.name,
-            'team1_score': match.score1,
-            'team2_score': match.score2,
-            'team1_id': match.team1_id,
-            'team2_id': match.team2_id,
-            'total_score': f'{match.score1}:{match.score2}'
-        }
+    return {
+        'match_id': match.match_id,
+        'team1_name': match.team1.name,
+        'team2_name': match.team2.name,
+        'team1_score': match.score1,
+        'team2_score': match.score2,
+        'team1_id': match.team1_id,
+        'team2_id': match.team2_id,
+        'total_score': f'{match.score1}:{match.score2}'
+    }
 
 
 async def get_match_teams_optimized(session: AsyncSession, match_id: int) -> List[Dict[str, Any]]:

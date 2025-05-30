@@ -1,5 +1,4 @@
 import logging
-import time
 from typing import Dict, Any
 
 from aiogram_dialog import DialogManager

@@ -1,7 +1,6 @@
 """
 Фильтры для определения ролей
 """
-from typing import List
 import logging
 
 from aiogram.filters import BaseFilter

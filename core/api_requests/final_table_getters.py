@@ -1,6 +1,6 @@
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List, Dict, Union, Any, Set
+from typing import List, Dict, Union, Any, Set, Sequence
 from collections import defaultdict
 
 from database.models import TugOfWarMatch, ExternalTeamMapping, DartsPlayOff, Participant, KettleResult
@@ -320,7 +320,7 @@ class TableTennisPlaceCalculator:
         result = await self.session.execute(select(Participant.participant_id))
         return [r[0] for r in result.all()]
 
-    async def get_playoff_depth(self, matches: List[TableTennisMatch]) -> str:
+    async def get_playoff_depth(self, matches: Sequence[TableTennisMatch]) -> str:
         """Определяет глубину плей-оффа (1/2, 1/4 или 1/8)"""
         playoff_types = {m.group_name for m in matches if m.group_name in self.PLAYOFF_ORDER}
 

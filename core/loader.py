@@ -16,7 +16,6 @@ else:
 class MainSettings:
     TOKEN = os.getenv('TOKEN')
     SUPERUSER = int(os.getenv('SUPERUSER'))
-    ADMIN_LIST = [int(x) for x in os.getenv('ADMIN_LIST').split(' ')]
     ADMIN_GROUP = int(os.getenv('ADMIN_GROUP'))
 
 

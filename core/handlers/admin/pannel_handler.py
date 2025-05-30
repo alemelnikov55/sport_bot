@@ -1,6 +1,5 @@
 from aiogram.types import Message
 from aiogram_dialog import DialogManager, StartMode
-import logging
 
 from handlers.judge.state import AdminStates
 

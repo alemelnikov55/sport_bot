@@ -1,6 +1,5 @@
-from collections import defaultdict
 from datetime import datetime
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Sequence
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -39,7 +38,7 @@ async def save_relay_result(session: AsyncSession,
     await session.commit()
 
 
-async def get_last_judge_reley_results(session: AsyncSession, telegram_id: int) -> List[Tuple[str, int, float]]:
+async def get_last_judge_reley_results(session: AsyncSession, telegram_id: int) -> Sequence[Tuple[str, int, float]]:
     """
     Возвращает последние 10 результатов, зарегистрированных судьей по telegram_id
     и указанной дистанции, в виде кортежей:
@@ -47,7 +46,6 @@ async def get_last_judge_reley_results(session: AsyncSession, telegram_id: int) 
 
     :param session: Асинхронная сессия SQLAlchemy
     :param telegram_id: Telegram ID судьи
-    :param distance_m: Дистанция (в метрах)
     :return: Список кортежей
     """
     # Получение judge_id

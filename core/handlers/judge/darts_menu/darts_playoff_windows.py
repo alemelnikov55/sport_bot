@@ -1,5 +1,3 @@
-from aiogram_dialog.widgets.input import MessageInput
-
 from aiogram_dialog import Window
 from aiogram_dialog.widgets.kbd import Button, Group, Select
 from aiogram_dialog.widgets.text import Const, Format

@@ -1,6 +1,4 @@
-import asyncio
 import uuid
-from pprint import pprint
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,8 +8,7 @@ from typing import Type, Callable, Any, List, Dict
 from api_requests.final_table_getters import DartsPlaceCalculator, prepare_kettlebell_men_api_payload, \
     prepare_kettlebell_women_api_payload, calculate_tug_of_war_places, TableTennisPlaceCalculator
 from database.models import (
-    ExternalSportMapping, Sport, ExternalTeamMapping, Team, VolleyballMatchStatus, VolleyballMatch, MatchStatus,
-    FootballMatch, async_session, TugOfWarMatch, RunningResult
+    ExternalSportMapping, Sport, ExternalTeamMapping, VolleyballMatch, FootballMatch, RunningResult
 )
 from database.models.relay_race_model import RelayResult
 

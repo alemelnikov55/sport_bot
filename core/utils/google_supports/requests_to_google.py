@@ -36,6 +36,23 @@ spreadsheet = client.open(TABLE_NAME)
 # === Регистрация обработчиков по листам ===
 sheet_handlers: Dict[str, Callable[[Any], list]] = {}
 
+# Столбцы, которые нужно исключить
+EXCLUDED_COLUMNS = {"Справка", "Цвет манишки", "Комментарий"}
+
+# Полные названия колонок, которые содержат информацию о видах спорта
+SPORTS_COLUMNS_FULL = {
+    "football",
+    "volleyball",
+    "run_100m",
+    "run_2000m",
+    "run_3000m",
+    "relay_race_4x100",
+    "pong",
+    "tug_of_war",
+    'kettle',
+    'darts'
+}
+
 
 def get_filtered_participants_data(sheet_name: str) -> List[Dict[str, Union[int, str, None, List[str]]]]:
     """
@@ -44,23 +61,6 @@ def get_filtered_participants_data(sheet_name: str) -> List[Dict[str, Union[int,
     :param sheet_name: Название листа
     :return: Список словарей с данными участников, где виды спорта собраны в список
     """
-    # Столбцы, которые нужно исключить
-    EXCLUDED_COLUMNS = {"Справка", "Цвет манишки", "Комментарий"}
-
-    # Полные названия колонок, которые содержат информацию о видах спорта
-    SPORTS_COLUMNS_FULL = {
-        "football",
-        "volleyball",
-        "run_100m",
-        "run_2000m",
-        "run_3000m",
-        "relay_race_4x100",
-        "pong",
-        "tug_of_war",
-        'kettle',
-        'darts'
-    }
-
     try:
         worksheet = spreadsheet.worksheet(sheet_name)
     except WorksheetNotFound as exc:
@@ -323,7 +323,7 @@ def handle_darts_qualifiers(data):
         )
         rows.append(row)
 
-    return (rows)
+    return rows
 
 
 @register_sheet_handler('darts_playoff')
@@ -355,7 +355,7 @@ def process_sheet(sheet_name: str, raw_data):
         try:
             sheet = spreadsheet.worksheet(sheet_name)
         except gspread.exceptions.WorksheetNotFound:
-            sheet = spreadsheet.add_worksheet(title=sheet_name, rows="100", cols="20")
+            sheet = spreadsheet.add_worksheet(title=sheet_name, rows=100, cols=20)
 
         sheet.clear()
         sheet.update(values, "A1")

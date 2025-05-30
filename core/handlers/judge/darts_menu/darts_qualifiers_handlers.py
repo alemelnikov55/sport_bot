@@ -1,11 +1,9 @@
-import logging
-
 from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 
-from database.darts_requests import logger, add_darts_qualifiers_result
+from database.darts_requests import add_darts_qualifiers_result
 from handlers.judge.state import MainJudgeStates, DartsStates
 
 

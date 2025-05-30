@@ -1,6 +1,4 @@
 import logging
-from collections import defaultdict
-from typing import List, Tuple, Dict, Any
 
 from sqlalchemy import select, case, func
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -43,46 +41,6 @@ async def save_kettle_results(session: AsyncSession, lifter_id: int, count: int,
 
     session.add(new_result)
     await session.commit()
-
-
-# async def get_all_kettle_results(session: AsyncSession) -> Dict[str, Any]:
-#     """
-#     Получает все результаты гиревого спорта из базы данных.
-#
-#     :param session:
-#     :return:
-#     """
-#     stmt = (
-#         select(
-#             KettleResult.weight,
-#             Participant.participant_id,
-#             Participant.full_name,
-#             Team.name,
-#             KettleResult.lift_count,
-#         )
-#         .join(Participant, KettleResult.lifter_id == Participant.participant_id)
-#         .join(Team, Team.team_id == KettleResult.team_id)
-#         .order_by(KettleResult.lift_count)
-#     )
-#
-#     result = await session.execute(stmt)
-#     rows = result.all()
-#
-#     grouped: Dict[str, List[Dict]] = defaultdict(list)
-#
-#     for weight, lifter_id, full_name, team_name, lift_count in rows:
-#         category = weight if weight else 'Без категории'
-#         # TODO внести расчет категории
-#         grouped[category].append(
-#             {
-#                 'participant_id': lifter_id,
-#                 'full_name': full_name,
-#                 'team_name': team_name,
-#                 'lift_count': lift_count
-#             }
-#         )
-#
-#     return dict(grouped)
 
 
 async def get_kettle_export_results(session: AsyncSession) -> list[dict]:

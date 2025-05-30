@@ -2,7 +2,7 @@ import asyncio
 import logging
 import logging.config
 
-from aiogram import Bot, Dispatcher, F
+from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.filters import Command
 from aiogram.fsm.storage import redis
@@ -18,7 +18,6 @@ from aiogram_dialog import setup_dialogs
 
 from aiohttp import web
 
-from handlers.text_handler import text_handler
 from loader import RedisSettings, MainSettings, WebhookSettings
 from logger_config import LOGGING_CONFIG
 
@@ -28,8 +27,6 @@ from handlers.start import start_handler
 
 from handlers.admin.pannel_handler import start_admin_panel
 from handlers.admin.start_game import start_game
-
-from handlers.update import update
 
 from handlers.judge.choose_sport import choose_sport
 from handlers.judge.dialog import dialog_router

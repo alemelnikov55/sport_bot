@@ -1,9 +1,7 @@
 """
 Модель для хранения результатов гиревого спорта
 """
-# from enum import Enum as PyEnum
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, Numeric, func, String
-# from sqlalchemy import Enum as SQLAlchemyEnum
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, func
 
 from database.models import Base
 

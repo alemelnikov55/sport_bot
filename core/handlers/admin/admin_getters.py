@@ -2,11 +2,11 @@ from aiogram_dialog import DialogManager
 
 from database.football_requests import get_football_matches_for_team, get_team_goals_in_match, get_match_info_by_id
 from database.pong_requests import get_table_tennis_participants_by_gender
-from database.service_requests import get_teams_by_sport, get_participants_by_sport
-from handlers.judge.football_menu.football_getters import football_teams_getter
+from database.service_requests import get_teams_by_sport
 
 
 printable_gender = {'male': 'Мужчин', 'female': 'Женщин'}
+
 
 def get_team_name_from_match(match: dict, team_id: int) -> str:
     if match["team1_id"] == team_id:

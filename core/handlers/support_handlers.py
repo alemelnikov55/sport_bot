@@ -1,8 +1,6 @@
 """
 Вспомогательные команды для оповещения администратора и страта бота
 """
-from datetime import datetime
-
 from aiogram import Bot
 from aiogram.types import BotCommandScopeAllGroupChats, BotCommand, BotCommandScopeAllPrivateChats
 

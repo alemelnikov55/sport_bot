@@ -1,15 +1,13 @@
 import requests
 from requests.auth import HTTPBasicAuth
-from pprint import pprint
+from loader import ApiSettings
 
 # Общие настройки
-BASE_URL = "https://spartakiada.techincity.ru/referee-bot-integration/api/v1"
-AUTH = HTTPBasicAuth("test", "123")  # Логин и пароль
-SSL_VERIFY = False  # Отключаем проверку SSL для тестов
+AUTH = HTTPBasicAuth(ApiSettings.API_USER, ApiSettings.API_PASSWORD)  # Логин и пароль
 
 def make_api_request(endpoint):
     """Общая функция для выполнения GET-запросов к API"""
-    url = f"{BASE_URL}/{endpoint}"
+    url = f"{ApiSettings.API_URL}/{endpoint}"
     try:
         response = requests.get(url, auth=AUTH)
         if response.status_code == 200:

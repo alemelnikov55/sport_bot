@@ -1,7 +1,7 @@
 import logging
-from typing import Dict, List, Tuple, Optional, Any
+from typing import Dict, List
 
-from sqlalchemy import update, select, case, or_, func
+from sqlalchemy import update, select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import aliased
 

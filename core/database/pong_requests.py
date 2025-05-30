@@ -119,7 +119,7 @@ async def update_pong_set_status(
         match_id: int,
         set_number: int,
         new_status: PongMatchStatus
-) -> TableTennisSet:
+) -> TableTennisSet | None:
     """
     Обновляет статус сета в теннисном матче с проверкой соответствия set_id и match_id
 
@@ -144,7 +144,7 @@ async def update_pong_set_status(
     if new_status == PongMatchStatus.FINISHED:
         if volleyball_set.status == PongMatchStatus.FINISHED:
             print("Сет уже завершен, пропускаем обновление")
-            return
+            return None
         # Проверяем, что счет валидный
         if volleyball_set.player1_score == volleyball_set.player2_score:
             if volleyball_set.player1_score == 0:
@@ -604,7 +604,7 @@ async def get_table_tennis_participants_by_gender(
         ParticipantSport.sport
     ).where(
         and_(
-            Sport.name == 'Настольный теннис',  #TODO Ручной ввод!
+            Sport.name == 'Настольный теннис',
             Participant.gender == gender
         )
     )

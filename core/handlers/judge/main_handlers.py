@@ -20,8 +20,8 @@ async def choose_sport_handler(call: CallbackQuery, button: Button, dialog_manag
     start_data = {'sport_name': sport_name,
                   'sport_id': int(sport_id),
                   'judge_telegram_id': call.message.chat.id}
-
-    if sport_name == 'Мини-Футбол':
+    #TODO ручной ввод
+    if sport_name == 'Мини-футбол':
         await dialog_manager.start(FootballStates.match,
                                    data=start_data)
 

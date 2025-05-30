@@ -1,13 +1,12 @@
 import logging
-from pprint import pprint
 
-from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager, ShowMode
 from aiogram_dialog.widgets.kbd import Button
 
 from database.darts_requests import create_darts_playoff_match, increment_player_win, update_playoff_winner
 from database.models import DartsPlayoffType
+
 from handlers.judge.state import DartsStates
 
 logger = logging.getLogger(__name__)

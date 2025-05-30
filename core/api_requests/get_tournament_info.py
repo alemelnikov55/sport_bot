@@ -11,25 +11,25 @@ from database.models.engine import async_session
 
 
 async def get_tournament_full_info():
-    athletes = get_athletes()
+    # athletes = get_athletes()
     teams = get_divisions()
     sports = get_disciplines()
 
     pprint(teams)
     pprint(sports)
 
-    async with async_session() as session:
-        # 2. Импортируем команды
-        print("🔄 Импортируем команды...")
-        await import_external_teams(session, teams)
-
-        # 3. Импортируем виды спорта
-        print("🔄 Импортируем виды спорта...")
-        await import_external_sports(session, sports)
+    # async with async_session() as session:
+    #     # 2. Импортируем команды
+    #     print("🔄 Импортируем команды...")
+    #     await import_external_teams(session, teams)
+    #
+    #     # 3. Импортируем виды спорта
+    #     print("🔄 Импортируем виды спорта...")
+    #     await import_external_sports(session, sports)
 
          # 1. Импортируем атлетов
-        print("🔄 Импортируем атлетов...")
-        await import_external_athletes(session, athletes)
+        # print("🔄 Импортируем атлетов...")
+        # await import_external_athletes(session, athletes)
 
 
 if __name__ == "__main__":

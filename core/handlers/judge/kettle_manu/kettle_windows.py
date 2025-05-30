@@ -8,7 +8,7 @@ from handlers.judge.kettle_manu.kettle_getters import kettle_team_choose_getter,
     kettle_count_getter, kettle_confirm_result_getter, kettle_history_getter
 from handlers.judge.kettle_manu.kettle_handlers import history_kettle_handler, back_kettle_team_choose_handler, \
     kettle_team_choose_handler, kettle_choose_lifter_handler, lifter_result_handler, \
-    kettle_choose_category_handler, kettle_confirm_result_handler, back_to_choose_team, lifter_weight_handler
+    kettle_confirm_result_handler, back_to_choose_team, lifter_weight_handler
 from handlers.judge.state import KettleStates
 
 

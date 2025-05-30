@@ -1,4 +1,4 @@
-from typing import List, Dict, Union, Any
+from typing import List, Dict, Union
 import logging
 from sqlalchemy import text, select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        logger.warning('База данных успешно инициализирована.')
 
 
 async def drop_all_tables():
@@ -20,7 +21,7 @@ async def drop_all_tables():
         await session.execute(text("DROP SCHEMA public CASCADE;"))
         await session.execute(text("CREATE SCHEMA public;"))
         await session.commit()
-        print("Все таблицы удалены.")
+        logger.warning('Все таблицы успешно удалены.')
 
 
 async def bulk_create_participants(participants_data: List[Dict]) -> int:

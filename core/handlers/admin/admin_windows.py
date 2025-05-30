@@ -1,18 +1,17 @@
 from aiogram_dialog import Window
 from aiogram_dialog.widgets.input import MessageInput
-from aiogram_dialog.widgets.kbd import Button, Group, Select, Back
+from aiogram_dialog.widgets.kbd import Button, Group, Select
 from aiogram_dialog.widgets.text import Const, Format
 
 from handlers.admin.admin_handlers import fix_score_handler, choose_sport_to_fix_handler, choose_team_to_fix_handler, \
     choose_match_to_fix_handler, choose_goal_to_fix_handler, admin_fix_goal_approve_handler, \
-    admin_fix_goal_refuse_handler, back_admin_choose_goal_to_fix, \
-    back_admin_choose_match_to_fix, back_admin_choose_team_to_fix, back_admin_choose_sport_to_fix, \
+    admin_fix_goal_refuse_handler, back_admin_choose_sport_to_fix, \
     create_groups_handler, create_football_tournament_groups, groups_football_count_inpout_handler, \
     groups_volleyball_count_inpout_handler, create_volleyball_tournament_groups, add_judge_handler, \
     add_judge_inpout_handler, groups_pong_count_inpout_handler, create_pong_tournament_groups, \
     groups_tug_count_inpout_handler, create_tug_tournament_groups, admin_send_result_handler, send_result_handler, \
     back_to_panel_handler, pong_choose_gender_handler
-from handlers.admin.admin_getters import football_teams_getter, football_matches_getter, football_goal_getter, \
+from handlers.admin.admin_getters import football_matches_getter, football_goal_getter, \
     admin_fix_goal_approve_getter, create_groups_tournament_football_getter, create_groups_tournament_volleyball_getter, \
     create_groups_tournament_pong_getter, create_groups_tournament_tug_getter
 from handlers.judge.main_getters import get_sports

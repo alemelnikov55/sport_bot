@@ -2,7 +2,6 @@ import logging
 from typing import Dict, Any
 
 from aiogram_dialog import DialogManager
-from sqlalchemy.orm.attributes import HISTORY_BLANK
 
 from database.kettle_requests import get_judge_history
 from database.service_requests import get_teams_by_sport, get_team_participants_by_team_and_sport

@@ -1,13 +1,4 @@
 from itertools import combinations
-from typing import List, Dict
-
-from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, InlineKeyboardMarkup
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from database.service_requests import get_teams_by_sport
-from utils.states import GroupCreationStates
 
 GROUPS_LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 

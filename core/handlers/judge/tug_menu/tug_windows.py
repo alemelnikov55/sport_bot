@@ -1,6 +1,5 @@
 from aiogram_dialog import Window
-from aiogram_dialog.widgets.input import MessageInput
-from aiogram_dialog.widgets.kbd import Button, Group, Select, Back, ScrollingGroup
+from aiogram_dialog.widgets.kbd import Button, Group, Select, ScrollingGroup
 from aiogram_dialog.widgets.text import Const, Format
 from magic_filter import F
 

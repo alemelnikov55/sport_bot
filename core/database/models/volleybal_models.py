@@ -1,5 +1,4 @@
 from enum import Enum as PyEnum
-from typing import Optional
 
 from sqlalchemy import Column, Integer, ForeignKey, String, CheckConstraint
 from sqlalchemy.orm import relationship

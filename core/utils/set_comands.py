@@ -1,4 +1,4 @@
-from aiogram.types import BotCommand, BotCommandScopeChat
+from aiogram.types import BotCommand
 
 SUPERUSER_COMMANDS = [
     BotCommand(command='panel', description='Панель администратора'),

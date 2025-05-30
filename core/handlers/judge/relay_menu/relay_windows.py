@@ -1,8 +1,7 @@
-from magic_filter import F
 from aiogram_dialog.widgets.input import MessageInput
 
 from aiogram_dialog import Window
-from aiogram_dialog.widgets.kbd import Button, Group, Select, Back
+from aiogram_dialog.widgets.kbd import Button, Group, Select
 from aiogram_dialog.widgets.text import Const, Format
 
 from handlers.judge.relay_menu.relay_getter import relay_team_choose_getter, relay_time_register_getter, \
@@ -10,7 +9,6 @@ from handlers.judge.relay_menu.relay_getter import relay_team_choose_getter, rel
 from handlers.judge.relay_menu.relay_handlers import relay_team_choose_handler, back_relay_team_choose_handler, \
     back_relay_time_register_handler, relay_result_handler, cancel_relay_confirm_result_handler, \
     relay_confirm_result_handler, history_relay_handler, back_relay_history_handler
-from handlers.judge.run_menu.run_handlers import runner_result_handler
 from handlers.judge.state import RelayStates
 
 
