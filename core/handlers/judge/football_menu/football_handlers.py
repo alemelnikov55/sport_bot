@@ -43,7 +43,7 @@ async def choose_scorer_handler(call: CallbackQuery, button: Button, dialog_mana
     goal_data = await builder.build_for_match(match_id)
     api.send_results(goal_data)
 
-    await add_goal(match_id, int(scorer_id))
+    await add_goal(session, match_id, int(scorer_id))
     await dialog_manager.switch_to(FootballStates.process_match)
     await call.answer('Гол добавлен!')
 
@@ -142,7 +142,7 @@ async def manual_scorer_inpout_handler(message: Message, message_input: MessageI
     scorer_id = int(text)
     match_id = int(dialog_manager.dialog_data['match'])
 
-    await add_goal(match_id, scorer_id)
+    await add_goal(session, match_id, scorer_id)
 
     builder = FootballResultBuilder(session)
     goal_data = await builder.build_for_match(match_id)

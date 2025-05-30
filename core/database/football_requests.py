@@ -4,7 +4,7 @@ from sqlalchemy import select, update, delete, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, aliased, selectinload
 
-from database.models import FootballGoal, FootballMatch, Participant, async_session, Sport, Team, \
+from database.models import FootballGoal, FootballMatch, Participant, Team, \
     FootballFallers
 from database.models import MatchStatus
 
@@ -31,98 +31,96 @@ async def clear_matches(session: AsyncSession) -> str:
         return 'Таблица матчей удалена.'
 
 
-async def add_goal(match_id: int, participant_id: int, half: int = 1) -> FootballMatch:
+async def add_goal(session: AsyncSession, match_id: int, participant_id: int, half: int = 1) -> FootballMatch:
     """Добавляет гол без проверки на участие в футболе"""
-    async with async_session() as session:
-        async with session.begin():
-            goal = FootballGoal(
-                match_id=match_id,
-                scorer_id=participant_id,
-                half=half
-            )
-            session.add(goal)
-
-            match = await session.get(FootballMatch, match_id)
-            participant = await session.get(Participant, participant_id)
-
-            if match.team1_id == participant.team_id:
-                match.score1 += 1
-            else:
-                match.score2 += 1
-
-            await session.commit()
-            return match
-
-
-# под удаление
-async def get_football_matches_with_goals() -> Dict[str, Any]:
-    """
-    Возвращает статистику футбольных матчей с голами, сгруппированную по группам.
-    Учитывает связи через таблицы ParticipantSport и FootballGoal.
-    """
-    result = {"football": {}}
-
-    async with async_session() as session:
-        # Получаем ID футбола из таблицы Sport
-        football_sport = await session.execute(
-            select(Sport.sport_id).where(Sport.name == "football")
+    async with session.begin():
+        goal = FootballGoal(
+            match_id=match_id,
+            scorer_id=participant_id,
+            half=half
         )
-        football_sport_id = football_sport.scalar_one_or_none()
+        session.add(goal)
 
-        if football_sport_id is None:
-            return result
+        match = await session.get(FootballMatch, match_id)
+        participant = await session.get(Participant, participant_id)
 
-        # Получаем все матчи с предзагруженными командами и голами
-        matches_query = (
-            select(FootballMatch)
-            .options(
-                joinedload(FootballMatch.team1),
-                joinedload(FootballMatch.team2),
-                joinedload(FootballMatch.goals).joinedload(FootballGoal.scorer)
-            )
-        )
-        matches = (await session.execute(matches_query)).scalars().unique().all()
+        if match.team1_id == participant.team_id:
+            match.score1 += 1
+        else:
+            match.score2 += 1
 
-        # Для каждого матча собираем данные
-        for match in matches:
-            group = match.group_name or "NoGroup"
+        await session.commit()
+        return match
 
-            if group not in result:
-                result[group] = []
-
-            # Получаем игроков, забивших голы в этом матче (уже предзагружены)
-            goal_scorers = [goal.scorer for goal in match.goals]
-
-            # Формируем данные по командам
-            team1_players = []
-            team2_players = []
-
-            for player in goal_scorers:
-
-                if player.team_id == match.team1_id:
-                    team1_players.append((player.short_name, player.participant_id))
-                else:
-                    team2_players.append((player.short_name, player.participant_id))
-
-            # Добавляем матч в результат
-            match_data = {
-                "team_1": {
-                    "match_id": match.match_id,
-                    "name": match.team1.name,
-                    "goals": match.score1,
-                    "players": team1_players
-                },
-                "team_2": {
-                    "match_id": match.match_id,
-                    "name": match.team2.name,
-                    "goals": match.score2,
-                    "players": team2_players
-                }
-            }
-
-            result[group].append(match_data)
-
-    return result
+#
+# # под удаление
+# async def get_football_matches_with_goals(session: AsyncSession) -> Dict[str, Any]:
+#     """
+#     Возвращает статистику футбольных матчей с голами, сгруппированную по группам.
+#     Учитывает связи через таблицы ParticipantSport и FootballGoal.
+#     """
+#     result = {"football": {}}
+#
+#     # Получаем ID футбола из таблицы Sport
+#     football_sport = await session.execute(
+#         select(Sport.sport_id).where(Sport.name == "football")
+#     )
+#     football_sport_id = football_sport.scalar_one_or_none()
+#
+#     if football_sport_id is None:
+#         return result
+#
+#     # Получаем все матчи с предзагруженными командами и голами
+#     matches_query = (
+#         select(FootballMatch)
+#         .options(
+#             joinedload(FootballMatch.team1),
+#             joinedload(FootballMatch.team2),
+#             joinedload(FootballMatch.goals).joinedload(FootballGoal.scorer)
+#         )
+#     )
+#     matches = (await session.execute(matches_query)).scalars().unique().all()
+#
+#     # Для каждого матча собираем данные
+#     for match in matches:
+#         group = match.group_name or "NoGroup"
+#
+#         if group not in result:
+#             result[group] = []
+#
+#         # Получаем игроков, забивших голы в этом матче (уже предзагружены)
+#         goal_scorers = [goal.scorer for goal in match.goals]
+#
+#         # Формируем данные по командам
+#         team1_players = []
+#         team2_players = []
+#
+#         for player in goal_scorers:
+#
+#             if player.team_id == match.team1_id:
+#                 team1_players.append((player.short_name, player.participant_id))
+#             else:
+#                 team2_players.append((player.short_name, player.participant_id))
+#
+#         # Добавляем матч в результат
+#         match_data = {
+#             "team_1": {
+#                 "match_id": match.match_id,
+#                 "name": match.team1.name,
+#                 "goals": match.score1,
+#                 "players": team1_players
+#             },
+#             "team_2": {
+#                 "match_id": match.match_id,
+#                 "name": match.team2.name,
+#                 "goals": match.score2,
+#                 "players": team2_players
+#             }
+#         }
+#
+#         result[group].append(match_data)
+#
+#     return result
 
 
 async def get_football_matches_with_goals_and_fallers(session: AsyncSession) -> dict:
@@ -383,6 +381,7 @@ async def get_match_info_by_id(session: AsyncSession, match_id: int) -> Dict[str
 
     Args:
         match_id: ID матча
+        session
 
     Returns:
         Словарь с минимальной информацией:
@@ -457,7 +456,7 @@ async def add_faller(session: AsyncSession, player_id: int, match_id: int) -> No
     await session.commit()
 
 
-async def get_football_matches_for_team( session: AsyncSession, team_id: int) -> List[Dict[str, Any]]:
+async def get_football_matches_for_team(session: AsyncSession, team_id: int) -> List[Dict[str, Any]]:
     """
     Возвращает все футбольные матчи для указанной команды
 
