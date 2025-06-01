@@ -47,7 +47,7 @@ jobstores = {
         port=6379,
     )
 }
-
+""
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
 
