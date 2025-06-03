@@ -174,72 +174,6 @@ class BaseDuelSportPlacer:
 
         return result
 
-#
-# class DartsPlacer(BaseDuelSportPlacer):
-#     async def fetch_matches(self):
-#         result = await self.session.execute(select(DartsPlayOff))
-#         return result.scalars().all()
-#
-#     async def calculate_places(self) -> Dict[str, List[Dict[str, Union[int, str]]]]:
-#         participants_gender = await self.get_participants_map()
-#         matches = await self.fetch_matches()
-#
-#         wins: Dict[int, int] = {}
-#         all_players = set()
-#
-#         for match in matches:
-#             if not match.winner_id:
-#                 continue
-#
-#             # Добавляем обоих игроков
-#             all_players.update([match.player1_id, match.player2_id])
-#
-#             # Победителю прибавляем 1
-#             wins[match.winner_id] = wins.get(match.winner_id, 0) + 1
-#
-#         # Все проигравшие получают 0 побед, если не были победителями ни в одном матче
-#         for pid in all_players:
-#             if pid not in wins:
-#                 wins[pid] = 0
-#
-#         # Группировка по полу
-#         gender_groups = {"M": [], "F": []}
-#         for pid, score in wins.items():
-#             gender = participants_gender.get(pid)
-#             if gender in gender_groups:
-#                 gender_groups[gender].append((pid, score))
-#
-#         # Распределение мест с учётом делений
-#         result = {"M": [], "F": []}
-#         for gender, group in gender_groups.items():
-#             sorted_group = sorted(group, key=lambda x: -x[1])
-#             rank_list = []
-#             current_place = 1
-#             index = 0
-#
-#             while index < len(sorted_group):
-#                 tied = [sorted_group[index]]
-#                 score = sorted_group[index][1]
-#                 j = index + 1
-#                 while j < len(sorted_group) and sorted_group[j][1] == score:
-#                     tied.append(sorted_group[j])
-#                     j += 1
-#
-#                 if len(tied) == 1:
-#                     place = str(current_place)
-#                 else:
-#                     place = f"{current_place}-{current_place + len(tied) - 1}"
-#
-#                 for pid, _ in tied:
-#                     rank_list.append({"participant_id": pid, "place": place})
-#
-#                 current_place += len(tied)
-#                 index = j
-#
-#             result[gender] = rank_list
-#
-#         return result
-
 
 class DartsPlaceCalculator:
     def __init__(self, session: AsyncSession):
@@ -451,10 +385,7 @@ class TableTennisPlaceCalculator:
                 })
 
         return result
-# class PongPlacer(BaseDuelSportPlacer):
-#     async def fetch_matches(self):
-#         result = await self.session.execute(select(TableTennisMatch))
-#         return result.scalars().all()
+
 
 ######################################
 #  KETTLEBELL

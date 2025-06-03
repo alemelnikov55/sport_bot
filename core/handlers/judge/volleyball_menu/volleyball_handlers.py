@@ -3,7 +3,7 @@ from aiogram_dialog import DialogManager, ShowMode
 from aiogram_dialog.widgets.kbd import Button
 
 from api_requests.api_base_config import api
-from api_requests.data_preparation_fonc import VolleyballResultBuilder
+from api_requests.data_preparation_fonc import VolleyballResultBuilder, build_volleyball_tournament_data
 from database.models import VolleyballMatchStatus
 from database.volleyball_requests import update_volleyball_set_status, update_volleyball_match_status, \
     increment_volleyball_set_score, create_volleyball_matches, get_next_available_set
@@ -121,6 +121,12 @@ async def volleyball_set_group_handler(call: CallbackQuery, button: Button, dial
     data_to_create = {group_type: [(team1_id, team2_id)]}
 
     await create_volleyball_matches(session, data_to_create)
+
+    # Отправка данных о турнирной сетке турнира по волейболу в API
+    tournament_data = await build_volleyball_tournament_data(session)
+    api.send_tournament_stages(tournament_data)
+    print(tournament_data)
+
 
     await dialog_manager.switch_to(VolleyballStates.match)
     await call.answer('Матч создан!')

@@ -4,15 +4,8 @@ import time
 
 from sqlalchemy import text
 
-from api_requests.final_table_getters import calculate_tug_of_war_places, DartsPlaceCalculator, \
-    prepare_kettlebell_women_api_payload, TableTennisPlaceCalculator
-from api_requests.api_base_config import api
-from database.kettle_requests import get_kettlebell_male_results, get_kettlebell_women_scores
 from database.models import async_session
-from api_requests.data_preparation_fonc import build_football_tournament_data, build_volleyball_tournament_data, \
-    RelayResultBuilder, RunningResultBuilder, FootballResultBuilder, VolleyballResultBuilder, DartsResultBuilder, \
-    KettlebellResultBuilder, TugResultBuilder, TableTennisResultBuilder
-from database.pong_requests import get_table_tennis_participants_by_gender
+
 from database.service_requests import init_db, drop_all_tables
 
 
