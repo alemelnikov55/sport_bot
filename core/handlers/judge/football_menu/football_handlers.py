@@ -4,7 +4,7 @@ from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 
 from api_requests.api_base_config import api
-from api_requests.data_preparation_fonc import FootballResultBuilder
+from api_requests.data_preparation_fonc import FootballResultBuilder, build_football_tournament_data
 from database.football_requests import change_match_status, add_goal, create_match, add_faller
 from database.models import MatchStatus, async_session
 from handlers.judge.state import FootballStates, MainJudgeStates
@@ -86,6 +86,11 @@ async def manual_set_group_handler(call: CallbackQuery, button: Button, dialog_m
     second_team = int(dialog_manager.dialog_data['manual_team2'])
 
     await create_match(session, first_team, second_team, group_type)
+
+    # Отправка на внешний API
+    tournament_data = await build_football_tournament_data(session)
+    api.send_tournament_stages(tournament_data)
+    print(tournament_data)
 
     await dialog_manager.switch_to(FootballStates.match)
     await call.answer('Поехали!')

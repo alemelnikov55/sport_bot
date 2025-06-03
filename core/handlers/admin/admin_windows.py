@@ -14,6 +14,7 @@ from handlers.admin.admin_handlers import fix_score_handler, choose_sport_to_fix
 from handlers.admin.admin_getters import football_matches_getter, football_goal_getter, \
     admin_fix_goal_approve_getter, create_groups_tournament_football_getter, create_groups_tournament_volleyball_getter, \
     create_groups_tournament_pong_getter, create_groups_tournament_tug_getter
+from handlers.judge.football_menu.football_getters import football_teams_getter
 from handlers.judge.main_getters import get_sports
 from handlers.judge.state import AdminStates
 
