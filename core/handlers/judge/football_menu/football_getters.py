@@ -38,7 +38,7 @@ async def match_info_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str
 async def choose_scorer_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     session: AsyncSession = dialog_manager.middleware_data["session"]
     team_id = int(dialog_manager.dialog_data['goal_team_id'])
-    sport_id = int(dialog_manager.dialog_data['sport'])
+    sport_id = int(dialog_manager.start_data['sport_id'])
 
     all_participants = await get_team_participants_by_team_and_sport(team_id, sport_id, session)
 
@@ -48,7 +48,8 @@ async def choose_scorer_getter(dialog_manager: DialogManager, **kwargs) -> Dict[
 async def football_teams_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     session = dialog_manager.middleware_data['session']
     # sport_identifier = 'football'
-    sport_identifier = 'Мини-Футбол'
+    # TODO Ручной ввод
+    sport_identifier = 'Мини-футбол'
     
     football_teams = await get_teams_by_sport(sport_identifier, session)
 
@@ -66,11 +67,11 @@ async def teams_info_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str
 async def choose_faller_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     session: AsyncSession = dialog_manager.middleware_data["session"]
     team_id = int(dialog_manager.dialog_data['red_card_team_id'])
-    sport_id = int(dialog_manager.dialog_data['sport'])
+    sport_id = int(dialog_manager.start_data['sport_id'])
 
     all_participants = await get_team_participants_by_team_and_sport(team_id, sport_id, session)
 
-    return {'players': [{'name': name.split(' ')[0], 'id': id_} for name, id_ in all_participants.items()]}
+    return {'players': [{'name': name.split(" ")[0], 'id': id_} for name, id_ in all_participants.items()]}
 
 
 async def manual_set_group_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:

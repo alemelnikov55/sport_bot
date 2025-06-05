@@ -47,6 +47,7 @@ async def import_external_athletes(session: AsyncSession, athletes: List[Dict]) 
             print(f"⚠️ Пропущен атлет {athlete['lastName']} — нет команды с divisionId {division_id}")
             continue
 
+        athlete_id = athlete['id']
         # Формируем имя
         full_name = format_full_name(athlete["lastName"], athlete["firstName"], athlete.get("middleName", ""))
         short_name = format_short_name(athlete["lastName"], athlete["firstName"])
@@ -54,6 +55,7 @@ async def import_external_athletes(session: AsyncSession, athletes: List[Dict]) 
         gender = map_gender(athlete["gender"])
 
         participant = Participant(
+            participant_id=athlete_id,
             full_name=full_name,
             short_name=short_name,
             age=age,

@@ -47,7 +47,8 @@ class ExternalAPIClient:
 
 
 api = ExternalAPIClient(
-    base_url=ApiSettings.API_URL,
+    base_url="ApiSettings.API_URL",
+    # base_url=ApiSettings.API_URL,
     username=ApiSettings.API_USER,
     password=ApiSettings.API_PASSWORD,
 )

@@ -18,6 +18,7 @@ from aiogram_dialog import setup_dialogs
 
 from aiohttp import web
 
+from handlers.help import help_handler
 from loader import RedisSettings, MainSettings, WebhookSettings
 from logger_config import LOGGING_CONFIG
 
@@ -77,6 +78,7 @@ async def start_bot():
 
     dp.message.register(cancel_handler, Command('cancel'))
     dp.message.register(start_handler, Command('start'))
+    dp.message.register(help_handler, Command('help'))
 
     # Регистрируем хэндлеры судей
     dp.message.register(choose_sport, Command(commands='choose_sport'), IsJudge())

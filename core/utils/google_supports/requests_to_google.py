@@ -374,7 +374,7 @@ def update_multiple_sheets(sheet_data_map: Dict[str, Any], use_threads: bool = T
     """
 
     if use_threads:
-        with ThreadPoolExecutor(max_workers=2) as executor:
+        with ThreadPoolExecutor(max_workers=6) as executor:
             futures = [executor.submit(process_sheet, sheet_name, data) for sheet_name, data in sheet_data_map.items()]
             for future in as_completed(futures):
                 pass  # все логи уже выведены внутри process_sheet

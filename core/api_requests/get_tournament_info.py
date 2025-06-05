@@ -4,7 +4,7 @@
 import asyncio
 from pprint import pprint
 
-from inpout_requests import import_external_athletes, import_external_teams, import_external_sports
+from api_requests.inpout_requests import import_external_athletes, import_external_teams, import_external_sports
 
 from database.models.engine import async_session
 
