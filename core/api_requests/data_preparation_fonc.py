@@ -296,9 +296,9 @@ class DartsResultBuilder(BaseResultPayloadBuilder):
                     continue
                 payload.append({
                     "athleteId": athlete_id,
-                    "result": place_value
+                    "result": raw_place
                 })
-
+        print(payload)
         return payload
 
     async def build(self) -> dict:
@@ -353,11 +353,12 @@ class TableTennisResultBuilder(BaseResultPayloadBuilder):
         result_payload = []
         for gender in ("M", "F"):
             for row in place_dict.get(gender, []):
+                print(row)
                 result_payload.append({
                     "athleteId": row["participant_id"],
                     "result": row["place"]  # строка: "1", "2", "5-6" и т.д.
                 })
-
+        print(result_payload)
         return result_payload
 
     async def build(self) -> Dict[str, Any]:

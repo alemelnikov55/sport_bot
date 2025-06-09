@@ -9,8 +9,8 @@ container = client_.containers.get('auto_quiz')
 container_ip = container.attrs['NetworkSettings']['IPAddress']
 
 # Определение базы данных
-DATABASE_URL = f"postgresql+asyncpg://{DBSettings.POSTGRES_USER}:{DBSettings.POSTGRES_PASSWORD}@localhost:{DBSettings.DB_PORT}/auto_quiz"
-# DATABASE_URL = f"postgresql+asyncpg://{DBSettings.POSTGRES_USER}:{DBSettings.POSTGRES_PASSWORD}@{container_ip}:{DBSettings.DB_PORT}/auto_quiz"
+# DATABASE_URL = f"postgresql+asyncpg:///auto_quiz"
+DATABASE_URL = f"postgresql+asyncpg://{DBSettings.POSTGRES_USER}:{DBSettings.POSTGRES_PASSWORD}@{container_ip}:{DBSettings.DB_PORT}/auto_quiz"
 print(DATABASE_URL)
 engine = create_async_engine(DATABASE_URL, echo=False)
 

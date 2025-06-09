@@ -159,4 +159,9 @@ async def manual_scorer_inpout_handler(message: Message, message_input: MessageI
     except Exception as e:
         print(e)
 
+    # builder = FootballResultBuilder(session)
+    # goal_data = await builder.build_for_match(match_id)
+    # try:
+    #     api.send_results(goal_data)
+
     await dialog_manager.switch_to(FootballStates.process_match)

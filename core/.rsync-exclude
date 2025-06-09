@@ -1,6 +1,7 @@
 .git
 .idea
 __pycache__/
+engine.py
 *.pyc
 .env
 .venv/

@@ -1,5 +1,5 @@
 from aiogram_dialog import Window
-from aiogram_dialog.widgets.kbd import Button, Group, Select
+from aiogram_dialog.widgets.kbd import Button, Group, Select, ScrollingGroup
 from aiogram_dialog.widgets.text import Const, Format
 from aiogram_dialog.widgets.input import MessageInput
 
@@ -18,18 +18,23 @@ def get_matches_window() -> Window:
     """Окно выбора матча"""
     return Window(
         Const('Выберите матч:'),
-        Group(
-            Select(
-                Format("{item[group]}: {item[team1]} - {item[team2]}"),
-                id="matches_select",
-                item_id_getter=lambda item: item["match_id"],
-                items="matches",
-                on_click=choose_match_handler
+        ScrollingGroup(
+            Group(
+                Select(
+                    Format("{item[group]}: {item[team1]} - {item[team2]}"),
+                    id="matches_select",
+                    item_id_getter=lambda item: item["match_id"],
+                    items="matches",
+                    on_click=choose_match_handler
+                ),
+                Button(Const("Создать матч"), id="manual_match_add", on_click=manual_football_match_add_handler),
+                Button(Const("Назад"), id="back_choose_match", on_click=choose_match_back_handler),
+                width=1,
+                id="matches_group"
             ),
-            Button(Const("Создать матч"), id="manual_match_add", on_click=manual_football_match_add_handler),
-            Button(Const("Назад"), id="back_choose_match", on_click=choose_match_back_handler),
+            id="matches_group",
             width=1,
-            id="matches_group"
+            height=11,
         ),
         state=FootballStates.match,
         getter=active_matches_getter
